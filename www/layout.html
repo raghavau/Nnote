@@ -72,8 +72,8 @@
 <script type="text/javascript">
     //var apiURL = 'http://192.168.0.153/Api/Nnote/';
     //var apiURL = '../../Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/Api/Nnote/';
-    var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -140,7 +140,7 @@
             $('#ifrm').attr('src', 'sample.html?empid=' + btoa($("#hempid").val()));
         });
         $('#reports').click(function () {
-            $('#ifrm').attr('src', 'sample.html?empid=' + btoa($("#hempid").val()));
+            $('#ifrm').attr('src', 'complaintsList.html?empid=' + btoa($("#hempid").val()));
         });
         $('#more').click(function () {
             $('#ifrm').attr('src', 'sample.html?empid=' + btoa($("#hempid").val()));

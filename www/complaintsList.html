@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+
+
+    <style type="text/css">
+        body {
+            background-color: #e5e5e5;
+        }
+
+        body>.grid {
+            height: 100%;
+        }
+
+        .column {
+            max-width: 450px;
+        }
+
+        .thumbnail {
+            width: 200px;
+            height: 250px;
+            position: fixed;
+            z-index: 999999;
+            border-radius: 10px;
+            top: 50%;
+            left: 50%;
+            /*margin-right: -50%;*/
+            transform: translate(-50%, -50%);
+            /*-webkit-transition: all 500ms ease-in;
+            -webkit-transform: scale(1);
+            -ms-transition: all 500ms ease-in;
+            -ms-transform: scale(1);
+            -moz-transition: all 500ms ease-in;
+            -moz-transform: scale(1);
+            transition: all 500ms ease-in;*/
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui sticky" style="background-color: white; padding: 5px;box-shadow: 0px 4px #e5e5e5">
+
+        <div class="ui form">
+            <div class="two fields">
+                <div class="field">
+                    <label> From date</label>
+                    <div class="ui calendar">
+                        <div class="ui input left icon">
+                            <i class="calendar icon"></i>
+                            <input type="text" placeholder="DD/MM/YYYY" id="fromdate">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>To date</label>
+                    <div class="ui calendar">
+                        <div class="ui input left icon">
+                            <i class="calendar icon"></i>
+                            <input type="text" placeholder="DD/MM/YYYY" id="todate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui four buttons large">
+            <!-- <button class="ui green basic button" teal id="btnDates">Date Wise</button> -->
+            <button class="ui icon button green label " id="btnAll" value="0">
+                <i class="calendar check icon"></i> All
+            </button>
+            <button class="ui icon button red label" id="btnService" value="1">
+                <i class="cogs icon"></i> Service Wise
+            </button>
+            <button class="ui icon button blue label" id="btnPersonwise" value="2">
+                <i class="user md icon"></i> Person Wise
+            </button>
+            <button class="ui icon button orange  label" id="btnDates" value="3">
+                <i class="calendar alternate icon"></i> Date Wise
+            </button>
+
+        </div>
+    </div>
+    <div class="ui padded stacked left aligned segment">
+        <div class="ui error message">
+            <p>No Data Available. Please check for another date</p>
+        </div>
+        <div class="ui middle aligned relaxed divided list"></div>
+        <div class="ui active inverted page dimmer">
+            <div class="ui large text loader">Loading Please Wait.....</div>
+        </div>
+
+        <input type="hidden" id="hinId" />
+    </div>
+    <input type="hidden" id="hempid" />
+</body>
+
+</html>
+<script type="text/javascript">
+    document.addEventListener("deviceready", onDeviceReady, false);
+    //100733663577
+    function onDeviceReady() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    function onBackKeyDown() {
+        var state = confirm('Are You Sure you want to Exit.');
+        if (state)
+            navigator.app.exitApp(); // exit the app
+    }
+
+    //var apiURL = 'http://192.168.0.44/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    var qsParm = new Array();
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(function () {
+        $('#fromdate').attr("readonly", "true");
+        $("#fromdate").datepicker({
+            dateFormat: "dd/M/yy",
+            changeMonth: true,
+            gotoCurrent: true,
+            minDate: '-1m',
+            maxDate: '-1d', //"+1y",
+            onClose: function (selectedDate) {
+                $("#todate").datepicker("option", "minDate", selectedDate);
+            }
+        });
+    });
+    $(function () {
+        $('#todate').attr("readonly", "true");
+        $("#todate").datepicker({
+            dateFormat: "dd/M/yy",
+            changeMonth: true,
+            numberOfMonths: 1,
+            gotoCurrent: true,
+            maxDate: '+1y',
+            onClose: function (selectedDate) {
+                $("#fromdate").datepicker("option", "maxDate", selectedDate);
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        qs();
+        $("#fromdate").datepicker().datepicker("setDate", new Date());
+        $("#todate").datepicker().datepicker("setDate", new Date());
+        $.ajaxSetup({
+            cache: false
+        });
+        $('.ui.dropdown').dropdown();
+        $('.dimmer').hide();
+
+        $('.error.message').hide();
+
+        $('.ui.sticky').sticky();
+
+        $('.message .close').on('click', function () {
+            $(this).closest('.message').transition('fade');
+        });
+
+        // $("#btnAll").click(function() {
+        //     getComplaintsList(0);
+        // });
+        // $("#btnService").click(function() {
+        //     getComplaintsList(1);
+        // });
+
+        // $("#btnPersonwise").click( function() {
+        //     getComplaintsList(2);
+        // });
+        // $("#btnDates").click(function() {
+        //     getComplaintsList(3);
+        // });
+        // $("#fromdate").click('change', function() {
+        //     var selectdate = $(this).val();
+        //     var hinval = $("#hinId").val();
+        //     getComplaintsList(hinval);
+        // });
+        // $("#todate").click('change', function() {
+        //     var val = $(this).val();
+        //     var hinval = $("#hinId").val();
+        //     //alert(hinval);
+        //     getComplaintsList(hinval);
+
+        // });
+
+        $("#fromdate").on('change', function () {
+            var hinval = $("#hinId").val();
+            getComplaintsList(hinval);
+        });
+        $("#todate").on('change', function () {
+            var hinval = $("#hinId").val();
+            getComplaintsList(hinval);
+        });
+        $("button").click(function () {
+            var val = $(this).val();
+            $("#hinId").val(val);
+            getComplaintsList(val);
+        });
+    });
+
+    function getComplaintsList(val) {
+        //debugger;
+
+        $('.dimmer').show();
+        var objdata = {
+            compainttype: val,
+            fromdate: $("#fromdate").val(),
+            todate: $("#todate").val(),
+        };
+        $.ajax({
+            type: 'POST',
+            url: apiURL + 'summaryrpt/',
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(objdata),
+            success: function (response) {
+                var htmlStr = '';
+                $(".divided.list").empty();
+                //alert(response.data.length);
+                if (response.data.length > 0) {
+                    $('.error.message').hide();
+                    var k = 0;
+                    for (var i = 0; i <= response.data.length - 1; i++) {
+                        //debugger;
+                        htmlStr +=
+                            '<div class="item"><div class="left floated content" style="width: 100%;">';
+                        if (val == '0') {
+                            htmlStr +=
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
+                                response.data[i].IMP + '  <div class="ui left tiny teal label">' + response
+                                .data[i].total + '</div></label>';
+                        }
+                        if (val == '1') {
+                            htmlStr +=
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
+                                'Service-' + response.data[i].IMP +
+                                '  <div class="ui left tiny teal  label">' + response.data[i].total +
+                                '</div></label>';
+                        }
+                        if (val == '2') {
+                            htmlStr +=
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
+                                'Person-' + response.data[i].IMP +
+                                '  <div class="ui left tiny teal label">' + response.data[i].total +
+                                '</div></label>';
+                        }
+                        if (val == '3') {
+                            var date = response.data[i].IMP;
+                            var selectdate = date.split(' ');
+                            htmlStr +=
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
+                                'Date-' + selectdate[0] + '  <div class="ui left tiny teal label">' +
+                                response.data[i].total + '</div></label>';
+                        }
+                        //htmlStr += '<div class="description"><table><tr>Pending<label>'+ response.data[i].pending  + '</label><br>Resolved<label style="margin-left: 13.25%;">'+response.data[i].resolved +'</label><br>Repost<label style="margin-left: 21.5%;">'+response.data[i].repost +'</label><br>Notfeasible<label style="margin-left: 3.5%;">'+response.data[i].notfeasible +'</label></div></div></table></div>';
+                        htmlStr +=
+                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;">Pending</td><td style="text-align:right;">' +
+                            response.data[i].pending + ' </td><td style="text-align:right;">' + response
+                            .data[i].pending_per + ' </td></tr>';
+                        htmlStr +=
+                            '<td style="text-align:left;"> Resolved </td><td style="text-align:right;">' +
+                            response.data[i].resolved + '</td><td style="text-align:right;">' + response
+                            .data[i].resolved_per + ' </td></tr>'
+                        htmlStr +=
+                            '<tr><td style="text-align:left;"> Repost</td><td style="text-align:right;">' +
+                            response.data[i].repost + '</td><td style="text-align:right;">' + response.data[
+                                i].repost_per + '</td></tr>';
+                        htmlStr +=
+                            '<tr><td style="text-align:left;"> Not Feasible</td><td style="text-align:right;">' +
+                            response.data[i].notfeasible + '</td><td style="text-align:right;">' + response
+                            .data[i].notfeasible_per + '</td></tr>';
+                        htmlStr +=
+                            '<tr><td style="text-align:left;"> Overdue</td><td style="text-align:right;">' +
+                            response.data[i].overdue + '</td></tr>';
+                        htmlStr += '</table></div></div></div></div>';
+                    }
+                    $(".divided.list").append(htmlStr);
+                } else {
+                    $('.error.message').show();
+                    $(".divided.list").empty();
+                }
+                $('.dimmer').hide();
+            }
+        });
+    }
+</script>
