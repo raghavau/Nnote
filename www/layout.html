@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Index Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <style type="text/css">
+        body {
+            /*overflow: hidden;*/
+        }
+
+        body>.grid {
+            height: 100%;
+        }
+
+        .column {
+            max-width: 450px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ui top fixed fluid teal inverted labeled menu">
+        <a class="header item">
+            <img class="ui mini image" src="img/logo.png" style="width: 24px !important;">&nbsp;&nbsp;&nbsp;<span style="font-size: 25px; font-weight: bold; color:white">nNote</span>
+        </a>
+        <div class="right icon menu">
+            <!-- <a class="item" id="home">
+                <i class="home icon"></i>
+            </a>
+            <a class="item" id="notifications">
+                <i class="alarm icon"></i> <span id="ntfCount" class="ui tiny red circular label"></span>
+            </a> -->
+            <a class="item" id="signout">
+                <span class="ico-width" style="color: #ffffff;">
+                    <i class="fas fa-power-off fa-1x"></i>
+                    <!-- <img class="ui tiny centered circular image" src="img/salad.svg" style="width: 50px !important;"> -->
+                </span>
+            </a>
+        </div>
+    </div>
+    <iframe frameborder="0" width="100%" id="ifrm" style="position: absolute" scrolling="auto"></iframe>
+    <div class="ui bottom fixed fluid four item labeled icon tiny menu">
+        <a class="item" id="services">
+            <i class="calendar plus red icon"></i>
+            Services
+        </a>
+        <a class="item" id="status">
+            <i class="tasks blue icon"></i>
+            Service Status
+        </a>
+        <a class="item" id="reports">
+            <i class="clipboard list green icon"></i>
+            Reports
+        </a>
+        <a class="item" id="more">
+            <i class="bars gray icon"></i>
+            More
+        </a>
+    </div>
+    <input type="hidden" id="hempid" />
+</body>
+
+</html>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript">
+    var apiURL = 'http://192.168.0.153/Api/Nnote/';
+    //var apiURL = '../../Api/Nnote/';
+    //var apiURL = 'http://narayanagroup.co.in/Api/Nnote/';
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", function (e) {
+            e.preventDefault();
+        }, false);
+    }
+    var qsParm = new Array();
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    /*var timeout = setTimeout(function runMe() {
+        //debugger;
+        ShowNotifications();
+        timeout = setTimeout(runMe, 10000);
+    }, 10000);*/
+
+    $(document).ready(function () {
+        qs();
+        var ifrmheight = $('body').height() - $('.bottom').height();
+        $('#ifrm').css('top', $('.top').height());
+        $('#ifrm').height(ifrmheight - 45);
+
+        $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
+
+        $("#ntfCount").text("");
+        $("#ntfCount").hide();
+        //ShowNotifications();
+
+        $('#home').click(function () {
+            //$('#ifrm').attr('src', 'home.html?empid=' + btoa($("#hempid").val()));
+        });
+        $('#notifications').click(function () {
+            //$('#ifrm').attr('src', 'notifications.html?empid=' + btoa($("#hempid").val()));
+        });
+        $('#signout').click(function () {
+            window.location.href = 'index.html';
+        });
+
+        $('#services').click(function () {
+            $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
+        });
+        $('#status').click(function () {
+            $('#ifrm').attr('src', 'sample.html?empid=' + btoa($("#hempid").val()));
+        });
+        $('#reports').click(function () {
+            $('#ifrm').attr('src', 'sample.html?empid=' + btoa($("#hempid").val()));
+        });
+        $('#more').click(function () {
+            $('#ifrm').attr('src', 'sample.html?empid=' + btoa($("#hempid").val()));
+        });
+    });
+
+    function ShowNotifications() {
+        $.get(apiURL + 'Notifications/' + $("#hempid").val(), function (response) {
+            //debugger;
+            var arrdata = response.data;
+            if (arrdata.length > 0) {
+                selectedArray = jQuery.grep(arrdata, function (data, i) {
+                    //debugger;
+                    return data.Status == 1;
+                });
+
+                if (selectedArray.length > 0) {
+                    $("#ntfCount").text(selectedArray.length);
+                    $("#ntfCount").show();
+                } else {
+                    $("#ntfCount").text("");
+                    $("#ntfCount").hide();
+                }
+            } else {
+                $("#ntfCount").text("");
+                $("#ntfCount").hide();
+            }
+        }).fail(function () {
+            setTimeout(ShowNotifications(), 3000);
+        });
+    }
+</script>
