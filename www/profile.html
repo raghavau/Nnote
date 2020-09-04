@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+    <style type="text/css">
+
+        body {
+            background-color: #e5e5e5;
+            /*overflow: hidden;*/
+        }
+
+        body>.grid {
+            height: 100%;
+        }
+
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!--<div class="ui middle aligned center aligned grid">-->
+    <!-- ui raised very padded text container
+             ui middle aligned center aligned grid
+        -->
+
+    <div class="ui column grid">
+        <div class="column">
+            <div class="ui stacked left aligned segment">
+                <div class="ui red ribbon label">Profile</div>
+                <table class="ui unstackable very basic large celled table">
+                    <tbody>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <img src="" id="empimg" class="ui tiny rounded image">
+                            </td>
+                            <td class="top aligned left aligned">
+                                <div class="header">
+                                    <h3><label id="firstname"></label></h3>
+                                    <div class="sub header"><i class="checked calendar blue icon"></i><label id="attndate"></label></div>
+                                    <div class="sub header"><i class="sign in green icon"></i><label id="intime"></label></div>
+                                    <div class="sub header"><i class="sign out red icon"></i><label id="outtime"></label></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="ui section divider"></div>
+                <table class="ui unstackable very basic large celled table">
+                    <tbody>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="birthday large violet icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="dob"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="edit large teal icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="doj"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="sitemap large red icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="desig"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="id card large blue icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="empid"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="mobile big green icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="mobile"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="two wide top aligned center aligned">
+                                <i class="mail large brown icon"></i>
+                            </td>
+                            <td class="top aligned left aligned">
+                                <label id="email"></label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <!--</div>-->
+    <input type="hidden" id="hempid" />
+</body>
+
+</html>
+<script type="text/javascript">
+    //var apiURL = 'http://192.168.0.44/NtraktApi/api/';
+    //var apiURL = 'http://115.241.194.2/NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    var qsParm = new Array();
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", function(e) {
+            e.preventDefault();
+        }, false);
+    }
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ready(function() {
+        qs();
+        $(".dimmer").show();
+        $.get(apiURL + 'User/Info/' + $("#hempid").val(), function(response) {
+            //debugger;
+            $("#firstname").text(response.data[0].Name);
+            $("#dob").text(response.data[0].Dob);
+            $("#doj").text(response.data[0].Doj);
+            $("#desig").text(response.data[0].Designation);
+            $("#empid").text(response.data[0].BioEmpNo);
+            $("#mobile").text(response.data[0].MobileNo);
+            $("#email").text();
+            $("#empimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
+        }).done(function() {
+            //debugger;
+            var timeout = setTimeout(function runMe() {
+                $.get(apiURL + 'Attendance/Current/' + $("#hempid").val(), function(response) {
+                    //debugger;
+                    if (response.data.length > 0) {
+                        $("#attndate").text(response.data[0].AttendanceDate);
+                        $("#intime").text(response.data[0].InTime);
+                        $("#outtime").text(response.data[0].OutTime);
+                    } else {
+                        $("#attndate").text('--');
+                        $("#intime").text('--');
+                        $("#outtime").text('--');
+                    }
+                }).done(function(response) {
+                    $(".dimmer").hide();
+                }).fail(function() {
+                    $("#attndate").text('--');
+                    $("#intime").text('--');
+                    $("#outtime").text('--');
+                    $(".dimmer").hide();
+                });
+            }, 2000)
+        });
+    });
+
+</script>

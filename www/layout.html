@@ -46,7 +46,11 @@
         </div>
     </div>
     <iframe frameborder="0" width="100%" id="ifrm" style="position: absolute" scrolling="auto"></iframe>
-    <div class="ui bottom fixed fluid four item labeled icon tiny menu">
+    <div class="ui bottom fixed fluid five item labeled icon tiny menu">
+        <a class="item" id="profile">
+            <i class="calendar plus teal icon"></i>
+            Profile
+        </a>
         <a class="item" id="services">
             <i class="calendar plus red icon"></i>
             Services
@@ -117,14 +121,14 @@
         $('#ifrm').css('top', $('.top').height());
         $('#ifrm').height(ifrmheight - 45);
 
-        $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
+        $('#ifrm').attr('src', 'home.html?empid=' + btoa($("#hempid").val()));
 
         $("#ntfCount").text("");
         $("#ntfCount").hide();
         //ShowNotifications();
 
         $('#home').click(function () {
-            //$('#ifrm').attr('src', 'home.html?empid=' + btoa($("#hempid").val()));
+            $('#ifrm').attr('src', 'home.html?empid=' + btoa($("#hempid").val()));
         });
         $('#notifications').click(function () {
             //$('#ifrm').attr('src', 'notifications.html?empid=' + btoa($("#hempid").val()));
@@ -133,6 +137,9 @@
             window.location.href = 'index.html';
         });
 
+        $('#profile').click(function () {
+            $('#ifrm').attr('src', 'profile.html?empid=' + btoa($("#hempid").val()));
+        });
         $('#services').click(function () {
             $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
         });
