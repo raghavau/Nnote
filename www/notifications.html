@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="semantic/css/semantic.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome4.7.0/css/font-awesome.css">
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="semantic/js/semantic.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #e5e5e5;
+            /*overflow: hidden;*/
+        }
+
+        body>.grid {
+            height: 100%;
+        }
+
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="ui column grid">
+        <div class="column">
+            <div class="ui left aligned segment">
+                <div class="ui middle aligned selection divided animated list"></div>
+                <label id="lblError" class="ui red fluid large label"></label>
+            </div>
+        </div>
+    </div>
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading Please Wait.....</div>
+    </div>
+    <input type="hidden" id="hempid" />
+</body>
+
+</html>
+<script type="text/javascript">
+    //var apiURL = 'http://192.168.1.44/NtraktApi/api/';
+    //var apiURL = 'http://115.241.194.2/NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    var qsParm = new Array();
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", function(e) {
+            e.preventDefault();
+        }, false);
+    }
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    var timeout = setTimeout(function runMe() {
+        //debugger;
+        ShowNotifications();
+        timeout = setTimeout(runMe, 10000);
+    }, 10000);
+
+    $(document).ready(function() {
+        qs();
+        empid = $("#hempid").val();
+        $(".dimmer").show();
+        $("#lblError").hide();
+        $("#lblError").text();
+
+        ShowNotifications();
+
+        MarkAsReadNotifications();
+    });
+
+    function ShowNotifications() {
+        $(".dimmer").show();
+        $("#lblError").hide();
+        $("#lblError").text();
+        $(".divided.list").empty();
+        $.get(apiURL + 'Notifications/' + $("#hempid").val(), function(response) {
+            //debugger;
+            var htmlStr = '';
+            if (response.data.length > 0) {
+                for (i = 0; i <= response.data.length - 1; i++) {
+                    htmlStr += "<div class='item'><div class='right floated content'></div>";
+                    if(response.data[i].Status == "1")
+                        htmlStr += "<i class='right triangle red icon'></i>";
+                    else
+                        htmlStr += "<i class='right triangle gray icon'></i>";
+                    htmlStr += "<div class='content'><div class='header'>" + response.data[i].NotificationHeader + "</div><div class='description'>" + response.data[i].NotificationDescription + "</div></div>";
+                    htmlStr += "</div>";
+                }
+                $(".divided.list").append(htmlStr);
+            } else {
+                $("#lblError").show();
+                $("#lblError").text("No New Notifications");
+            }
+        }).done(function() {
+
+        }).fail(function() {
+            setTimeout(ShowNotifications(), 3000);
+        });
+        $(".dimmer").hide();
+    }
+
+    function MarkAsReadNotifications() {
+        var ntfData = {};
+        ntfData.UserId = $("#hempid").val();
+        ntfData.NotificationId = "0";
+        //debugger;
+        $(".dimmer").show();
+        $.post(apiURL + 'Notifications/MarkRead', ntfData, function(response) {
+            //debugger;
+            $(".dimmer").hide();
+        }, 'json').fail(function(jqxhr, settings, ex) {
+            //debugger;
+            $(".dimmer").hide();
+            alert("error: " + ex);
+        });
+    }
+
+</script>
