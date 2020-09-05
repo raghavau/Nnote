@@ -36,8 +36,13 @@
 <body>
     <div class="ui column grid">
         <div class="column">
-            <div class="ui basic center aligned segment">
-        
+            <div class="ui left aligned segment">
+                <div class="ui red ribbon label">Service Requests</div>
+                <div class="ui error message" style="display: none;">
+                    <p>No Data Available. Please check for another date</p>
+                </div>
+                <div class="ui middle aligned relaxed divided list" id="list"></div>
+                <input type="hidden" id="hinId" value="0">
             </div>
         </div>
     </div>
@@ -93,7 +98,78 @@
 
     $(document).ready(function () {
         $(".dimmer").hide();
+        $('.ui.checkbox').checkbox();
 
         qs();
+        ShowRequests();
     });
+
+    function ShowRequests() {
+        $(".dimmer").show();
+        $.get(apiURL + 'getpendingrequests/' + $("#hempid").val(), function (response) {
+            //debugger;
+            var arrdata = response.data;
+            var content = '';
+            if (arrdata.length > 0) {
+                for (j = 0; j < arrdata.length; j++) {
+                    content = content + arrdata[j].strcontent;
+                }
+                $(".dimmer").hide();
+                $('#list').append(content);
+            }
+        }).fail(function () {
+            $(".dimmer").hide();
+            alert('Failed to load Service Requests. Please Check.');
+        });
+    }
+
+    function ChangeStatus(id) {
+        if ($("#txtRemarks" + id).val() == '') {
+            alert('Please Enter Remakrs.');
+            $("#txtRemarks" + id).focus();
+            return false;
+        }
+
+        $(".dimmer").show();
+        var objdata = {
+            cstatus: 'Y',
+            complaintslno: $("#hcslno" + id).val(),
+            remarks: $("#txtRemarks" + id).val(),
+            userid: $("#hempid").val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: apiURL + 'updcomplainstatus',
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(objdata),
+            success: function (result) {
+                //debugger;
+                if (result.data == 'Success') {
+                    alert('Your Service Request Submitted Successfully');
+                    document.location.href = "editrequest.html?empid=" + btoa($("#hempid").val());
+                } else {
+                    $(".dimmer").hide();
+                    alert('Your Service Request Failed to Submit.');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Error occurred while submitting data.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            }
+        });
+    }
+
+    function ShowSlide(id) {
+        $('#slide' + id).toggle('slide down');
+        $('.checkbox#status' + id).checkbox('uncheck');
+        $('#txtRemarks' + id).focus();
+        $('#txtRemarks' + id).val('');
+    }
+
+    function HideSlide(id) {
+        $('#slide' + id).hide('slide up');
+        $('.checkbox#status' + id).checkbox('uncheck');
+        $('#txtRemarks' + id).val('');
+    }
 </script>

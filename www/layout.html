@@ -33,10 +33,10 @@
         <div class="right icon menu">
             <!-- <a class="item" id="home">
                 <i class="home icon"></i>
-            </a>
+            </a>-->
             <a class="item" id="notifications">
                 <i class="alarm icon"></i> <span id="ntfCount" class="ui tiny red circular label"></span>
-            </a> -->
+            </a>
             <a class="item" id="signout">
                 <span class="ico-width" style="color: #ffffff;">
                     <i class="fas fa-power-off fa-1x"></i>
@@ -144,7 +144,7 @@
             $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
         });
         $('#status').click(function () {
-            $('#ifrm').attr('src', 'sample.html?empid=' + btoa($("#hempid").val()));
+            $('#ifrm').attr('src', 'editrequest.html?empid=' + btoa($("#hempid").val()));
         });
         $('#reports').click(function () {
             $('#ifrm').attr('src', 'complaintsList.html?empid=' + btoa($("#hempid").val()));

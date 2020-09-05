@@ -11,7 +11,7 @@
     <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
     <script type="text/javascript" src="jquery-ui/jquery-ui.min.js"></script>
     <script type="text/javascript" src="semantic/semantic.min.js"></script>
-
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
 
     <style type="text/css">
         body {
@@ -79,13 +79,13 @@
                 <i class="calendar check icon"></i> All
             </button>
             <button class="ui icon button red label" id="btnService" value="1">
-                <i class="cogs icon"></i> Service Wise
+                <i class="cogs icon"></i> Service 
             </button>
             <button class="ui icon button blue label" id="btnPersonwise" value="2">
-                <i class="user md icon"></i> Person Wise
+                <i class="user md icon"></i> Person 
             </button>
             <button class="ui icon button orange  label" id="btnDates" value="3">
-                <i class="calendar alternate icon"></i> Date Wise
+                <i class="calendar alternate icon"></i> Date 
             </button>
 
         </div>
@@ -98,10 +98,11 @@
         <div class="ui active inverted page dimmer">
             <div class="ui large text loader">Loading Please Wait.....</div>
         </div>
-
-        <input type="hidden" id="hinId" />
+     
     </div>
     <input type="hidden" id="hempid" />
+    <input type="hidden" id="hinId" />
+    <input type="hidden" id="hsid" />
 </body>
 
 </html>
@@ -118,10 +119,10 @@
             navigator.app.exitApp(); // exit the app
     }
 
-    //var apiURL = 'http://192.168.0.44/NtraktApi/api/';
     //var apiURL = '../../NtraktApi/api/';
     //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
     var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://192.168.0.153/Api/Nnote/';
     var qsParm = new Array();
 
     function qs() {
@@ -152,7 +153,8 @@
             changeMonth: true,
             gotoCurrent: true,
             minDate: '-1m',
-            maxDate: '-1d', //"+1y",
+            // maxDate: '-1d', //"+1y",
+            maxDate: '+1y',
             onClose: function (selectedDate) {
                 $("#todate").datepicker("option", "minDate", selectedDate);
             }
@@ -176,6 +178,7 @@
         qs();
         $("#fromdate").datepicker().datepicker("setDate", new Date());
         $("#todate").datepicker().datepicker("setDate", new Date());
+        
         $.ajaxSetup({
             cache: false
         });
@@ -189,34 +192,7 @@
         $('.message .close').on('click', function () {
             $(this).closest('.message').transition('fade');
         });
-
-        // $("#btnAll").click(function() {
-        //     getComplaintsList(0);
-        // });
-        // $("#btnService").click(function() {
-        //     getComplaintsList(1);
-        // });
-
-        // $("#btnPersonwise").click( function() {
-        //     getComplaintsList(2);
-        // });
-        // $("#btnDates").click(function() {
-        //     getComplaintsList(3);
-        // });
-        // $("#fromdate").click('change', function() {
-        //     var selectdate = $(this).val();
-        //     var hinval = $("#hinId").val();
-        //     getComplaintsList(hinval);
-        // });
-        // $("#todate").click('change', function() {
-        //     var val = $(this).val();
-        //     var hinval = $("#hinId").val();
-        //     //alert(hinval);
-        //     getComplaintsList(hinval);
-
-        // });
-
-        $("#fromdate").on('change', function () {
+    $("#fromdate").on('change', function () {
             var hinval = $("#hinId").val();
             getComplaintsList(hinval);
         });
@@ -229,11 +205,13 @@
             $("#hinId").val(val);
             getComplaintsList(val);
         });
+
+        getComplaintsList(0);
     });
 
     function getComplaintsList(val) {
         //debugger;
-
+        
         $('.dimmer').show();
         var objdata = {
             compainttype: val,
@@ -252,12 +230,12 @@
                 //alert(response.data.length);
                 if (response.data.length > 0) {
                     $('.error.message').hide();
-                    var k = 0;
-                    for (var i = 0; i <= response.data.length - 1; i++) {
+                   for (var i = 0; i <= response.data.length - 1; i++) {
                         //debugger;
                         htmlStr +=
                             '<div class="item"><div class="left floated content" style="width: 100%;">';
                         if (val == '0') {
+                         //htmlStr +='<div class="ui content"><div class="column"><div class="ui raised segment"> <a class="ui red ribbon label">Overview</a>'   
                             htmlStr +=
                                 '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
                                 response.data[i].IMP + '  <div class="ui left tiny teal label">' + response
@@ -272,8 +250,8 @@
                         }
                         if (val == '2') {
                             htmlStr +=
-                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
-                                'Person-' + response.data[i].IMP +
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' 
+                                 + response.data[i].IMP +
                                 '  <div class="ui left tiny teal label">' + response.data[i].total +
                                 '</div></label>';
                         }
@@ -287,24 +265,23 @@
                         }
                         //htmlStr += '<div class="description"><table><tr>Pending<label>'+ response.data[i].pending  + '</label><br>Resolved<label style="margin-left: 13.25%;">'+response.data[i].resolved +'</label><br>Repost<label style="margin-left: 21.5%;">'+response.data[i].repost +'</label><br>Notfeasible<label style="margin-left: 3.5%;">'+response.data[i].notfeasible +'</label></div></div></table></div>';
                         htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;">Pending</td><td style="text-align:right;">' +
-                            response.data[i].pending + ' </td><td style="text-align:right;">' + response
-                            .data[i].pending_per + ' </td></tr>';
+                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: orange;" id="lblpending"> Pending </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick="PendingwiseReport('+response.data[i].pending+','+val+')">' +
+                            response.data[i].pending + ' </a></td><td style="text-align:right;"><a class="ui orange label">' + response
+                            .data[i].pending_per + '</a> </td></tr>';
                         htmlStr +=
-                            '<td style="text-align:left;"> Resolved </td><td style="text-align:right;">' +
-                            response.data[i].resolved + '</td><td style="text-align:right;">' + response
-                            .data[i].resolved_per + ' </td></tr>'
+                            '<td style="text-align:left;"> <label style="color: #21BA45;"> Resolved </label></td><td style="text-align:right;"><a class="ui green circular label">' +
+                            response.data[i].resolved + '</a></td><td style="text-align:right;"><a class="ui green label">' + response
+                            .data[i].resolved_per + '</a> </td></tr>'
                         htmlStr +=
-                            '<tr><td style="text-align:left;"> Repost</td><td style="text-align:right;">' +
-                            response.data[i].repost + '</td><td style="text-align:right;">' + response.data[
-                                i].repost_per + '</td></tr>';
+                            '<tr><td style="text-align:left;"> <label style="color: blue;"> Repost</label></td><td style="text-align:right;"><a class="ui blue circular label">' +
+                            response.data[i].repost + '</a></td><td style="text-align:right;"><a class="ui label">' + response.data[i].repost_per + '<a></td></tr>';
                         htmlStr +=
-                            '<tr><td style="text-align:left;"> Not Feasible</td><td style="text-align:right;">' +
-                            response.data[i].notfeasible + '</td><td style="text-align:right;">' + response
-                            .data[i].notfeasible_per + '</td></tr>';
+                            '<tr><td style="text-align:left;"> <label style="color: gray;"> Not Feasible </label></td><td style="text-align:right;"><a class="ui gray circular label">' +
+                            response.data[i].notfeasible + '</a></td><td style="text-align:right;"><a class="ui grey label">' + response
+                            .data[i].notfeasible_per + '</a></td></tr>';
                         htmlStr +=
-                            '<tr><td style="text-align:left;"> Overdue</td><td style="text-align:right;">' +
-                            response.data[i].overdue + '</td></tr>';
+                            '<tr><td style="text-align:left;" > <label style="color: red;">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label">' +
+                            response.data[i].overdue + '</a></td></tr>';
                         htmlStr += '</table></div></div></div></div>';
                     }
                     $(".divided.list").append(htmlStr);
@@ -315,5 +292,17 @@
                 $('.dimmer').hide();
             }
         });
+    }
+
+    function PendingwiseReport(Count,ComplateType)
+    {
+        //document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+        var fromdate=btoa($("#fromdate").val());
+        var todate= btoa($("#todate").val());
+        var empid=btoa($("#hempid").val());
+        var Statustext=btoa($("#lblpending").text());
+        //alert("fromdate-"+fromdate+",todate-"+todate +",empid-"+empid+ ",Statustext-"+Statustext+ ",Count-" +Count);return false;
+       // document.location.href = "complaintsWiseReport.html?empid="+empid +"fromdate";
+        //document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" + btoa($("#fromdate").val()) + "&todate=" + btoa($("#todate").val()) + "&Statustext=" + btoa($("#lblpending").text().trim()) +"&ComplateType=" + btoa(ComplateType);
     }
 </script>
