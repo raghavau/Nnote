@@ -228,9 +228,11 @@
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
+                alert(img.src);
                 document.getElementById('camera_status').innerHTML = "Success";
             },
             function (e) {
+                alert('Error');
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
@@ -247,9 +249,11 @@
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
+                alert(img.src);
                 document.getElementById('camera_status').innerHTML = "Success";
             },
             function (e) {
+                alert('Error');
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
