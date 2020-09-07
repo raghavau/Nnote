@@ -224,14 +224,14 @@
     function takePicture() {
         navigator.camera.getPicture(
             function (uri) {
-                var img = $('#camera_image');
+                var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
-                $('#camera_status').innerHTML = "Success";
+                document.getElementById('camera_status').innerHTML = "Success";
             },
             function (e) {
-                $('#camera_status').innerHTML = "Error getting picture.";
+                document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
                 destinationType: navigator.camera.DestinationType.FILE_URI,
@@ -243,14 +243,14 @@
     function selectPicture() {
         navigator.camera.getPicture(
             function (uri) {
-                var img = $('#camera_image');
+                var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
-                $('#camera_status').innerHTML = "Success";
+                document.getElementById('camera_status').innerHTML = "Success";
             },
             function (e) {
-                $('#camera_status').innerHTML = "Error getting picture.";
+                document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
                 destinationType: navigator.camera.DestinationType.FILE_URI,
@@ -261,15 +261,15 @@
 
     function uploadPicture() {
         $("#loading").show();
-        var img = $('#camera_image');
+        var img = document.getElementById('camera_image');
         var imageURI = img.src;
         if (!imageURI || (img.style.display == "none")) {
             alert('Take Picture or Select Picture from library.');
-            $('#camera_status').innerHTML = "Take picture or Select picture from library.";
+            document.getElementById('camera_status').innerHTML = "Take picture or Select picture from library.";
             $("#loading").hide();
             return;
         }
-        $('#camera_image').style.display = "none";
+        document.getElementById('camera_image').style.display = "none";
         var server = 'http://202.83.27.199/VPMSAPI/api/FileUpload/UploadFile';
         if (server) {
             var options = new FileUploadOptions();
@@ -285,13 +285,13 @@
 
             var ft = new FileTransfer();
             ft.upload(imageURI, encodeURI(server), function (r) {
-                $('#camera_status').innerHTML =
+                document.getElementById('camera_status').innerHTML =
                     "Picture Uploaded successfully."; // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
                 window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
                     btoa($("#hidEmail").val());
             }, function (error) {
                 $("#loading").hide();
-                $('#camera_status').innerHTML = "Upload failed: Code = " + error.code +
+                document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
                     "\n upload error source " + error.source + "\n upload error target " + error.target;
             }, options);
         }
