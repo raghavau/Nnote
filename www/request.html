@@ -111,9 +111,8 @@
 <script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    //var apiURL = '../../Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-    var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
     var cameraOptions = {
         sourceType: Camera.PictureSourceType.CAMERA,
         saveToPhotoAlbum: true,
@@ -228,7 +227,6 @@
     function takePicture() {
         navigator.camera.getPicture(
             function (uri) {
-                $('#txtRemarks').val('img.src');
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
@@ -236,7 +234,6 @@
                 document.getElementById('camera_status').innerHTML = "Success";
             },
             function (e) {
-                alert('Error');
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
@@ -253,11 +250,9 @@
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
-                alert(img.src);
                 document.getElementById('camera_status').innerHTML = "Success";
             },
             function (e) {
-                alert('Error');
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
@@ -267,41 +262,4 @@
         );
     };
 
-    function uploadPicture() {
-        $("#loading").show();
-        var img = document.getElementById('camera_image');
-        var imageURI = img.src;
-        if (!imageURI || (img.style.display == "none")) {
-            alert('Take Picture or Select Picture from library.');
-            document.getElementById('camera_status').innerHTML = "Take picture or Select picture from library.";
-            $("#loading").hide();
-            return;
-        }
-        document.getElementById('camera_image').style.display = "none";
-        var server = 'http://202.83.27.199/VPMSAPI/api/FileUpload/UploadFile';
-        if (server) {
-            var options = new FileUploadOptions();
-            options.fileKey = "file";
-            options.fileName = $("#hidRequestId").val();
-            options.mimeType = "image/jpeg";
-            options.chunkedMode = false;
-            options.headers = {
-                Connection: "close"
-            }
-            server = server + '/' + options.fileName;
-            //document.getElementById('camera_status').innerHTML = options.fileName;
-
-            var ft = new FileTransfer();
-            ft.upload(imageURI, encodeURI(server), function (r) {
-                document.getElementById('camera_status').innerHTML =
-                    "Picture Uploaded successfully."; // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
-                    btoa($("#hidEmail").val());
-            }, function (error) {
-                $("#loading").hide();
-                document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
-                    "\n upload error source " + error.source + "\n upload error target " + error.target;
-            }, options);
-        }
-    }
 </script>

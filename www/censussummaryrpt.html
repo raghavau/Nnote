@@ -76,17 +76,17 @@
         <div class="ui four buttons large">
             <!-- <button class="ui green basic button" teal id="btnDates">Date Wise</button> -->
             <button class="ui icon button green label " id="btnAll" value="0">
-                <i class="calendar check icon"></i> All
+                <i class="list ul icon"></i> All
             </button>
             <button class="ui icon button red label" id="btnService" value="1">
-                <i class="cogs icon"></i> Service
+                <i class="bed icon"></i> Ward
             </button>
             <button class="ui icon button blue label" id="btnPersonwise" value="2">
-                <i class="user md icon"></i> Person
+                <i class="money bill alternate icon"></i> Paytype
             </button>
-            <button class="ui icon button orange  label" id="btnDates" value="3">
+            <!-- <button class="ui icon button orange  label" id="btnDates" value="3">
                 <i class="calendar alternate icon"></i> Date
-            </button>
+            </button> -->
 
         </div>
     </div>
@@ -150,7 +150,7 @@
     $(function () {
         $('#fromdate').attr("readonly", "true");
         $("#fromdate").datepicker({
-            dateFormat: "dd-M-yy",
+            dateFormat: "dd/M/yy",
             changeMonth: true,
             gotoCurrent: true,
             minDate: '-6d',
@@ -163,7 +163,7 @@
     $(function () {
         $('#todate').attr("readonly", "true");
         $("#todate").datepicker({
-            dateFormat: "dd-M-yy",
+            dateFormat: "dd/M/yy",
             changeMonth: true,
             numberOfMonths: 1,
             gotoCurrent: true,
@@ -176,8 +176,6 @@
     });
 
     $(document).ready(function () {
-        //debugger;
-        qs();
         $("#fromdate").datepicker().datepicker("setDate", new Date());
         $("#todate").datepicker().datepicker("setDate", new Date());
 
@@ -212,16 +210,16 @@
     });
 
     function getComplaintsList(val) {
-        //debugger;
+        
         $('.dimmer').show();
         var objdata = {
-            compainttype: val,
+            censustype: val,
             fromdate: $("#fromdate").val(),
             todate: $("#todate").val(),
         };
         $.ajax({
             type: 'POST',
-            url: apiURL + 'summaryrpt/',
+            url: apiURL + 'censussummaryrpt/',
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
@@ -231,72 +229,37 @@
                 //alert(response.data.length);
                 if (response.data.length > 0) {
                     $('.error.message').hide();
-                    //debugger;
+                    if (val == '0') {
                     for (var i = 0; i <= response.data.length - 1; i++) {
-                        ////debugger;
                         htmlStr +=
                             '<div class="item"><div class="left floated content" style="width: 100%;">';
-                        if (val == '0') {
-                            // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui green ribbon label">' +  response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
-                            //         .data[i].total + '</div>';
-                            htmlStr +=
-                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
-                                response.data[i].IMP + '  <div class="ui left tiny teal label">' + response
-                                    .data[i].total + '</div></label>';
-                        }
-                        if (val == '1') {
-                            // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui red ribbon label">' + 'Service-'+ response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
-                            //         .data[i].total + '</div>';
-
-                            htmlStr +=
-                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
-                                'Service-' + response.data[i].IMP +
-                                '  <div class="ui left tiny teal  label">' + response.data[i].total +
-                                '</div></label>';
-                        }
-                        if (val == '2') {
-                            // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui blue ribbon label">' + response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
-                            //         .data[i].total + '</div>';
-                            htmlStr +=
-                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">'
-                                + response.data[i].IMP +
-                                '  <div class="ui left tiny teal label">' + response.data[i].total +
-                                '</div></label>';
-                        }
-                        if (val == '3') {
-                            // var date = response.data[i].IMP;
-                            // var selectdate = date.split(' ');
-                            // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui orange ribbon label">' + selectdate[0]+ '</div><div class="ui left tiny teal label">' + response
-                            //         .data[i].total + '</div>';
-                            // alert(currentdate);
-                            htmlStr +=
-                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
-                                'Date-' + response.data[i].IMP + '  <div class="ui left tiny teal label">' +
-                                response.data[i].total + '</div></label>';
-                        }
-
-
-
-                        //htmlStr += '<div class="description"><table><tr>Pending<label>'+ response.data[i].pending  + '</label><br>Resolved<label style="margin-left: 13.25%;">'+response.data[i].resolved +'</label><br>Repost<label style="margin-left: 21.5%;">'+response.data[i].repost +'</label><br>Notfeasible<label style="margin-left: 3.5%;">'+response.data[i].notfeasible +'</label></div></div></table></div>';
                         htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: orange;" id="lblpending" > Pending </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick="PendingwiseReport(1,' + response.data[i].pending + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].pending + ' </a></td><td style="text-align:right;"><a class="ui orange label">' + response
-                                .data[i].pending_per + '</a> </td></tr>';
-                        htmlStr +=
-                            '<td style="text-align:left;"> <label style="color: #21BA45;" id="lblresolved"> Resolved </label></td><td style="text-align:right;"><a class="ui green circular label" onclick="PendingwiseReport(2,' + response.data[i].resolved + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].resolved + '</a></td><td style="text-align:right;"><a class="ui green label">' + response
-                                .data[i].resolved_per + '</a> </td></tr>'
-                        htmlStr +=
-                            '<tr><td style="text-align:left;"> <label style="color: blue;" id="lbltepost"> Repost</label></td><td style="text-align:right;"><a class="ui blue circular label" onclick="PendingwiseReport(3,' + response.data[i].repost + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].repost + '</a></td><td style="text-align:right;"><a class="ui blue label">' + response.data[i].repost_per + '<a></td></tr>';
-                        htmlStr +=
-                            '<tr><td style="text-align:left;"> <label style="color: gray;" id="lblNotfeasible"> Not Feasible </label></td><td style="text-align:right;"><a class="ui gray circular label" onclick="PendingwiseReport(4,' + response.data[i].notfeasible + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].notfeasible + '</a></td><td style="text-align:right;"><a class="ui grey label">' + response
-                                .data[i].notfeasible_per + '</a></td></tr>';
-                        htmlStr +=
-                            '<tr><td style="text-align:left;" > <label style="color: red;" id="lbloverdue">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label" onclick="PendingwiseReport(5,' + response.data[i].overdue + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].overdue + '</a></td></tr>';
+                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                ' </label></td><td style="text-align:right;"><a class="ui orange circular label">' +
+                            response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
                         htmlStr += '</table></div></div></div></div>';
+                    }
+                    }
+                    if (val == '1') {
+                        for (var i = 0; i <= response.data.length - 1; i++) {
+                        htmlStr +=
+                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                 ' </label></td><td style="text-align:right;"><a class="ui orange circular label">' +
+                             response.data[i].censuscnt + ' </a></td><td style="text-align:right;"><a class="ui green label">' + response
+                                  .data[i].censuscntperc + '</a></td></tr>';
+                        htmlStr += '</table></div></div></div></div>';
+                     }
+                    }
+                    if (val == '2') {
+                        for (var i = 0; i <= response.data.length - 1; i++) {
+                         htmlStr +=
+                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                 ' </label></td><td style="text-align:right;"><a class="ui orange circular label">' +
+                             response.data[i].censuscnt + ' </a></td><td style="text-align:right;"><a class="ui green label">' + response
+                                  .data[i].censuscntperc + '</a></td></tr>';
+                        
+                        htmlStr += '</table></div></div></div></div>';
+                     } 
                     }
                     $(".divided.list").append(htmlStr);
                 } else {
@@ -308,30 +271,4 @@
         });
     }
 
-    function PendingwiseReport(labletext, Count, ComplateType, ServiceID) {
-        //debugger;
-        // var  text = $(label).text()
-        alert(ServiceID);
-
-        if (labletext == "1") {
-            labletext = "Pending";
-        }
-        if (labletext == "2") {
-            labletext = "Resolved";
-        }
-        if (labletext == "3") {
-            labletext = "Repost";
-        }
-        if (labletext == "4") {
-            labletext = "NotFeasible";
-        }
-        if (labletext == "5") {
-            labletext = "Overdue";
-        }
-        if (Count != '0') {
-            document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" + btoa($("#fromdate").val()) +
-                "&todate=" + btoa($("#todate").val()) + "&Statustext=" + btoa(labletext) +
-                "&ComplateType=" + btoa(ComplateType) + "&ServiceId=" + btoa(ServiceID);
-        }
-    }
 </script>
