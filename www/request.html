@@ -226,30 +226,24 @@
     }
 
     function takePicture() {
-        navigator.camera.getPicture(function (result) {
-            console.log(result);
-            document.getElementById('camera_image').src = result;
-        }, function (error) {
-            console.log(error);
-        }, cameraOptions);
-        // navigator.camera.getPicture(
-        //     function (uri) {
-        //         var img = document.getElementById('camera_image');
-        //         img.style.visibility = "visible";
-        //         img.style.display = "block";
-        //         img.src = uri;
-        //         alert(img.src);
-        //         document.getElementById('camera_status').innerHTML = "Success";
-        //     },
-        //     function (e) {
-        //         alert('Error');
-        //         document.getElementById('camera_status').innerHTML = "Error getting picture.";
-        //     }, {
-        //         quality: 50,
-        //         destinationType: navigator.camera.DestinationType.FILE_URI,
-        //         correctOrientation: true
-        //     }
-        // );
+        navigator.camera.getPicture(
+            function (uri) {
+                alert('img.src');
+                var img = document.getElementById('camera_image');
+                img.style.visibility = "visible";
+                img.style.display = "block";
+                img.src = uri;
+                document.getElementById('camera_status').innerHTML = "Success";
+            },
+            function (e) {
+                alert('Error');
+                document.getElementById('camera_status').innerHTML = "Error getting picture.";
+            }, {
+                quality: 50,
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                correctOrientation: true
+            }
+        );
     };
 
     function selectPicture() {
