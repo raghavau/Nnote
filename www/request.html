@@ -51,7 +51,7 @@
                         <table style="border: 0px solid; width: 100%;">
                             <tr>
                                 <td colspan="2" style="text-align: center;">
-                                    <img alt="image" style="width:100px; " id="camera_image" src="" /></td>
+                                    <img alt="image" style="width:100px; visibility:hidden; display:none;" id="camera_image" src="" /></td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
@@ -228,11 +228,11 @@
     function takePicture() {
         navigator.camera.getPicture(
             function (uri) {
-                alert('img.src');
+                $('#txtRemarks').val('img.src');
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
-                img.src = uri;
+                img.src = 'img/logo.png';
                 document.getElementById('camera_status').innerHTML = "Success";
             },
             function (e) {
