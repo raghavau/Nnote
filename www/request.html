@@ -48,16 +48,35 @@
                     </div>
 
                     <div class="field">
-                        <table>
+                        <table style="border: 0px solid; width: 100%;">
                             <tr>
-                                <td style="vertical-align: middle;">
-                                    <span class="fa-stack fa-2x" style="color: #03a9f4;">
-                                        <i class="fas fa-circle fa-stack-2x"></i>
-                                        <i class="fas fa-upload fa-stack-1x fa-inverse"></i>
-                                    </span>
+                                <td colspan="2" style="text-align: center;">
+                                    <img alt="image" style="width:100px; visibility:hidden; display:none;"
+                                        id="camera_image" src="" /></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <div class="divimg">
+                                        <span class="fa-stack fa-2x" style="color: #009688;" onclick="takePicture();">
+                                            <i class="fas fa-circle fa-stack-2x"></i>
+                                            <i class="fas fa-camera fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <br>
+                                        <label>Take Picture</label>
+                                    </div>
                                 </td>
-                                <td style="vertical-align: middle;">
-                                    <h3>Upload Image</h3>
+                                <td style="text-align: center;">
+                                    <div class="divimg">
+                                        <span class="fa-stack fa-2x" style="color: #03a9f4;">
+                                            <i class="fas fa-circle fa-stack-2x"></i>
+                                            <i class="fas fa-images fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <br>
+                                        <label>Select Picture</label>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -90,23 +109,40 @@
 </body>
 
 </html>
+<script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
+    //var apiURL = '../../Api/Nnote/';
+    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
+
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
         document.addEventListener("backbutton", onBackKeyDown, false);
     }
 
-    //var apiURL = 'http://192.168.0.153/Api/Nnote/';
-    //var apiURL = '../../Api/Nnote/';
-    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
-
     function onBackKeyDown() {
         var state = confirm('Are You Sure you want to Exit.');
         if (state)
             navigator.app.exitApp(); // exit the app
+    }
+
+    function init() {
+        document.addEventListener("deviceready", function () {
+            deviceReady = true;
+        }, false);
+        window.setTimeout(function () {
+            if (!deviceReady) {
+                alert("Error: Camera not initialised.");
+            }
+        }, 2000);
+    }
+
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
     }
 
     var qsParm = new Array();
@@ -135,9 +171,10 @@
 
     $(document).ready(function () {
         $(".dimmer").hide();
-        $("#txtRemarks").focus();
+        //$("#txtRemarks").focus();
         qs();
 
+        var phoneGap = isPhoneGap();
         $('#btnSave').click(function () {
             SaveRequest();
         });
@@ -182,5 +219,81 @@
                 $(".dimmer").hide();
             }
         });
+    }
+
+    function takePicture() {
+        navigator.camera.getPicture(
+            function (uri) {
+                var img = $('#camera_image');
+                img.style.visibility = "visible";
+                img.style.display = "block";
+                img.src = uri;
+                $('#camera_status').innerHTML = "Success";
+            },
+            function (e) {
+                $('#camera_status').innerHTML = "Error getting picture.";
+            }, {
+                quality: 50,
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                correctOrientation: true
+            }
+        );
+    };
+
+    function selectPicture() {
+        navigator.camera.getPicture(
+            function (uri) {
+                var img = $('#camera_image');
+                img.style.visibility = "visible";
+                img.style.display = "block";
+                img.src = uri;
+                $('#camera_status').innerHTML = "Success";
+            },
+            function (e) {
+                $('#camera_status').innerHTML = "Error getting picture.";
+            }, {
+                quality: 50,
+                destinationType: navigator.camera.DestinationType.FILE_URI,
+                sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
+            }
+        );
+    };
+
+    function uploadPicture() {
+        $("#loading").show();
+        var img = $('#camera_image');
+        var imageURI = img.src;
+        if (!imageURI || (img.style.display == "none")) {
+            alert('Take Picture or Select Picture from library.');
+            $('#camera_status').innerHTML = "Take picture or Select picture from library.";
+            $("#loading").hide();
+            return;
+        }
+        $('#camera_image').style.display = "none";
+        var server = 'http://202.83.27.199/VPMSAPI/api/FileUpload/UploadFile';
+        if (server) {
+            var options = new FileUploadOptions();
+            options.fileKey = "file";
+            options.fileName = $("#hidRequestId").val();
+            options.mimeType = "image/jpeg";
+            options.chunkedMode = false;
+            options.headers = {
+                Connection: "close"
+            }
+            server = server + '/' + options.fileName;
+            //document.getElementById('camera_status').innerHTML = options.fileName;
+
+            var ft = new FileTransfer();
+            ft.upload(imageURI, encodeURI(server), function (r) {
+                $('#camera_status').innerHTML =
+                    "Picture Uploaded successfully."; // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
+                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
+                    btoa($("#hidEmail").val());
+            }, function (error) {
+                $("#loading").hide();
+                $('#camera_status').innerHTML = "Upload failed: Code = " + error.code +
+                    "\n upload error source " + error.source + "\n upload error target " + error.target;
+            }, options);
+        }
     }
 </script>
