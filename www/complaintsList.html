@@ -120,7 +120,7 @@
     }
 
     //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
     //var apiURL = 'http://192.168.0.153/Api/Nnote/';
     var qsParm = new Array();
 
@@ -153,7 +153,7 @@
             dateFormat: "dd-M-yy",
             changeMonth: true,
             gotoCurrent: true,
-            minDate: '-6d',
+            minDate: new Date(2020, 9 - 1, 1),
             maxDate: '+0d',
             onClose: function (selectedDate) {
                 $("#todate").datepicker("option", "minDate", selectedDate);
@@ -167,7 +167,7 @@
             changeMonth: true,
             numberOfMonths: 1,
             gotoCurrent: true,
-            minDate: '-6d',
+            minDate: new Date(2020, 9 - 1, 1),
             maxDate: '+0d',
             onClose: function (selectedDate) {
                 $("#fromdate").datepicker("option", "maxDate", selectedDate);
@@ -178,7 +178,7 @@
     $(document).ready(function () {
         //debugger;
         qs();
-        $("#fromdate").datepicker().datepicker("setDate", new Date());
+        $("#fromdate").datepicker().datepicker("setDate", "-6d");
         $("#todate").datepicker().datepicker("setDate", new Date());
 
         $.ajaxSetup({
@@ -196,11 +196,21 @@
         });
         $("#fromdate").on('change', function () {
             var hinval = $("#hinId").val();
-            getComplaintsList(hinval);
+            if (hinval != "") {
+                getComplaintsList(hinval);
+            }
+            else {
+                getComplaintsList(0);
+            }
         });
         $("#todate").on('change', function () {
             var hinval = $("#hinId").val();
-            getComplaintsList(hinval);
+            if (hinval != "") {
+                getComplaintsList(hinval);
+            }
+            else {
+                getComplaintsList(0);
+            }
         });
         $("button").click(function () {
             var val = $(this).val();
@@ -242,7 +252,7 @@
                             htmlStr +=
                                 '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
                                 response.data[i].IMP + '  <div class="ui left tiny teal label">' + response
-                                    .data[i].total + '</div></label>';
+                                .data[i].total + '</div></label>';
                         }
                         if (val == '1') {
                             // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui red ribbon label">' + 'Service-'+ response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
@@ -258,8 +268,8 @@
                             // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui blue ribbon label">' + response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
                             //         .data[i].total + '</div>';
                             htmlStr +=
-                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">'
-                                + response.data[i].IMP +
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
+                                response.data[i].IMP +
                                 '  <div class="ui left tiny teal label">' + response.data[i].total +
                                 '</div></label>';
                         }
@@ -279,22 +289,33 @@
 
                         //htmlStr += '<div class="description"><table><tr>Pending<label>'+ response.data[i].pending  + '</label><br>Resolved<label style="margin-left: 13.25%;">'+response.data[i].resolved +'</label><br>Repost<label style="margin-left: 21.5%;">'+response.data[i].repost +'</label><br>Notfeasible<label style="margin-left: 3.5%;">'+response.data[i].notfeasible +'</label></div></div></table></div>';
                         htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: orange;" id="lblpending" > Pending </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick="PendingwiseReport(1,' + response.data[i].pending + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].pending + ' </a></td><td style="text-align:right;"><a class="ui orange label">' + response
-                                .data[i].pending_per + '</a> </td></tr>';
+                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: orange;" id="lblpending" > Pending </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick="PendingwiseReport(1,' +
+                            response.data[i].pending + ',' + val + ',' + response.data[i].srvcode + ')">' +
+                            response.data[i].pending +
+                            ' </a></td><td style="text-align:right;"><a class="ui orange label">' + response
+                            .data[i].pending_per + '</a> </td></tr>';
                         htmlStr +=
-                            '<td style="text-align:left;"> <label style="color: #21BA45;" id="lblresolved"> Resolved </label></td><td style="text-align:right;"><a class="ui green circular label" onclick="PendingwiseReport(2,' + response.data[i].resolved + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].resolved + '</a></td><td style="text-align:right;"><a class="ui green label">' + response
-                                .data[i].resolved_per + '</a> </td></tr>'
+                            '<td style="text-align:left;"> <label style="color: #21BA45;" id="lblresolved"> Resolved </label></td><td style="text-align:right;"><a class="ui green circular label" onclick="PendingwiseReport(2,' +
+                            response.data[i].resolved + ',' + val + ',' + response.data[i].srvcode + ')">' +
+                            response.data[i].resolved +
+                            '</a></td><td style="text-align:right;"><a class="ui green label">' + response
+                            .data[i].resolved_per + '</a> </td></tr>'
                         htmlStr +=
-                            '<tr><td style="text-align:left;"> <label style="color: blue;" id="lbltepost"> Repost</label></td><td style="text-align:right;"><a class="ui blue circular label" onclick="PendingwiseReport(3,' + response.data[i].repost + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].repost + '</a></td><td style="text-align:right;"><a class="ui blue label">' + response.data[i].repost_per + '<a></td></tr>';
+                            '<tr><td style="text-align:left;"> <label style="color: blue;" id="lbltepost"> Repost</label></td><td style="text-align:right;"><a class="ui blue circular label" onclick="PendingwiseReport(3,' +
+                            response.data[i].repost + ',' + val + ',' + response.data[i].srvcode + ')">' +
+                            response.data[i].repost +
+                            '</a></td><td style="text-align:right;"><a class="ui blue label">' + response
+                            .data[i].repost_per + '<a></td></tr>';
                         htmlStr +=
-                            '<tr><td style="text-align:left;"> <label style="color: gray;" id="lblNotfeasible"> Not Feasible </label></td><td style="text-align:right;"><a class="ui gray circular label" onclick="PendingwiseReport(4,' + response.data[i].notfeasible + ',' + val + ',' + response.data[i].srvcode + ')">' +
-                            response.data[i].notfeasible + '</a></td><td style="text-align:right;"><a class="ui grey label">' + response
-                                .data[i].notfeasible_per + '</a></td></tr>';
+                            '<tr><td style="text-align:left;"> <label style="color: gray;" id="lblNotfeasible"> Not Feasible </label></td><td style="text-align:right;"><a class="ui gray circular label" onclick="PendingwiseReport(4,' +
+                            response.data[i].notfeasible + ',' + val + ',' + response.data[i].srvcode +
+                            ')">' +
+                            response.data[i].notfeasible +
+                            '</a></td><td style="text-align:right;"><a class="ui grey label">' + response
+                            .data[i].notfeasible_per + '</a></td></tr>';
                         htmlStr +=
-                            '<tr><td style="text-align:left;" > <label style="color: red;" id="lbloverdue">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label" onclick="PendingwiseReport(5,' + response.data[i].overdue + ',' + val + ',' + response.data[i].srvcode + ')">' +
+                            '<tr><td style="text-align:left;" > <label style="color: red;" id="lbloverdue">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label" onclick="PendingwiseReport(5,' +
+                            response.data[i].overdue + ',' + val + ',' + response.data[i].srvcode + ')">' +
                             response.data[i].overdue + '</a></td></tr>';
                         htmlStr += '</table></div></div></div></div>';
                     }
@@ -329,7 +350,8 @@
             labletext = "Overdue";
         }
         if (Count != '0') {
-            document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" + btoa($("#fromdate").val()) +
+            document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" +
+                btoa($("#fromdate").val()) +
                 "&todate=" + btoa($("#todate").val()) + "&Statustext=" + btoa(labletext) +
                 "&ComplateType=" + btoa(ComplateType) + "&ServiceId=" + btoa(ServiceID);
         }

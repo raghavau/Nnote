@@ -38,46 +38,13 @@
         <div class="column">
             <div class="ui left aligned segment">
                 <div class="ui red ribbon label">Services</div><br>
-                <div class="ui two cards" name="wtcards" id="wtcards">
-                    <!-- <div class="card">
-                        <div class="content">
-                            <div class="header">Elliot Fu</div>
-                            <div class="description">
-                                Elliot Fu is a film-maker from New York.
-                            </div>
-                        </div>
-                        <div class="ui bottom attached button" onclick="Click();">
-                            <i class="add icon"></i>
-                            Add Friend
-                        </div>
-                    </div> -->
-                </div>
+                <div class="ui two cards" name="wtcards" id="wtcards"></div>
             </div>
         </div>
     </div>
 
     <div class="ui active inverted page dimmer">
         <div class="ui large text loader">Loading</div>
-    </div>
-
-    <div id="question" style="display:none; cursor: default">
-        <form class="ui equal width form">
-            <h4 class="ui dividing header">Shipping Information</h4>
-            <div class="field">
-                <label>Name</label>
-                <div class="field">
-                    <textarea name="txtRemarks" id="txtRemarks" cols="30" rows="5" class="ui input"></textarea>
-                </div>
-            </div>
-            <div class="two equal width fields">
-                <div class="eight wide field">
-                    <button id="btnSave" class="ui positive button">Save</button>
-                </div>
-                <div class="eight wide field">
-                    <button id="btnCancel" class="ui negative button">Cancel</button>
-                </div>
-            </div>
-        </form>
     </div>
     <input type="hidden" id="hempid" />
 </body>
@@ -92,8 +59,8 @@
     }
 
     //var apiURL = 'http://192.168.0.153/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-    var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
 
     function onBackKeyDown() {
         var state = confirm('Are You Sure you want to Exit.');
@@ -151,7 +118,7 @@
         });
     }
 
-    function Click(id) {
-        document.location.href = "request.html?empid=" + btoa($("#hempid").val()) + "&sid=" + btoa(id);
+    function Click(id, name) {
+        document.location.href = "request.html?empid=" + btoa($("#hempid").val()) + "&sid=" + btoa(id) + "&sname=" + btoa(name);
     }
 </script>

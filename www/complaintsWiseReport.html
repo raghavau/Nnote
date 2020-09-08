@@ -48,7 +48,9 @@
             <div class="ui error message">
                 <p>No Data Available. Please check for another date</p>
             </div>
-            <div class="ui middle aligned relaxed divided list"></div>
+            <div class="ui middle aligned relaxed divided list">
+
+            </div>
         </div>
 
     </div>
@@ -70,9 +72,9 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
 
-    //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://192.168.0.153/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://192.168.0.153/Api/Nnote/'
+    //var apiURL = 'http://192.168.0.251/Nnoteapi/Api/Nnote/';
     var qsParm = new Array();
 
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -112,7 +114,7 @@
     }
 
     $(document).ready(function () {
-       
+        //debugger;
         qs();
         $(".dimmer").show();
         // alert($("#hinStatustext").val());
@@ -131,35 +133,38 @@
             contentType: "application/json",
             data: JSON.stringify(objdata),
             success: function (response) {
-               // debugger;
+                //debugger;
                 var htmlStr = '';
                 $(".divided.list").empty();
                 //alert(response.data.length);
                 if (response.data.length > 0) {
-
-                    // alert(response.data.length);
                     $('.error.message').hide();
-
-                    for (var i = 0; i <= response.data.length - 1; i++) {
-                        if ($("#hinStatustext").val() == "Pending") {
-                            htmlStr += '<div class="ui stacked left aligned segment"><div class="ui orange ribbon label">' + $("#hinStatustext").val() + '</div>';
+                    htmlStr += '<div class="ui  left aligned segment">';
+                    if ($("#hinStatustext").val() == "Pending") {
+                            htmlStr += '<div class="ui orange ribbon label">' + $("#hinStatustext").val() + '</div>';
                         }
                         if ($("#hinStatustext").val() == "Resolved") {
-                            htmlStr += '<div class="ui stacked left aligned segment"><div class="ui green ribbon label">' + $("#hinStatustext").val() + '</div>';
+                            htmlStr += '<div class="ui green ribbon label">' + $("#hinStatustext").val() + '</div>';
                         }
                         if ($("#hinStatustext").val() == "Repost") {
-                            htmlStr += '<div class="ui stacked left aligned segment"><div class="ui blue ribbon label">' + $("#hinStatustext").val() + '</div>';
+                            htmlStr += '<div class="ui blue ribbon label">' + $("#hinStatustext").val() + '</div>';
                         }
                         if ($("#hinStatustext").val() == "NotFeasible") {
-                            htmlStr += '<div class="ui stacked left aligned segment"><div class="ui gray ribbon label">' + 'Not Feasible' + '</div>';
+                            htmlStr += '<div class="ui gray ribbon label">' + $("#hinStatustext").val() + '</div>';
                         }
                         if ($("#hinStatustext").val() == "Overdue") {
-                            htmlStr += '<div class="ui stacked left aligned segment"><div class="ui red ribbon label">' + $("#hinStatustext").val() + '</div>';
+                            htmlStr += '<div class="ui red ribbon label">' + $("#hinStatustext").val() + '</div>';
                         }
+                    // alert(response.data.length);
+                   
+                    for (var i = 0; i <= response.data.length - 1; i++) {
+                        
+                        
                         htmlStr += '<div class="item">';
                         htmlStr += '<div class="description"><table><tr><td><label style="font-weight: bold;">' + response.data[i].servicename + '</label><br>' + response.data[i].complaint + '</td></tr></table></div>';
-                        htmlStr += '</div></div>';
+                        htmlStr += '</div><hr>';
                     }
+                    htmlStr += '</div>';
                     $(".divided.list").append(htmlStr);
                 }
                 else {
@@ -176,6 +181,6 @@
     $('#btnCancel').click(function () {
         //alert($("#hinfromdate").val());
         document.location.href = "complaintsList.html?empid=" + btoa($("#hempid").val());
-            //+ "&fdate=" + btoa($("#hinfromdate").val()) + "&tdate=" + btoa($("#hintodate").val());
+        //+ "&fdate=" + btoa($("#hinfromdate").val()) + "&tdate=" + btoa($("#hintodate").val());
     });
 </script>

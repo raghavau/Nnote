@@ -37,7 +37,7 @@
     <div class="ui column grid">
         <div class="column">
             <div class="ui stacked left aligned segment">
-                <div class="ui red ribbon label">Service Request</div><br>
+                <div class="ui red ribbon label" id="lblHeading"></div><br>
                 <div class="ui form">
                     <!-- <h4 class="ui dividing header">Service Request</h4> -->
                     <div class="field">
@@ -105,14 +105,15 @@
     </div>
     <input type="hidden" id="hempid" />
     <input type="hidden" id="hsid" />
+    <input type="hidden" id="hsname" />
 </body>
 
 </html>
 <script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-    var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
     var cameraOptions = {
         sourceType: Camera.PictureSourceType.CAMERA,
         saveToPhotoAlbum: true,
@@ -165,6 +166,7 @@
         if (parms.length > 0) {
             $("#hempid").val(atob(qsParm["empid"]));
             $("#hsid").val(atob(qsParm["sid"]));
+            $("#hsname").val(atob(qsParm["sname"]));
             return true;
         } else {
             window.location.href = 'index.html';
@@ -174,9 +176,10 @@
 
     $(document).ready(function () {
         $(".dimmer").hide();
-        //$("#txtRemarks").focus();
         qs();
 
+        $("#lblHeading").text($("#hsname").val() + ' Service Request');
+        //document.getElementById('lblHeading').innerText = $("#hsname").val();
         var phoneGap = isPhoneGap();
         $('#btnSave').click(function () {
             SaveRequest();
