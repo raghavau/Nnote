@@ -64,6 +64,7 @@
     <input type="hidden" id="hinStatustext" />
     <input type="hidden" id="hinval" />
     <input type="hidden" id="hinServiceCode" />
+    <input type="hidden" id="hinclickvalue" />
 
 </body>
 
@@ -73,7 +74,10 @@
 <script type="text/javascript">
 
     var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+
+
     //var apiURL = 'http://192.168.0.153/Api/Nnote/'
+
     //var apiURL = 'http://192.168.0.251/Nnoteapi/Api/Nnote/';
     var qsParm = new Array();
 
@@ -87,7 +91,6 @@
     //document.location.href = "complaintsWiseReport.html?empid=" + empid + "&fromdate=" +
     // fromdate + "&todate=" + todate + "&Statustext=" + Statustext +"&ComplateType=" + ComplateType;
     function qs() {
-        //debugger;
         var query = window.location.search.substring(1);
         var parms = query.split('&');
         for (var i = 0; i < parms.length; i++) {
@@ -114,7 +117,6 @@
     }
 
     $(document).ready(function () {
-        //debugger;
         qs();
         $(".dimmer").show();
         // alert($("#hinStatustext").val());
@@ -133,7 +135,7 @@
             contentType: "application/json",
             data: JSON.stringify(objdata),
             success: function (response) {
-                //debugger;
+                //  debugger;
                 var htmlStr = '';
                 $(".divided.list").empty();
                 //alert(response.data.length);
@@ -141,25 +143,22 @@
                     $('.error.message').hide();
                     htmlStr += '<div class="ui  left aligned segment">';
                     if ($("#hinStatustext").val() == "Pending") {
-                            htmlStr += '<div class="ui orange ribbon label">' + $("#hinStatustext").val() + '</div>';
-                        }
-                        if ($("#hinStatustext").val() == "Resolved") {
-                            htmlStr += '<div class="ui green ribbon label">' + $("#hinStatustext").val() + '</div>';
-                        }
-                        if ($("#hinStatustext").val() == "Repost") {
-                            htmlStr += '<div class="ui blue ribbon label">' + $("#hinStatustext").val() + '</div>';
-                        }
-                        if ($("#hinStatustext").val() == "NotFeasible") {
-                            htmlStr += '<div class="ui gray ribbon label">' + $("#hinStatustext").val() + '</div>';
-                        }
-                        if ($("#hinStatustext").val() == "Overdue") {
-                            htmlStr += '<div class="ui red ribbon label">' + $("#hinStatustext").val() + '</div>';
-                        }
+                        htmlStr += '<div class="ui orange ribbon label">' + $("#hinStatustext").val() + '</div>';
+                    }
+                    if ($("#hinStatustext").val() == "Resolved") {
+                        htmlStr += '<div class="ui green ribbon label">' + $("#hinStatustext").val() + '</div>';
+                    }
+                    if ($("#hinStatustext").val() == "Repost") {
+                        htmlStr += '<div class="ui blue ribbon label">' + $("#hinStatustext").val() + '</div>';
+                    }
+                    if ($("#hinStatustext").val() == "NotFeasible") {
+                        htmlStr += '<div class="ui gray ribbon label">' + $("#hinStatustext").val() + '</div>';
+                    }
+                    if ($("#hinStatustext").val() == "Overdue") {
+                        htmlStr += '<div class="ui red ribbon label">' + $("#hinStatustext").val() + '</div>';
+                    }
                     // alert(response.data.length);
-                   
                     for (var i = 0; i <= response.data.length - 1; i++) {
-                        
-                        
                         htmlStr += '<div class="item">';
                         htmlStr += '<div class="description"><table><tr><td><label style="font-weight: bold;">' + response.data[i].servicename + '</label><br>' + response.data[i].complaint + '</td></tr></table></div>';
                         htmlStr += '</div><hr>';
@@ -179,8 +178,8 @@
     });
 
     $('#btnCancel').click(function () {
-        //alert($("#hinfromdate").val());
-        document.location.href = "complaintsList.html?empid=" + btoa($("#hempid").val());
-        //+ "&fdate=" + btoa($("#hinfromdate").val()) + "&tdate=" + btoa($("#hintodate").val());
+        document.location.href = "complaintsList.html?empid=" + btoa($("#hempid").val())
+            + "&fdate=" + btoa($("#hinfromdate").val()) + "&tdate=" + btoa($("#hintodate").val())
+            + "&ComplateType=" + btoa($("#hinval").val());
     });
 </script>

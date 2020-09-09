@@ -119,13 +119,14 @@
             navigator.app.exitApp(); // exit the app
     }
 
+    //var apiURL = '../../NtraktApi/api/';
     //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
     var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://192.168.0.251/Nnoteapi/Api/Nnote/';
     //var apiURL = 'http://192.168.0.153/Api/Nnote/';
     var qsParm = new Array();
 
     function qs() {
-        //debugger;
         var query = window.location.search.substring(1);
         var parms = query.split('&');
         for (var i = 0; i < parms.length; i++) {
@@ -138,8 +139,12 @@
         }
         if (parms.length > 0) {
             $("#hempid").val(atob(qsParm["empid"]));
-            // $("#fromdate").val(atob(qsParm["fdate"]));
-            // $("#todate").val(atob(qsParm["tdate"]));
+            if (parms.length > 1) {
+                $("#fromdate").val(atob(qsParm["fdate"]));
+                $("#todate").val(atob(qsParm["tdate"]));
+                $("#hinId").val(atob(qsParm["ComplateType"]));
+                getComplaintsList($("#hinId").val());
+            }
             return true;
         } else {
             window.location.href = 'index.html';
@@ -153,10 +158,12 @@
             dateFormat: "dd-M-yy",
             changeMonth: true,
             gotoCurrent: true,
+            //minDate: '-6d',
             minDate: new Date(2020, 9 - 1, 1),
             maxDate: '+0d',
-            onClose: function (selectedDate) {
-                $("#todate").datepicker("option", "minDate", selectedDate);
+            defaultDate: -7,
+            onClose: function (minDate) {
+                $("#todate").datepicker("option", "minDate", minDate);
             }
         });
     });
@@ -167,8 +174,9 @@
             changeMonth: true,
             numberOfMonths: 1,
             gotoCurrent: true,
-            minDate: new Date(2020, 9 - 1, 1),
+            minDate: new Date(2020, 9 - 1, 1),//minDate: new Date(1, 09, 2020),
             maxDate: '+0d',
+            maxDate: new Date(),
             onClose: function (selectedDate) {
                 $("#fromdate").datepicker("option", "maxDate", selectedDate);
             }
@@ -176,7 +184,6 @@
     });
 
     $(document).ready(function () {
-        //debugger;
         qs();
         $("#fromdate").datepicker().datepicker("setDate", "-6d");
         $("#todate").datepicker().datepicker("setDate", new Date());
@@ -217,12 +224,12 @@
             $("#hinId").val(val);
             getComplaintsList(val);
         });
-
-        getComplaintsList(0);
+        if ($("#hinId").val() == "") {
+            getComplaintsList(0);
+        }
     });
 
     function getComplaintsList(val) {
-        //debugger;
         $('.dimmer').show();
         var objdata = {
             compainttype: val,
@@ -241,18 +248,14 @@
                 //alert(response.data.length);
                 if (response.data.length > 0) {
                     $('.error.message').hide();
-                    //debugger;
                     for (var i = 0; i <= response.data.length - 1; i++) {
-                        ////debugger;
                         htmlStr +=
                             '<div class="item"><div class="left floated content" style="width: 100%;">';
                         if (val == '0') {
-                            // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui green ribbon label">' +  response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
-                            //         .data[i].total + '</div>';
                             htmlStr +=
                                 '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
                                 response.data[i].IMP + '  <div class="ui left tiny teal label">' + response
-                                .data[i].total + '</div></label>';
+                                    .data[i].total + '</div></label>';
                         }
                         if (val == '1') {
                             // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui red ribbon label">' + 'Service-'+ response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
@@ -265,57 +268,35 @@
                                 '</div></label>';
                         }
                         if (val == '2') {
-                            // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui blue ribbon label">' + response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
-                            //         .data[i].total + '</div>';
                             htmlStr +=
-                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
-                                response.data[i].IMP +
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">'
+                                + response.data[i].IMP +
                                 '  <div class="ui left tiny teal label">' + response.data[i].total +
                                 '</div></label>';
                         }
                         if (val == '3') {
-                            // var date = response.data[i].IMP;
-                            // var selectdate = date.split(' ');
-                            // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui orange ribbon label">' + selectdate[0]+ '</div><div class="ui left tiny teal label">' + response
-                            //         .data[i].total + '</div>';
-                            // alert(currentdate);
                             htmlStr +=
                                 '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
                                 'Date-' + response.data[i].IMP + '  <div class="ui left tiny teal label">' +
                                 response.data[i].total + '</div></label>';
                         }
-
-
-
-                        //htmlStr += '<div class="description"><table><tr>Pending<label>'+ response.data[i].pending  + '</label><br>Resolved<label style="margin-left: 13.25%;">'+response.data[i].resolved +'</label><br>Repost<label style="margin-left: 21.5%;">'+response.data[i].repost +'</label><br>Notfeasible<label style="margin-left: 3.5%;">'+response.data[i].notfeasible +'</label></div></div></table></div>';
                         htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: orange;" id="lblpending" > Pending </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick="PendingwiseReport(1,' +
-                            response.data[i].pending + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
-                            response.data[i].pending +
-                            ' </a></td><td style="text-align:right;"><a class="ui orange label">' + response
-                            .data[i].pending_per + '</a> </td></tr>';
+                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: orange;" id="lblpending" > Pending </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick="PendingwiseReport(1,' + response.data[i].pending + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
+                            response.data[i].pending + ' </a></td><td style="text-align:right;"><a class="ui orange label">' + response
+                                .data[i].pending_per + '</a> </td></tr>';
                         htmlStr +=
-                            '<td style="text-align:left;"> <label style="color: #21BA45;" id="lblresolved"> Resolved </label></td><td style="text-align:right;"><a class="ui green circular label" onclick="PendingwiseReport(2,' +
-                            response.data[i].resolved + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
-                            response.data[i].resolved +
-                            '</a></td><td style="text-align:right;"><a class="ui green label">' + response
-                            .data[i].resolved_per + '</a> </td></tr>'
+                            '<td style="text-align:left;"> <label style="color: #21BA45;" id="lblresolved"> Resolved </label></td><td style="text-align:right;"><a class="ui green circular label" onclick="PendingwiseReport(2,' + response.data[i].resolved + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
+                            response.data[i].resolved + '</a></td><td style="text-align:right;"><a class="ui green label">' + response
+                                .data[i].resolved_per + '</a> </td></tr>'
                         htmlStr +=
-                            '<tr><td style="text-align:left;"> <label style="color: blue;" id="lbltepost"> Repost</label></td><td style="text-align:right;"><a class="ui blue circular label" onclick="PendingwiseReport(3,' +
-                            response.data[i].repost + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
-                            response.data[i].repost +
-                            '</a></td><td style="text-align:right;"><a class="ui blue label">' + response
-                            .data[i].repost_per + '<a></td></tr>';
+                            '<tr><td style="text-align:left;"> <label style="color: blue;" id="lbltepost"> Repost</label></td><td style="text-align:right;"><a class="ui blue circular label" onclick="PendingwiseReport(3,' + response.data[i].repost + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
+                            response.data[i].repost + '</a></td><td style="text-align:right;"><a class="ui blue label">' + response.data[i].repost_per + '<a></td></tr>';
                         htmlStr +=
-                            '<tr><td style="text-align:left;"> <label style="color: gray;" id="lblNotfeasible"> Not Feasible </label></td><td style="text-align:right;"><a class="ui gray circular label" onclick="PendingwiseReport(4,' +
-                            response.data[i].notfeasible + ',' + val + ',' + "'" + response.data[i].srvcode + "'" +
-                            ')">' +
-                            response.data[i].notfeasible +
-                            '</a></td><td style="text-align:right;"><a class="ui grey label">' + response
-                            .data[i].notfeasible_per + '</a></td></tr>';
+                            '<tr><td style="text-align:left;"> <label style="color: gray;" id="lblNotfeasible"> Not Feasible </label></td><td style="text-align:right;"><a class="ui gray circular label" onclick="PendingwiseReport(4,' + response.data[i].notfeasible + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
+                            response.data[i].notfeasible + '</a></td><td style="text-align:right;"><a class="ui grey label">' + response
+                                .data[i].notfeasible_per + '</a></td></tr>';
                         htmlStr +=
-                            '<tr><td style="text-align:left;" > <label style="color: red;" id="lbloverdue">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label" onclick="PendingwiseReport(5,' +
-                            response.data[i].overdue + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
+                            '<tr><td style="text-align:left;" > <label style="color: red;" id="lbloverdue">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label" onclick="PendingwiseReport(5,' + response.data[i].overdue + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
                             response.data[i].overdue + '</a></td></tr>';
                         htmlStr += '</table></div></div></div></div>';
                     }
@@ -329,29 +310,25 @@
         });
     }
 
-    function PendingwiseReport(labletext, Count, ComplateType, ServiceID) {
-        //debugger;
-        // var  text = $(label).text()
-        // alert(ServiceID);
-
-        if (labletext == "1") {
+    function PendingwiseReport(clickvalue, Count, ComplateType, ServiceID) {
+        var labletext = "";
+        if (clickvalue == "1") {
             labletext = "Pending";
         }
-        if (labletext == "2") {
+        if (clickvalue == "2") {
             labletext = "Resolved";
         }
         if (labletext == "3") {
             labletext = "Repost";
         }
-        if (labletext == "4") {
+        if (clickvalue == "4") {
             labletext = "NotFeasible";
         }
-        if (labletext == "5") {
+        if (clickvalue == "5") {
             labletext = "Overdue";
         }
-        if (Count != '0') {
-            document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" +
-                btoa($("#fromdate").val()) +
+        if (Count != '0') {//$("#hempid").val()
+            document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" + btoa($("#fromdate").val()) +
                 "&todate=" + btoa($("#todate").val()) + "&Statustext=" + btoa(labletext) +
                 "&ComplateType=" + btoa(ComplateType) + "&ServiceId=" + btoa(ServiceID);
         }
