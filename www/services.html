@@ -101,6 +101,7 @@
     function ShowWorkTypes() {
         //debugger;
         $(".dimmer").show();
+        $('#wtcards').empty();
         $.get(apiURL + 'GetWorkTypes', function (response) {
             //debugger;
             var arrdata = response.data;

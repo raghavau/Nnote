@@ -204,6 +204,7 @@
 
     function ShowRequests() {
         $(".dimmer").show();
+        $('#list').empty();
         $.get(apiURL + 'getpendingrequests/' + $("#hempid").val(), function (response) {
             //debugger;
             var arrdata = response.data;

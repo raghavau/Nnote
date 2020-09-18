@@ -118,6 +118,7 @@
 
     $(document).ready(function () {
         qs();
+        debugger;
         $(".dimmer").show();
         // alert($("#hinStatustext").val());
         var objdata = {
@@ -131,11 +132,11 @@
         $.ajax({
             type: 'POST',
             url: apiURL + 'complaintdtlsrpt/',
+            //url: 'http://localhost:6491/Api/Nnote/complaintdtlsrpt',
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
             success: function (response) {
-                //  debugger;
                 var htmlStr = '';
                 $(".divided.list").empty();
                 //alert(response.data.length);
@@ -156,6 +157,9 @@
                     }
                     if ($("#hinStatustext").val() == "Overdue") {
                         htmlStr += '<div class="ui red ribbon label">' + $("#hinStatustext").val() + '</div>';
+                    }
+                    if ($("#hinStatustext").val() == "Reopen") {
+                        htmlStr += '<div class="ui violet ribbon label">' + 'Re Open' + '</div>';
                     }
                     // alert(response.data.length);
                     for (var i = 0; i <= response.data.length - 1; i++) {

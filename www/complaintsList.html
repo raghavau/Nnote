@@ -185,7 +185,9 @@
 
     $(document).ready(function () {
         qs();
-        $("#fromdate").datepicker().datepicker("setDate", "-6d");
+        var minDate = new Date(2020, 9 - 1, 1);
+        //$("#fromdate").datepicker().datepicker("setDate", "-6d");
+        $("#fromdate").datepicker().datepicker("setDate", minDate);
         $("#todate").datepicker().datepicker("setDate", new Date());
 
         $.ajaxSetup({
@@ -201,6 +203,9 @@
         $('.message .close').on('click', function () {
             $(this).closest('.message').transition('fade');
         });
+
+        //Getdates();
+
         $("#fromdate").on('change', function () {
             var hinval = $("#hinId").val();
             if (hinval != "") {
@@ -229,6 +234,31 @@
         }
     });
 
+
+    function Getdates() {
+        $.ajax({
+            type: 'GET',
+            //url: apiURL + 'getdates/',
+            url: 'http://localhost:6491/Api/Nnote/getdates',
+            dataType: "json",
+            contentType: "application/json",
+            //data: JSON.stringify(objdata),
+            success: function (response) {
+                if (response.data[0] != '') {
+                    $('.error.message').hide();
+                    $("#fromdate").val(response.data[0].fromdateval);
+                    $("#todate").val(response.data[0].todateval);
+                    getComplaintsList(0);
+                }
+                else {
+                    $('.error.message').show();
+                }
+            }
+        });
+    }
+
+
+
     function getComplaintsList(val) {
         $('.dimmer').show();
         var objdata = {
@@ -239,6 +269,7 @@
         $.ajax({
             type: 'POST',
             url: apiURL + 'summaryrpt/',
+            //url: 'http://localhost:6491/Api/Nnote/summaryrpt',
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
@@ -298,6 +329,10 @@
                         htmlStr +=
                             '<tr><td style="text-align:left;" > <label style="color: red;" id="lbloverdue">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label" onclick="PendingwiseReport(5,' + response.data[i].overdue + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
                             response.data[i].overdue + '</a></td></tr>';
+                        htmlStr +=
+                            '<tr><td style="text-align:left;" > <label style="color: violet" id="lblRepost">Re Open</label></td><td style="text-align:right;"><a class="ui violet  circular label" onclick="PendingwiseReport(6,' + response.data[i].reopen + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
+                                response.data[i].reopen + '</a></td></tr>';
+
                         htmlStr += '</table></div></div></div></div>';
                     }
                     $(".divided.list").append(htmlStr);
@@ -318,7 +353,7 @@
         if (clickvalue == "2") {
             labletext = "Resolved";
         }
-        if (labletext == "3") {
+        if (clickvalue == "3") {
             labletext = "Repost";
         }
         if (clickvalue == "4") {
@@ -326,6 +361,9 @@
         }
         if (clickvalue == "5") {
             labletext = "Overdue";
+        }
+        if (clickvalue == "6") {
+            labletext = "Reopen";
         }
         if (Count != '0') {//$("#hempid").val()
             document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" + btoa($("#fromdate").val()) +

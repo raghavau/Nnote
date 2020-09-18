@@ -49,9 +49,9 @@
         </div>
     </div>
     <iframe frameborder="0" width="100%" id="ifrm" style="position: absolute" scrolling="auto"></iframe>
-    <div class="ui bottom fixed fluid five item labeled icon tiny menu">
+    <div class="ui bottom fixed fluid six item labeled icon tiny menu">
         <a class="item" id="profile">
-            <i class="calendar plus teal icon"></i>
+            <i class="id card teal icon"></i>
             Profile
         </a>
         <a class="item" id="services">
@@ -61,6 +61,10 @@
         <a class="item" id="status">
             <i class="tasks blue icon"></i>
             Service Status
+        </a>
+        <a class="item" id="reopen">
+            <i class="clone brown icon"></i>
+            ReOpen Request
         </a>
         <a class="item" id="reports">
             <i class="clipboard list green icon"></i>
@@ -146,6 +150,9 @@
         });
         $('#status').click(function () {
             $('#ifrm').attr('src', 'editrequest.html?empid=' + btoa($("#hempid").val()));
+        });
+        $('#reopen').click(function () {
+            $('#ifrm').attr('src', 'reopen.html?empid=' + btoa($("#hempid").val()));
         });
         $('#reports').click(function () {
             $('#ifrm').attr('src', 'complaintsList.html?empid=' + btoa($("#hempid").val()));
