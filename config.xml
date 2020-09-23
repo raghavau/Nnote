@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.phonegap.nnote" version="1.0.7" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.phonegap.nnote" version="1.0.8" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>nNote</name>
     <description>
         nNote
     </description>
-    <author email="support@nspira.com" href="http://nspira.in">
+    <author email="professionalcolleges.it@narayanagroup.com" href="http://nspira.in">
         Nspira IT Team
     </author>
     <content src="index.html" />
