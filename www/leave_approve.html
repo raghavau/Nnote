@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+    <style type="text/css">
+        body {
+            background-color: #e5e5e5;
+        }
+
+        body>.grid {
+            height: 100%;
+        }
+
+        .column {
+            max-width: 450px;
+        }
+
+        .thumbnail {
+            width: 200px;
+            height: 250px;
+            position: fixed;
+            z-index: 999999;
+            border-radius: 10px;
+            top: 50%;
+            left: 50%;
+            /*margin-right: -50%;*/
+            transform: translate(-50%, -50%);
+            /*-webkit-transition: all 500ms ease-in;
+            -webkit-transform: scale(1);
+            -ms-transition: all 500ms ease-in;
+            -ms-transform: scale(1);
+            -moz-transition: all 500ms ease-in;
+            -moz-transform: scale(1);
+            transition: all 500ms ease-in;*/
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="ui sticky" style="background-color: white; padding: 5px;box-shadow: 0px 4px #e5e5e5">
+        <div class="ui small fluid labeled action icon input">
+            <div class="ui label">
+                Date
+            </div>
+            <!--<input type="text" id="txtdate" readonly>-->
+            <select class="ui fluid dropdown" id="seldate"></select>
+            <button class="ui icon button" id="btnsearch"><i class="search icon"></i></button>
+        </div>
+        <br>
+        <button class="ui tiny fluid green disabled button" id="btnApproveAll">Approve All</button>
+    </div>
+    <!--<div class="ui top aligned center aligned grid">
+        <div class="ui column grid">
+            <div class="sixteen wide column">
+
+            </div>
+        </div>
+    </div>-->
+    <div class="ui padded stacked left aligned segment">
+        <div class="ui error message">
+            <p>No Data Available. Please check for another date</p>
+        </div>
+        <div class="ui middle aligned relaxed divided list"></div>
+    </div>
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading Please Wait.....</div>
+    </div>
+    <div id="imghide"></div>
+    <input type="hidden" id="hempid" />
+</body>
+
+</html>
+<script type="text/javascript">
+    document.addEventListener("deviceready", onDeviceReady, false);
+//100733663577
+    function onDeviceReady() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    function onBackKeyDown() {
+        var state = confirm('Are You Sure you want to Exit.');
+        if (state)
+            navigator.app.exitApp(); // exit the app
+    }
+
+    var apiURL = '../../NtraktApi/api/';
+    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    var qsParm = new Array(),
+        empid = null;
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ready(function() {
+        $.ajaxSetup({ cache: false });
+        $('.ui.dropdown').dropdown();
+        qs();
+        empid = $("#hempid").val();
+
+        $('.dimmer').hide();
+        $('#imghide').hide();
+        $('.error.message').hide();
+        /*$('#txtdate').datepicker({
+            dateFormat: "dd/mm/yy",
+            //changeMonth: true,
+            //changeYear: true,
+            maxDate: 0,
+            minDate: "-1m"
+        });
+        var date = new Date();
+        var month = parseInt(date.getMonth() + 1) < 10 ? '0' + parseInt(date.getMonth() + 1) : parseInt(date.getMonth() + 1);
+        $("#txtdate").val(date.getDate() + '/' + month + '/' + date.getFullYear());*/
+
+        $('.ui.sticky').sticky();
+
+        $('.message .close').on('click', function() {
+            $(this).closest('.message').transition('fade');
+        });
+
+        CheckStatus();
+        $("#btnsearch").click(function() {
+            getApprovalLeaves();
+        });
+
+        $("#seldate").on('change', function() {
+            getApprovalLeaves();
+        });
+
+        $("#btnApproveAll").click(function() {
+            ApproveAll();
+        });
+    });
+
+    function CheckStatus(){
+        //debugger;
+        $('.dimmer').show();
+        $.get(apiURL + 'User/CheckLeaveApprovalAccess/' + $("#hempid").val(), function(response) {
+            //debugger;
+        }).done(function(response) {
+            //debugger;
+            if(response.data == 'Success')
+                getLeaveApprovalDates();
+            else
+                window.location.href = 'error.html';
+            $(".dimmer").hide();
+        });
+    }
+
+    function getLeaveApprovalDates() {
+        //debugger;
+        $('.dimmer').show();
+        $.post(apiURL + 'Attendance/LeaveApprovalDates/', {
+            "EmpNo": empid
+        }, function(response) {
+            $("#seldate").empty();
+        }).done(function(response) {
+            var htmlStr = '';
+            if (response.data.length > 0) {
+                $('.error.message').hide();
+                $("#btnApproveAll").removeClass('disabled');
+                for (var i = 0; i <= response.data.length - 1; i++) {
+                    //debugger;
+                    htmlStr +='<option value="' + response.data[i] + '">' + response.data[i] + '</option>';
+                }
+                $("#seldate").append(htmlStr);
+            } else {
+                $('.error.message').show();
+            }
+            getApprovalLeaves();
+            $('.dimmer').hide();
+        }).fail(function() {
+            $('.dimmer').hide();
+        });
+    }
+
+    function getApprovalLeaves() {
+        //debugger;
+        $('.dimmer').show();
+        var DateVal = $("#seldate").val();
+        var imgData = null;
+        $.post(apiURL + 'Attendance/ApprovalLeaves/', {
+            "AttendanceDate": DateVal,
+            "EmpNo": empid
+        }, function(response) {
+            $(".divided.list").empty();
+        }).done(function(response) {
+            //debugger;
+            var htmlStr = '';
+            if (response.data.length > 0) {
+                $('.error.message').hide();
+                $("#btnApproveAll").removeClass('disabled');
+                for (var i = 0; i <= response.data.length - 1; i++) {
+                    //debugger;
+                    htmlStr += '<div class="item"><div class="right floated content">';
+                    htmlStr += '<button class="ui tiny basic green icon button" onclick="Approve(' + response.data[i].EmpNo + ',\'' + response.data[i].EventDate + '\')">';
+                    htmlStr += '<i class="check icon"></i></button>';
+                    htmlStr += '<button class="ui tiny basic red icon button" onclick="Reject(' + response.data[i].EmpNo + ',\'' + response.data[i].EventDate + '\')">';
+                    htmlStr += '<i class="trash icon"></i></button></div>';
+                    //htmlStr += '<img class="ui mini circular image" src="data:image/png;base64,' + response.data[i].EmpPhoto + '" onclick="zoomImage(this)">';
+                    htmlStr += '<img class="ui mini circular image" src="http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + response.data[i].EmpNo + '" onclick="zoomImage(this)">';
+                    htmlStr += '<div class="ui content"><label class="header" style="word-wrap: break-word;">' + response.data[i].EmpName + '  <div class="ui left tiny label">' + response.data[i].LeaveType + '</div></label>';
+                    htmlStr += '<div class="description">' + response.data[i].EmpNo + '<br>' + response.data[i].EventDate + '</div></div></div>';
+                    htmlStr += '</div>';
+                }
+
+                $(".divided.list").append(htmlStr);
+            } else {
+                getLeaveApprovalDates();
+                $('.error.message').show();
+            }
+            $('.dimmer').hide();
+        }).fail(function() {
+            $('.dimmer').hide();
+        });
+    }
+
+    function ApproveAll() {
+        $('.dimmer').show();
+        var DateVal = $("#seldate").val();
+        $.post(apiURL + 'Attendance/LeavesApproveAll/', {
+            "AttendanceDate": DateVal,
+            "UserId": empid
+        }, function(response) {
+            //debugger;
+        }).done(function(response) {
+            //debugger;
+            document.location.reload();
+        }).fail(function() {
+            $('.dimmer').hide();
+        });
+    }
+
+    function Approve(empNo, leaveDate) {
+        //debugger;
+        $('.dimmer').show();
+        $.post(apiURL + 'Attendance/LeaveApprove/', {
+            "EmpNo": empNo,
+            "LeaveDate": leaveDate,
+            "UserId": empid
+        }, function(response) {
+            //debugger;
+        }).done(function(response) {
+            getApprovalLeaves();
+        }).fail(function() {
+            $('.dimmer').hide();
+        });
+    }
+
+    function Reject(empNo, leaveDate) {
+        //debugger;
+        $('.dimmer').show();
+        $.post(apiURL + 'Attendance/LeaveReject/', {
+            "EmpNo": empNo,
+            "LeaveDate": leaveDate,
+            "UserId": empid
+        }, function(response) {
+            //debugger;
+        }).done(function(response) {
+            getApprovalLeaves();
+        }).fail(function() {
+            $('.dimmer').hide();
+        });
+    }
+
+    var imgClick = 0;
+
+    function zoomImage(obj) {
+        //debugger;
+        if (imgClick == 0) {
+            $('body')[0].style.overflow = 'hidden';
+            $('#imghide').addClass('ui active inverted page dimmer');
+            $('#imghide').show();
+            obj.className = 'thumbnail';
+            imgClick = 1;
+        } else {
+            $('body')[0].style.overflow = 'auto';
+            $('#imghide').removeClass('ui active inverted page dimmer');
+            $('#imghide').hide();
+            obj.className = 'ui mini circular image';
+            imgClick = 0;
+        }
+    }
+
+</script>

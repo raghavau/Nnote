@@ -1,0 +1,596 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Confirm Concession Entry</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery.blockui.js"></script>
+    <script type="text/javascript" src="jquery/moment.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+
+    <style type="text/css">
+        .txt_inv {
+            padding: 0px !important;
+            border: 0px !important;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var apiURL = '../../NtraktApi/api/InvConcession/';
+        //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
+
+
+        var RegNo = getParameterByName("rno");
+        var BillNo = getParameterByName("bno");
+        var glbUser = getParameterByName("uname");
+
+        $(function () {
+
+            var IsApproved = getParameterByName("IsApproved");
+
+            if (IsApproved == null) {
+                LoadPatientDetails();
+                $("#divMain").show();
+                $("#divApproved").hide();
+            }
+            else {
+                $("#divMain").hide();
+                $("#divApproved").show();
+                $("#lblAppBillNo").text(BillNo);
+            }
+
+
+        });
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        function LoadPatientDetails()
+        {
+            var ConData = {};
+            ConData.PRNo = RegNo;
+
+            $.post(apiURL + "PateintDetails", ConData, function (response) {
+            }).done(function (result) {
+
+                var data = result.data;
+                $.each(data, function (index, rData) {
+                    var patdata = rData.Name + " / " + rData.Age + " / " + rData.Sex;
+                    $("#lblPatName").text(patdata);
+                });
+
+                LoadPatientLabTests();
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+        function LoadConcessionDetails()
+        {
+            var ConData = {};
+            ConData.PRNo = RegNo;
+            ConData.BillNo = BillNo;
+
+            $.post(apiURL + "PateintConcessDetails", ConData, function (response) {
+            }).done(function (result) {
+
+                var rdata = result.data;
+
+                $.each(rdata, function (index, data) {
+
+                    var gcAmount = parseFloat(data.GcAmt);
+                    var conAmount = parseFloat(data.NetAmount);
+
+                    $("#lblReqBy").text(data.Req);
+                    $("#lblReaReq").text(data.Reason);
+                    $("#lblEmpID").text(data.Code);
+
+                    if (conAmount > 0) {
+                        $(".trGc").hide();
+                        $(".trConcess").show();
+                        $("#txtConPer").val(data.Concession);
+                        $("#txtConAmt").val(conAmount);
+                        $("#txtReferedBy").text(data.Name);
+                    }
+                    else if (gcAmount > 0) {
+                        $(".trGc").show();
+                        $(".trConcess").hide();
+                        $("#txtGcPer").val(data.GcPer);
+                        $("#txtGcAmt").val(gcAmount);
+                        $("#txtEmpCode").val(data.Name);
+                    }
+
+                    $("#txtAmountPay").val(data.BillAmount);
+
+                });
+
+
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+
+        function LoadPatientLabTests()
+        {
+            var ConData = {};
+            ConData.BillNo = BillNo;
+
+            $.post(apiURL + "LabTestList", ConData, function (response) {
+            }).done(function (result) {
+                var data = result.data;
+                        var tabHtml = "";
+                        var totaAmount = 0;
+                        var sno = 1;
+                        tabHtml = '<table class="ui celled small unstackable table"><thead><tr class="ui inverted teal table"><th>Test</th><th>Total</th><th>Con Charge</th><th>Net Charge</th></tr></thead>';
+                        $.each(data, function (index, rData) {
+                            tabHtml = tabHtml + '<tr><td>' + rData.Name + '<input id="txtCode' + sno + '" type="hidden" value ="' + rData.OtherInfo + '" /></td><td><input class="txt_inv" id="txtTotAmt' + sno + '" type="text" value="' + rData.BillAmount + '" readonly /></td><td><input class="txt_inv" type="text" value="' + rData.Concession + '" readonly /></td><td><input class="txt_inv" type="text" value="' + rData.NetAmount + '" readonly /> <input id="hdnQty' + sno + '" type="hidden" value="' + rData.Qty + '" /> </td></tr>';
+                            totaAmount = totaAmount + parseFloat(rData.BillAmount);
+                            sno = sno + 1;
+                        });
+                        $("#hdnSNo").val(sno);
+                        tabHtml = tabHtml + '<tr><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total </td><td><input id="txtTotalAmount" class="txt_inv" type="text" value="' + totaAmount + '" readonly /></td></tr>';
+                        tabHtml = tabHtml + "</table>";
+
+                        $("#gridTest").append(tabHtml);
+                        LoadConcessionDetails();
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+
+        function fnConcAmt() {
+            TotalCrg = $("#txtTotalAmount").val();  //eval(document.all.item("txtTotalCrg"))
+            ConsAmt = $("#txtConAmt").val(); // eval(document.all.item("txtConAmt"))
+
+            if (parseFloat(TotalCrg, 10) == 0) {
+                alert("Total Charge should not be zero. Please select a test.");
+                $("#txtConAmt").val(0) //document.f1.txtConAmt.value = 0;
+                return;
+            }
+
+            if (parseInt(ConsAmt, 10) != parseInt(ConsAmt, 10)) {
+                $("#txtAmountPay").val(parseInt(TotalCrg, 10) - ConsAmt); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - ConsAmt;
+                $("#txtConPer").val("");
+                //document.f1.txtConPer.value = "";
+
+            }
+            else {
+                pc = (parseInt(ConsAmt, 10) * 100) / parseInt(TotalCrg, 10);
+                $("#txtConPer").val(Math.round(pc));
+
+                MaxCon = 100; //document.f1.hidMaxCon.value;
+
+                if (Math.round(pc) > MaxCon) {
+                    alert("This employee can give Concession upto " + MaxCon + " % only.");
+                    $("#txtConAmt").val(0); //document.f1.txtConAmt.value = 0;
+                    $("#txtConPer").val(""); //document.f1.txtConPer.value = "";
+                    $("#txtAmountPay").val(parseInt(TotalCrg, 10) - parseInt(ConsAmt, 10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
+                    return;
+                }
+
+                AmtPay = parseInt(TotalCrg, 10) - parseInt(ConsAmt, 10); //parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
+
+                if (AmtPay < 0) {
+                    alert("The sum of Concession Amount and Credit Amount should not be greater than the Total Charge");
+                    $("#txtConAmt").val(0);
+                    $("#txtConPer").val("");
+                    $("#txtAmountPay").val(parseInt(TotalCrg, 10) - parseInt(ConsAmt, 10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
+                }
+                else
+                    //document.f1.txtDisAmtPay.value = AmtPay;
+                    $("#txtAmountPay").val(AmtPay);
+            }
+
+        }
+
+
+        function fnConcPC() {
+
+            TotalCrg = $("#txtTotalAmount").val();  //eval(document.all.item("txtTotalCrg"))
+            ConsPer = $("#txtConPer").val(); //eval(document.all.item("txtConPer"))
+
+            if (TotalCrg == 0) {
+                alert("Total Charge should not be zero. Please select a test.");
+                $("#txtConPer").val(""); //document.f1.txtConPer.value = "";
+                return;
+            }
+
+            if (parseInt(ConsPer, 10) != parseInt(ConsPer, 10)) {
+                $("#txtAmountPay").val(parseInt(TotalCrg, 10));
+                $("#txtConAmt").val(0);
+            }
+            else {
+                MaxCon = 100;
+
+                if (parseInt(ConsPer) > MaxCon) {
+                    alert("This employee can give Concession upto " + MaxCon + " % only.");
+                    $("#txtConAmt").val(0);
+                    $("#txtConPer").val("");
+                    $("#txtAmountPay").val(parseInt(TotalCrg, 10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10);
+                    return;
+                }
+
+                ConsAmt = Math.round((TotalCrg * ConsPer) / 100);
+
+                $("#txtConAmt").val(ConsAmt);
+                AmtPay = parseInt(TotalCrg, 10) - (ConsAmt);
+                $("#txtAmountPay").val(AmtPay);
+                if (AmtPay < 0) {
+                    alert("The sum of Concession Amount and Credit Amount should not be greater than the Total Charge");
+                    $("#txtConAmt").val(0);
+                    $("#txtConPer").val("");
+                    $("#txtAmountPay").val(parseInt(TotalCrg, 10));
+                }
+                else
+                    $("#txtAmountPay").val(AmtPay);
+
+            }
+        }
+
+
+        function fnCreditAmt() {
+
+            TotalCrg = $("#txtTotalAmount").val(); //eval(document.all.item("txtTotalCrg"))
+            CreditAmt = $("#txtGcAmt").val(); //eval(document.all.item("txtGCAmt"))
+
+
+            if (parseInt(TotalCrg, 10) == 0) {
+                alert("Total Charge should not be zero. Please select a test.");
+                $("#txtGcAmt").val(0);
+                return;
+            }
+
+            if (parseInt(CreditAmt, 10) != parseInt(CreditAmt, 10)) {
+                $("#txtAmountPay").val(parseInt(TotalCrg, 10));
+                $("#txtGcPer").val("");
+            }
+            else {
+                pc = (parseInt(CreditAmt, 10) * 100) / parseInt(TotalCrg, 10);
+                $("#txtGcPer").val(Math.round(pc * 100) / 100);
+
+                MaxCre = 100;
+                if (Math.round(pc) > MaxCre) {
+                    alert("This employee can give Credit upto " + MaxCre + " % only.");
+                    $("#txtGcAmt").val(0);
+                    $("#txtGcPer").val("");
+                    $("#txtAmountPay").val(parseInt(TotalCrg, 10));
+                    return;
+                }
+
+                AmtPay = parseInt(TotalCrg, 10) - parseInt(CreditAmt, 10);
+                if (AmtPay < 0) {
+                    alert("The sum of Concession Amount and Credit Amount should not be greater than the Total Charge");
+                    $("#txtGcAmt").val(0);
+                    $("#txtGcPer").val("");
+                    $("#txtAmountPay").val(TotalCrg);
+                }
+                else
+                    $("#txtAmountPay").val(AmtPay);
+            }
+
+        }
+
+
+        function fnCreditPC() {
+            TotalCrg = $("#txtTotalAmount").val();
+            CreditPer = $("#txtGcPer").val();
+
+            if (parseInt(TotalCrg, 10) == 0) {
+                alert("Total Charge should not be zero. Please select a test.");
+                $("#txtGcPer").val("");
+                return;
+            }
+
+            if (parseInt(CreditPer, 10) != parseInt(CreditPer, 10)) {
+                $("#txtAmountPay").val(parseInt(TotalCrg, 10));
+                $("#txtGcAmt").val("");
+            }
+            else {
+                MaxCre = 100;
+
+
+                if (parseInt(CreditPer, 10) > MaxCre) {
+                    alert("This employee can give Credit upto " + MaxCre + " % only.");
+                    $("#txtGcAmt").val(0);
+                    $("#txtGcPer").val("");
+                    $("#txtAmountPay").val(parseInt(TotalCrg, 10));
+                    return;
+                }
+
+                CreditAmt = Math.round((parseInt(TotalCrg, 10) * parseInt(CreditPer, 10)) / 100);
+
+                $("#txtGcAmt").val(CreditAmt);
+                AmtPay = parseInt(TotalCrg, 10) - (CreditAmt);
+
+                if (AmtPay < 0) {
+                    alert("The sum of Concession Amount and Credit Amount should not be greater than the Total Charge");
+                    $("#txtGcAmt").val(0);
+                    $("#txtGcPer").val("");
+                    $("#txtAmountPay").val(parseInt(TotalCrg, 10));
+                }
+                else {
+                    $("#txtAmountPay").val(AmtPay);
+                }
+            }
+
+        }
+
+
+        function SubmitTheData()
+        {
+            if (confirm("Are you sure you want to submit the data?") == false)
+            {
+                return;
+            }
+
+            $("#btnSubmit").text("Please wait...");
+            $("#btnSubmit").prop('disabled', true);
+
+            var ConPer = $("#txtConPer").val();
+            var ConAmt = $("#txtConAmt").val();
+            var GcPer =  $("#txtGcPer").val();
+            var GcAmt =  $("#txtGcAmt").val();
+            var PayAmt = $("#txtAmountPay").val();
+            var TotAmt = $("#txtTotalAmount").val();
+            var iPer, iAmount, type;
+
+            if (ConPer != "" && ConAmt != "") {
+                iPer = ConPer;
+                iAmount = ConAmt;
+                type = 'C';
+            } else if (GcPer != "" & GcAmt != "") {
+                iPer = GcPer;
+                iAmount = GcAmt;
+                type = 'P';
+            }
+
+
+            var ConData = {};
+            ConData.PRNo = RegNo;
+            ConData.BillNo = BillNo;
+            ConData.PRNo = RegNo;
+            ConData.GcPer = iPer;
+            ConData.GcAmt = iAmount;
+            ConData.ConType = type;
+            ConData.BillAmount = TotAmt;
+            ConData.NetAmount = PayAmt;
+            ConData.User = glbUser;
+
+            $.post(apiURL + "ConcessApprove", ConData, function (response) {
+            }).done(function (result) {
+
+                if (result.data == "success")
+                    {
+                        UpdtePatientLabTest();
+                    }
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+
+        function UpdtePatientLabTest()
+        {
+            var CountTest = parseInt($("#hdnSNo").val());
+            var Concess = parseFloat($("#txtConPer").val());
+            var PayAmt = $("#txtAmountPay").val();
+            var TCrg = 0;
+            var i;
+            var TotAmount, TestCode, Qty, DiffCrg;
+
+            for (i = 1; i < CountTest; i++)
+            {
+
+                TotAmount = $("#txtTotAmt" + i).val();
+                TestCode = $("#txtCode" + i).val();
+                Qty = $("#hdnQty" + i).val();
+
+                TotAmount = Math.round(TotAmount-(TotAmount * Concess) / 100)
+
+                TCrg= TCrg+(TotAmount * Qty);
+
+                if (parseFloat(i) == parseFloat(CountTest - 1))
+                {
+                    if (parseFloat(PayAmt) > parseFloat(TCrg))
+                    {
+                        DiffCrg = (PayAmt - TCrg) / Qty;
+                        TotAmount = TotAmount + DiffCrg;
+                    }
+                    else if (parseFloat(TCrg) > parseFloat(PayAmt))
+                    {
+                        DiffCrg = (TCrg - PayAmt) / Qty;
+                        TotAmount = TotAmount - DiffCrg;
+                    }
+                }
+
+
+                var ConData = {};
+                ConData.PRNo = RegNo;
+                ConData.BillNo = BillNo;
+                ConData.PRNo = RegNo;
+                ConData.BillAmount = TotAmount;
+                ConData.Code = TestCode;
+
+                $.post(apiURL + "LabDataUpdate", ConData, function (response) {
+                }).done(function (result) {
+
+                }).fail(function (jqxhr, settings, ex) {
+                    console.log(ex)
+                });
+
+            }
+
+            setTimeout(function () {
+
+                if (parseInt(i) == parseInt(CountTest)) {
+                    alert("Concession approved successfully...");
+                    window.location = "InvConfirmConcessionList.html?uname=" + glbUser;
+                }
+            }, 3000);
+
+        }
+
+        function GoToList()
+        {
+            window.location = "InvConfirmConcessionList.html?uname=" + glbUser;
+        }
+
+
+    </script>
+
+
+</head>
+<body>
+    <br />
+    <div class="ui container" id="divMain">
+        <div class="page-header">
+            <h3>Lab Investigation Concession Approval</h3>
+            <div class="ui divider"></div>
+        </div>
+        <div class="ui small form">
+            <div class="fields">
+                <div class="four wide field">
+                    <label>Patient Name / Age / Sex</label>
+                    <div id="lblPatName"></div>
+                </div>
+                <!--<div class="four wide field">
+                    <label>Age</label>
+                    <div id="lblAge"></div>
+                </div>
+                <div class="four wide field">
+                    <label>Sex</label>
+                    <div id="lblSex"></div>
+                </div>-->
+            </div>
+            <br/>
+            <div class="fields">
+                <div id="gridTest"></div>
+            </div>
+            <br />
+            <div class="fields">
+                <div class="four wide field">
+                    <label>Requested By</label>
+                    <div id="lblReqBy"></div>
+                </div>
+                <div class="four wide field">
+                    <label>Reason For Request</label>
+                    <div id="lblReaReq"></div>
+                </div>
+                <div class="four wide field">
+                    <label>Employee ID</label>
+                    <div id="lblEmpID">-</div>
+                </div>
+            </div>
+            <br />
+            <div class="fields">
+                <div>
+                    <table class="ui celled unstackable small table">
+                        <tr class="trConcess">
+                            <td>Concession</td>
+                            <td >Refered By</td>
+                            <td>
+                                <!--<input type="text" id="txtReferedBy"  />-->
+                                <div id="txtReferedBy"></div>
+                            </td>
+                        </tr>
+                        <tr class="trConcess">
+                            <td>&nbsp;</td>
+                            <td>
+                                <div class="ui right labeled input">
+                                    <input type="text" id="txtConPer" onkeyup="fnConcPC()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" style="width:70%" />
+                                    <div class="ui  label">
+                                      %
+                                    </div>
+                                </div>
+
+                            </td>
+                            <td>
+                                <input type="text" id="txtConAmt" onkeyup="fnConcAmt()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                            </td>
+                        </tr>
+                        <tr class="trGc" style="display:none;">
+                            <td>Due</td>
+                            <td>
+                                Emp Code
+                            </td>
+                            <td>
+                                <input type="text" id="txtEmpCode" />
+                            </td>
+                         </tr>
+                        <tr class="trGc">
+                            <td>&nbsp;</td>
+                            <td>
+                                <div class="ui right labeled input">
+                                    <input type="text" id="txtGcPer" onkeyup="fnCreditPC()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" style="width:70%" />
+                                    <div class="ui  label">
+                                        %
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" id="txtGcAmt" onkeyup="fnCreditAmt()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>Amount to Pay</td>
+                            <td>
+                                <input type="text" id="txtAmountPay" value="" readonly />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+            <br />
+            <div align="center">
+                <button class="ui primary tiny button" onclick="SubmitTheData();" id="btnSubmit">
+                    Submit
+                </button> &nbsp;
+                <button class="ui tiny button" onclick="GoToList();">
+                    Cancel
+                </button>
+            </div>
+            <br />
+            <br />
+        </div>
+    </div>
+
+    <div id="divApproved" style="display:none;">
+        <center>
+            <font face=verdana size=2 color=darkred>
+                <b>
+                    Investigation Concession Bill Approved ConcessionNo <span id="lblAppBillNo"></span>
+                </b>
+              </font>
+        </center>
+    </div>
+
+    <input type="hidden" id="hdnSNo" />
+
+</body>
+</html>

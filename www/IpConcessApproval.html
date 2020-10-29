@@ -1,0 +1,430 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Confirm Concession Entry</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery.blockui.js"></script>
+    <script type="text/javascript" src="jquery/moment.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+
+    <style type="text/css">
+        .txt_inv {
+            padding: 0px !important;
+            border: 0px !important;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        var apiURL = '../../NtraktApi/api/InvConcession/';
+        //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
+
+        var RegNo = getParameterByName("rno");
+        var Pid = getParameterByName("pno");
+        var glbUser = getParameterByName("uname");
+        var glbType = getParameterByName("type");  //ASHOK: C for crditscreen : P for Hospital Pay Screen
+
+        $(function () {
+
+            var IsApproved = getParameterByName("IsApproved");
+
+            if (IsApproved == null) {
+                LoadPatientDetails();
+                $("#divMain").show();
+                $("#divApproved").hide();
+            }
+            else {
+                $("#divMain").hide();
+                $("#divApproved").show();
+                $("#lblAppBillNo").text(BillNo);
+            }
+
+
+        });
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        function LoadPatientDetails()
+        {
+            var ConData = {};
+            ConData.PRNo = RegNo;
+
+            $.post(apiURL + "PateintDetails", ConData, function (response) {
+            }).done(function (result) {
+
+                var data = result.data;
+                $.each(data, function (index, rData) {
+                    var patdata = rData.Name + " / " + rData.Age + " / " + rData.Sex;
+                    $("#lblPatName").text(patdata);
+                });
+
+                LoadConcessionDetails();
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+        function LoadConcessionDetails()
+        {
+            var ConData = {};
+
+            ConData.PRNo = RegNo;
+            ConData.Code = Pid;
+
+            $.post(apiURL + "IpConcessDetails", ConData, function (response) {
+            }).done(function (result) {
+
+                var rdata = result.data;
+
+                $("#lblPatData").text(rdata.PRNo);
+                $("#lblAmount").text(rdata.BillAmount);
+                $("#lblCriCP").text(rdata.CreditBy);
+                $("#lblDate").text(rdata.BillDate);
+                $("#txtCreAmount").val(rdata.GcAmt);
+                $("#txtCrePer").val(rdata.GcPer);
+                $("#txtConAmount").val(rdata.NetAmount);
+                $("#txtConPer").val(rdata.Qty);
+                $("#lblConCN").text(rdata.Name);
+                $("#lblRemarks").text(rdata.OtherInfo);
+
+                var NetAmount = parseFloat(rdata.BillAmount) - parseFloat(rdata.GcAmt) - parseFloat(rdata.NetAmount);
+
+                $("#lblNetAmount").text(parseInt(NetAmount));
+
+
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+
+
+        function SubmitTheData()
+        {
+            if (ValidateData() == false)
+            {
+                return;
+            }
+
+            $("#btnSubmit").text("Please wait...");
+            $("#btnSubmit").prop('disabled', true);
+
+            var ConPer = $("#txtConPer").val();
+            var ConAmt = $("#txtConAmount").val();
+            var GcPer = $("#txtCrePer").val();
+            var GcAmt = $("#txtCreAmount").val();
+            var PayAmt = $("#txtAmountPay").val();
+            var TotAmt = $("#txtTotalAmount").val();
+            var iPer, iAmount, type;
+
+            var ConData = {};
+            ConData.PRNo = RegNo;
+            ConData.Code = Pid;
+            ConData.GcPer = GcPer;
+            ConData.GcAmt = GcAmt;
+            ConData.Concession = ConPer;
+            ConData.NetAmount = ConAmt;
+            ConData.User = glbUser;
+
+            $.post(apiURL + "IpConcessApprove", ConData, function (response) {
+            }).done(function (result) {
+
+                if (result.data == "success")
+                    {
+                        alert("Bill Approved successfully...");
+                        window.location = "IpConcessList.html?uname=" + glbUser + "&type=" + glbType;
+                    }
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+
+
+        function GoToList()
+        {
+            window.location = "IpConcessList.html?uname=" + glbUser + "&type=" + glbType;
+        }
+
+
+        function funcdt() {
+
+            cdtamt = $("#txtCreAmount").val(); //document.frmDR.txtcdtamt.value;
+            billamt = parseFloat($("#lblAmount").text()); //parseFloat(document.frmDR.txtbillamt.value);
+            cdtper = parseFloat($("#txtCrePer").val()); //parseFloat(document.frmDR.txtcdtper.value);
+
+            if (cdtamt > billamt) {
+                alert("Credit Amount Exceeded")
+                $("#txtCreAmount").val(0);
+                $("#txtCreAmount").focus();
+                //document.frmDR.txtcdtamt.value = 0;
+                //document.frmDR.txtcdtamt.focus();
+                return false;
+            }
+
+            if (cdtamt == "") {
+                $("#txtCreAmount").val("");
+                //document.frmDR.txtcdtamt.value = 0;
+                cdtamt = 0;
+            }
+            else {
+                cdtamt = parseFloat($("#txtCreAmount").val());
+            }
+
+            finper = (cdtamt * 100) / billamt;
+            $("#txtCrePer").val(round_decimals(finper, 2));
+
+        }
+
+
+        function funcon() {
+
+            conamt = $("#txtConAmount").val(); // document.frmDR.txtconamt.value;
+            billamt = parseFloat($("#lblAmount").text());
+            conper = parseFloat($("#txtConPer").val());
+
+            if (conamt > billamt) {
+                alert("Concession Amount Exceeded")
+                $("#txtConAmount").val(0);
+                $("#txtConAmount").focus();
+                return false;
+            }
+
+            if ($("#txtConAmount").val() == "") {
+                $("#txtConAmount").val(0)
+                conamt = 0;
+            }
+            else {
+                conamt = parseFloat($("#txtConAmount").val());
+            }
+
+            finper = (conamt * 100) / billamt;
+            $("#txtConPer").val(round_decimals(finper, 2));
+
+        }
+
+        function round_decimals(original_number, decimals) {
+            var result1 = original_number * Math.pow(10, decimals)
+            var result2 = Math.round(result1)
+            var result3 = result2 / Math.pow(10, decimals)
+            return pad_with_zeros(result3, decimals)
+        }
+
+        function pad_with_zeros(rounded_value, decimal_places) {
+
+            // Convert the number to a string
+            var value_string = rounded_value.toString()
+
+            // Locate the decimal point
+            var decimal_location = value_string.indexOf(".")
+
+            // Is there a decimal point?
+            if (decimal_location == -1) {
+
+                // If no, then all decimal places will be padded with 0s
+                decimal_part_length = 0
+
+                // If decimal_places is greater than zero, tack on a decimal point
+                value_string += decimal_places > 0 ? "." : ""
+            }
+            else {
+
+                // If yes, then only the extra decimal places will be padded with 0s
+                decimal_part_length = value_string.length - decimal_location - 1
+            }
+
+            // Calculate the number of decimal places that need to be padded with 0s
+            var pad_total = decimal_places - decimal_part_length
+
+            if (pad_total > 0) {
+
+                // Pad the string with 0s
+                for (var counter = 1; counter <= pad_total; counter++)
+                    value_string += "0"
+            }
+            return value_string
+        }
+
+
+        function ValidateData() {
+
+            conamt = parseFloat($("#txtConAmount").val());
+            cdtamt = parseFloat($("#txtCreAmount").val());
+            billamt = parseFloat($("#lblAmount").text());
+            totamt = conamt + cdtamt;
+
+            if ($("#txtCreAmount").val() == "") {
+                alert("Enter Credit Amount, Atleast Provide ZERO");
+                $("#txtCreAmount").focus();
+                return false;
+            }
+
+            if ($("#txtConAmount").val() == "") {
+                alert("Please Check Credit and Concession Amount Exceeded")
+                $("#txtConAmount").focus();
+                return false;
+            }
+
+            if (totamt > billamt) {
+                alert("Credit and Concession Amount Exceeded")
+                $("#txtCreAmount").focus();
+                return false;
+            }
+
+            var x = window.confirm("Are you sure you want to approve this bill?")
+
+            if (!x) {
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        }
+
+    </script>
+
+
+</head>
+<body>
+    <br />
+    <div class="ui container" id="divMain">
+        <div class="page-header">
+            <h3>Ip Concession Approval</h3>
+            <div class="ui divider"></div>
+        </div>
+        <div class="ui small form">
+            <div class="fields">
+                <div class="four wide field">
+                    <label>Patient Name / Age / Sex</label>
+                    <div id="lblPatName"></div>
+                </div>
+            </div>
+            <br/>
+            <div class="fields">
+                <div>
+                    <table class="ui celled unstackable table">
+                      <tr>
+                          <td><b>Pat. Reg No / ID / Type</b></td>
+                          <td>
+                              <div id="lblPatData"></div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td><b>Date</b></td>
+                          <td>
+                              <div id="lblDate"></div>
+                          </td>
+                      </tr>
+                      <tr>
+                            <td><b>Bill Amount</b></td>
+                            <td>
+                                <div id="lblAmount"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Credit Person Code / Name</b></td>
+                            <td>
+                                <div id="lblCriCP"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Credit Amount</b>
+                            </td>
+                            <td>
+                                <div><input type="text" id="txtCreAmount" onkeyup="funcdt()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" /></div>
+                                <div class="ui right labeled input" style="margin-top: 3px;">
+                                    <input type="text" id="txtCrePer" style="width:80%;" readonly />
+                                    <div class="ui  label">
+                                        %
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Con. Person Code / Name</b></td>
+                            <td>
+                                <div id="lblConCN"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b> Con.Amount</b>
+                            </td>
+                            <td>
+                                <div><input type="text" id="txtConAmount" onkeyup="funcon()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" /> </div>
+                                <div class="ui right labeled input" style="margin-top:5px;">
+                                    <input type="text" id="txtConPer" style="width:80%;" readonly />
+                                    <div class="ui  label">
+                                        %
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Amount to Pay</b></td>
+                            <td>
+                                <div id="lblNetAmount"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Remarks</b></td>
+                            <td>
+                                <div id="lblRemarks"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+            <br />
+            <div align="center">
+                <button class="ui primary small button" onclick="SubmitTheData();" id="btnSubmit">
+                    Submit
+                </button> &nbsp;
+                <button class="ui small button" onclick="GoToList();">
+                    Cancel
+                </button>
+            </div>
+            <br />
+            <br />
+        </div>
+    </div>
+
+    <div id="divApproved" style="display:none;">
+        <center>
+            <font face=verdana size=2 color=darkred>
+                <b>
+                    Investigation Concession Bill Approved ConcessionNo <span id="lblAppBillNo"></span>
+                </b>
+              </font>
+        </center>
+    </div>
+
+    <input type="hidden" id="hdnSNo" />
+
+</body>
+</html>

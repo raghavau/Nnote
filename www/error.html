@@ -2,44 +2,39 @@
 <html>
 
 <head>
-    <title>Complaint Request</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
     <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
     <script type="text/javascript" src="semantic/semantic.min.js"></script>
     <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
     <style type="text/css">
-        .ico-width {
-            font-size: 48px !important;
+        body {
+            /*overflow: hidden;*/
         }
 
-        .extra-background {
-            background-color: #f1f1f1 !important;
-        }
-
-        .extra-color-black {
-            color: black !important;
+        body>.grid {
+            height: 100%;
         }
 
         .column {
-            /*max-width: 450px;*/
-            margin: 20px;
+            max-width: 450px;
         }
+
     </style>
 </head>
 
 <body>
-    <div class="ui basic center aligned segment">
-        <h2>Work is in progress...</h2>
-    </div>
-
-    <div class="ui active inverted page dimmer">
-        <div class="ui large text loader">Loading</div>
+    <div class="ui padded stacked left aligned segment">
+        <div class="ui error message">
+            <p>UnAuthorised Access.</p>
+        </div>
     </div>
     <input type="hidden" id="hempid" />
 </body>
@@ -50,20 +45,10 @@
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", onBackKeyDown, false);
+        document.addEventListener("backbutton", function(e) {
+            e.preventDefault();
+        }, false);
     }
-
-    var apiURL = '../../NnoteApi/Api/Nnote/';
-    //var apiURL = '../../Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://115.241.194.2/NnoteApi/Api/Nnote/';
-
-    function onBackKeyDown() {
-        var state = confirm('Are You Sure you want to Exit.');
-        if (state)
-            navigator.app.exitApp(); // exit the app
-    }
-
     var qsParm = new Array();
 
     function qs() {
@@ -86,10 +71,8 @@
             return false;
         }
     }
+    $(document).ready(function() {
 
-    $(document).ready(function () {
-        $(".dimmer").hide();
-
-        qs();
     });
+
 </script>

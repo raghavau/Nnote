@@ -1,0 +1,416 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Vehilce Requistion Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+
+    <script type="text/javascript">
+        var apiURL = '../../NtraktApi/api/Vehicle/';
+        //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/Vehicle/';
+
+        var glbUser = atob(getQueryString("uid"));
+
+        $(function () {
+            LoadDivisionList();
+            LoadVehTypes();
+
+            SetDate();
+
+            //$("#txtReqDate").datepicker({ dateFormat: "dd/M/yy" });
+            $("#txtFromDate").datepicker({ dateFormat: "dd/M/yy" });
+            $("#txtToDate").datepicker({ dateFormat: "dd/M/yy" });
+
+            $('#txtNOV').keypress(function (e) {
+                var len = $(this).val();
+                if (len.length > 1) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+
+        function SetDate()
+        {
+            var mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var d = new Date();
+            $("#txtReqDate").val(d.getDate() + "/" + mon[d.getMonth()] + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+        }
+
+
+        function getQueryString(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+
+        function SaveData()
+        {
+            var appname = $("#txtNameApp").val();
+            var dept = $("#txtDept").val();
+            var division = $("#ddlDivision").val();
+            var type = $("#ddlType").val();
+            var nov = $("#txtNOV").val();
+            var reqdate = $("#txtReqDate").val();
+            var from = $("#txtFromDate").val();
+            var to = $("#txtToDate").val();
+            var name = $("#txtNOO").val();
+            var purpose = $("#txtPurpose").val();
+            var source = $("#txtSource").val();
+            var dest = $("#txtDest").val();
+            var reptime = $("#txtRepTime").val();
+
+
+            if (appname == "")
+            {
+                alert("Please enter applicant name");
+                return;
+            }
+
+            if (dept == "") {
+                alert("Please enter department name");
+                return;
+            }
+
+            if (division == "-1") {
+                alert("Please select division");
+                return;
+            }
+
+            if (type == "-1") {
+                alert("Please select vehicle type");
+                return;
+            }
+
+            if (nov == "") {
+                alert("Please enter number of vehicles");
+                return;
+            }
+
+            if (reqdate == "") {
+                alert("Please enter requisition date");
+                return;
+            } else {
+                var rvalid = new Date(reqdate);
+                if (rvalid == "Invalid Date")
+                {
+                    alert("Please enter valid requistion date");
+                    return;
+                }
+            }
+
+            if (from == "") {
+                alert("Please from date");
+                return;
+            } else {
+                var rvalid = new Date(from);
+                if (rvalid == "Invalid Date") {
+                    alert("Please enter valid from date");
+                    return;
+                }
+            }
+
+            if (to == "") {
+                alert("Please to date");
+                return;
+            } else {
+                var rvalid = new Date(to);
+                if (rvalid == "Invalid Date") {
+                    alert("Please enter valid to date");
+                    return;
+                }
+            }
+
+            var fval = +new Date(from);
+            var tval = +new Date(to);
+
+            if (fval > tval)
+            {
+                alert("To date must greater than from date");
+                return;
+            }
+
+            if (name == "")
+            {
+                alert("Please enter name of the official");
+                return;
+            }
+
+            if (name.length > 50)
+            {
+                alert("Name of the official chareters must less than 50");
+                return;
+            }
+
+            if (source == "")
+            {
+                alert("Please enter source");
+                return;
+            }
+
+            if (dest == "")
+            {
+                alert("Please enter destination");
+                return;
+            }
+
+            if (reptime == "")
+            {
+                alert("Please enter report time & place");
+                return;
+            }
+
+            if (purpose == "") {
+                alert("Please enter purpose");
+                return;
+            }
+
+            $("#btnSave").text("Please wait...");
+            $("#btnSave").prop('disabled', true);
+
+            var vData = {};
+
+            vData.Name = appname;
+            vData.DepName = dept;
+            vData.Division = division;
+            vData.Type = type;
+            vData.VehNo = nov;
+            vData.ReqDate = reqdate;
+            vData.FromDate = from;
+            vData.ToDate = to;
+            vData.OffName = name;
+            vData.Purpose = purpose;
+            vData.User = glbUser;
+            vData.Source = source;
+            vData.Dest = dest;
+            vData.RepTime = reptime;
+
+            $.post(apiURL + "SaveVehReq", vData, function (response) {
+            }).done(function (result) {
+                var data = result.data;
+                if (data == "success")
+                {
+                    ClearFields();
+                    alert("Record saved successfully...");
+                    $("#btnSave").text("Submit");
+                    $("#btnSave").prop('disabled', false);
+                }
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+        function LoadDivisionList()
+        {
+            var vData = {};
+
+            vData.ID = glbUser;
+            $.post(apiURL + "CampusList", vData, function (response) {
+            }).done(function (result) {
+                var data = result.data;
+
+                var Opts = "";
+                $.each(data, function (index, rData) {
+                    Opts = Opts + '<option value="' + rData.ID + '">' + rData.Name + '</option>';
+                });
+
+                $("#ddlDivision").append(Opts);
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+        }
+
+        function LoadVehTypes()
+        {
+            $.get(apiURL + "EngineList", function (response) {
+            }).done(function (result) {
+                var data = result.data;
+
+                var Opts = "";
+                $.each(data, function (index, rData) {
+                    Opts = Opts + '<option value="' + rData.ID + '">' + rData.Name + '</option>';
+                });
+
+                $("#ddlType").append(Opts);
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+        }
+
+        function ClearFields()
+        {
+             $("#txtNameApp").val("");
+             $("#txtDept").val("");
+             $("#ddlDivision").val("-1");
+             $("#ddlType").val("-1");
+             $("#txtNOV").val("");
+             $("#txtReqDate").val("");
+             $("#txtFromDate").val("");
+             $("#txtToDate").val("");
+             $("#txtNOO").val("");
+             $("#txtPurpose").val("");
+             $("#txtSource").val("");
+             $("#txtDest").val("");
+             $("#txtRepTime").val("");
+             SetDate();
+        }
+
+
+    </script>
+
+</head>
+<body>
+
+    <br />
+    <div class="ui container">
+        <div class="page-header">
+            <h3>Vehicle Requisition Form</h3>
+            <div class="ui divider"></div>
+        </div>
+        <div class="ui small form">
+           <div class="row">
+               <div class="fields">
+                   <div class="four wide field">
+                       <label>Name Of Applicant</label>
+                       <div>
+                           <input id="txtNameApp" type="text" />
+                       </div>
+                   </div>
+                   <div class="four wide field">
+                       <label>Department</label>
+                       <div>
+                           <input id="txtDept" type="text" />
+                       </div>
+                   </div>
+                   <div class="four wide field">
+                       <label>Division</label>
+
+                           <select id="ddlDivision" class="ui dropdown">
+                               <option value="-1">-Select-</option>
+                           </select>
+
+
+                   </div>
+               </div>
+           </div>
+            <div class="row">
+                <div class="fields">
+                    <div class="four wide field">
+                        <label>Vehilce Type</label>
+
+                            <select id="ddlType" class="ui dropdown">
+                                <option value="-1">-Select-</option>
+                            </select>
+
+                    </div>
+                    <div class="four wide field">
+                        <label>No Of Vehicles</label>
+                        <div>
+                            <input id="txtNOV" type="text" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <label>Requisition Date</label>
+                        <div>
+                            <input id="txtReqDate" type="text" placeholder="DD/MM/YYYY" readonly />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="fields">
+                    <div class="four wide field">
+                        <label>From Date</label>
+                        <div>
+                            <input id="txtFromDate" type="text" placeholder="DD/MM/YYYY" />
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <label>To Date</label>
+                        <div>
+                            <input id="txtToDate" type="text" placeholder="DD/MM/YYYY" />
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <label>Name Of Official</label>
+                        <div>
+                            <input id="txtNOO" type="text" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="fields">
+                    <div class="four wide field">
+                        <label>Source</label>
+                        <div>
+                            <input id="txtSource" type="text" />
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <label>Destination</label>
+                        <div>
+                            <input id="txtDest" type="text"  />
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <label>Report Time & Place</label>
+                        <div>
+                            <input id="txtRepTime" type="text" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="fields">
+                    <div class="four wide field">
+                        <label>Purpose</label>
+                        <div>
+                            <textarea id="txtPurpose" cols="30" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                       <div>&nbsp;</div>
+                    </div>
+                    <div class="four wide field">
+                        <div>&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="fields">
+                    <div class="four wide field">
+                        <div>&nbsp;</div>
+                    </div>
+                    <div class="four wide field" align="center">
+                        <button class="ui primary tiny button" id="btnSave" onclick="SaveData();">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+  </div>
+
+</body>
+</html>

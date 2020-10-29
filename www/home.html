@@ -26,7 +26,6 @@
             /*max-width: 450px;*/
             margin: 20px;
         }
-
     </style>
 </head>
 
@@ -68,7 +67,7 @@
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", function(e) {
+        document.addEventListener("backbutton", function (e) {
             e.preventDefault();
         }, false);
     }
@@ -94,26 +93,32 @@
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         qs();
         OnLoad();
     });
 
     function OnLoad() {
         $(".dimmer").show();
-        $.get(apiURL + 'User/Info/' + $("#hempid").val(), function(response) {
-            //debugger;
-            $("#firstname").text(response.data[0].Name);
-            $("#desig").text(response.data[0].Designation);
-            //$("#empimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
-            $("#empimg").attr('src', 'http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + $("#hempid").val());
-        }).done(function() {
-            //debugger;
-            $(".dimmer").hide();
-            //$("#empimg").attr('src', apiURL + 'User/ShowPicture/' + $("#hempid").val());
-        }).fail(function() {
-            //setTimeout(OnLoad(), 3000);
-        });
+        var timeout = setTimeout(function info() {
+            $.get(apiURL + 'User/Info/' + $("#hempid").val(), function (response) {
+                //debugger;
+                var userData = response.data;
+                if (userData.length > 0) {
+                    $("#firstname").text(response.data[0].Name);
+                    $("#desig").text(response.data[0].Designation);
+                    //$("#empimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
+                    $("#empimg").attr('src',
+                        'http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + $(
+                            "#hempid").val());
+                }
+            }).done(function () {
+                //debugger;
+                $(".dimmer").hide();
+                //$("#empimg").attr('src', apiURL + 'User/ShowPicture/' + $("#hempid").val());
+            }).fail(function () {
+                //setTimeout(OnLoad(), 3000);
+            })
+        }, 2000);
     }
-
 </script>

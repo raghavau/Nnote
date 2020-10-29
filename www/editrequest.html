@@ -159,8 +159,8 @@
         document.addEventListener("backbutton", onBackKeyDown, false);
     }
 
-    //var apiURL = '../../NnoteApi/Api/Nnote/';
-    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    var apiURL = '../../NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
 
     function onBackKeyDown() {
         var state = confirm('Are You Sure you want to Exit.');
@@ -171,7 +171,7 @@
     var qsParm = new Array();
     var actionId = 0,
         chkValue = null,
-        expDays = null;
+        expDays = 1;
 
     function qs() {
         //debugger;

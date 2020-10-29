@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Concession Confirm List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery.blockui.js"></script>
+    <script type="text/javascript" src="jquery/moment.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+
+    <style type="text/css">
+        .btnReject {
+            cursor: pointer;
+            color: red;
+        }
+
+        body {
+            overflow: auto;
+        }
+
+        .item {
+            border: 1px solid #dcdcdc !important;
+            padding: 8px !important;
+            border-radius: 4px;
+            margin: 8px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var glbUser = getParameterByName("uname");
+        var glbType = getParameterByName("type");
+        var apiURL = '../../NtraktApi/api/InvConcession/';
+        //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
+
+
+
+        $(function () {
+            CheckDoctorAcess();
+        });
+
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        function CheckDoctorAcess() {
+            var ConData = {};
+
+            ConData.User = atob(glbUser);
+
+            $.post(apiURL + "CheckConcess", ConData, function (response) {
+
+            }).done(function (result) {
+
+                if (result.data == "Y") {
+                    LoadConcessionMemList();
+                } else {
+                    window.location = "error.html";
+                }
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+
+
+
+        function LoadConcessionMemList() {
+
+
+            $("#listConcess").empty();
+
+            var ConData = {};
+
+            if (glbType == "C") {
+                ConData.ConType = "GEN";
+            } else {
+                ConData.ConType = "SUPER";
+            }
+
+            $.post(apiURL + "IpConcessList", ConData, function (response) {
+
+            }).done(function (result) {
+
+                var mData = result.data;
+
+                if (result.data == '') {
+                    $("#listConcess").append("No Records found");
+                    $(".dimmer").hide();
+                    return;
+                }
+
+                var tabHtml = '';
+
+                $.each(mData, function (index, rData) {
+
+                    tabHtml = tabHtml + '<div class="item">' +
+                        '<div class="right floated content">' +
+                        '<button class="btnApprove circular basic tiny green  ui icon button" rno="' +
+                        rData.PRNo + '" pno="' + rData.Code +
+                        '"><i class="check green icon"></i></button>' +
+                        '<button class="btnReject circular basic tiny red  ui icon button" prno="' +
+                        rData.PRNo + '" pno="' + rData.Code +
+                        '"><i class="delete red icon"></i></button>' +
+                        '</div>' +
+                        '<div class="content">' +
+                        '<table><tr><td><b>RegNo</b></td><td>: ' + rData.PRNo + '</td></tr>' +
+                        '<tr><td><b>IP No</b></td><td>: ' + rData.Code + '</td></tr>' +
+                        '<tr><td><b>Bill Amount</b></td><td>: ' + rData.TotalAmount + '</td></tr>' +
+                        '<tr><td><b>Cr RequestedBy</b></td><td>: ' + rData.CreditBy + '</td></tr>' +
+                        '<tr><td><b>Cr Amount</b></td><td>: ' + rData.BillAmount + '</td></tr>' +
+                        '<tr><td><b>Con RequestedBy</b></td><td>: ' + rData.ReferedBy + '</td></tr>' +
+                        '<tr><td><b>Con Amount</b></td><td>: ' + rData.Concession + '</td></tr>' +
+                        '<tr><td><b>Net Amount</b></td><td>: ' + parseInt(rData.NetAmount) +
+                        '</td></tr>' +
+                        '<tr><td><b>Date</b></td><td>: ' + rData.BillDate + '</td></tr>' +
+                        '</table></div></div>';
+
+                });
+
+                $("#listConcess").append(tabHtml);
+
+                $(".btnReject").click(function () {
+                    var pno, prno;
+                    pno = $(this).attr("pno");
+                    prno = $(this).attr("prno");
+
+                    if (confirm("Are you sure you want to reject this bill?") == true) {
+                        RejectTheConcession(pno, prno);
+                    }
+
+                });
+
+                $(".btnApprove").click(function () {
+                    var pid, prno
+                    pno = $(this).attr("pno");
+                    prno = $(this).attr("rno");
+
+                    window.location = "IpConcessApproval.html?rno=" + prno + "&pno=" + pno + "&uname=" +
+                        glbUser + "&type=" + glbType;
+
+                });
+
+                $(".dimmer").hide();
+
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+        }
+
+
+
+
+        function RejectTheConcession(pno, prno) {
+
+            $(".dimmer").show();
+
+            var ConData = {};
+
+            ConData.Code = pno;
+            ConData.PRNo = prno;
+            ConData.User = glbUser;
+
+            $.post(apiURL + "IpConcessReject", ConData, function (response) {
+
+            }).done(function (result) {
+
+                if (result.data == "success") {
+                    alert("Application rejected successfully...");
+                    LoadConcessionMemList();
+                }
+            }).fail(function (jqxhr, settings, ex) {
+                console.log(ex)
+            });
+
+        }
+    </script>
+
+</head>
+
+<body>
+    <br />
+    <div class="ui container">
+        <div class="page-header">
+            <h3>IP Concession List</h3>
+            <div class="ui divider"></div>
+        </div>
+        <div class="ui middle aligned divided list" id="listConcess">
+            <!--<div class="item">
+                        <div class="right floated content">
+                            <button class="circular basic tiny green  ui icon button"><i class="check green icon"></i></button>
+                            <button class="circular basic tiny red  ui icon button"><i class="delete red icon"></i></button>
+                        </div>
+                    <div class="content">
+                        <table>
+                            <tr>
+                                <td><b>RegNo</b></td>
+                                <td>: 201252000210</td>
+                            </tr>
+                            <tr>
+                                <td><b>PatID</b></td>
+                                <td>: 201252000210</td>
+                            </tr>
+                            <tr>
+                                <td><b>Cr RequestedBy</b></td>
+                                <td>: Ashok</td>
+                            </tr>
+                            <tr>
+                                <td><b>Cr Amount</b></td>
+                                <td>: 0</td>
+                            </tr>
+                            <tr>
+                                <td><b>Con Requestby</b></td>
+                                <td>: Ashok</td>
+                            </tr>
+                            <tr>
+                                <td><b>Con Amount</b></td>
+                                <td>: 2530</td>
+                            </tr>
+                            <tr>
+                                <td><b>Date</b></td>
+                                <td>: 24th Aug 2018</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>-->
+
+        </div>
+
+    </div>
+
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+
+</body>
+
+
+</html>

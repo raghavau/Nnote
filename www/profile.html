@@ -13,7 +13,6 @@
     <script type="text/javascript" src="semantic/semantic.min.js"></script>
     <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
     <style type="text/css">
-
         body {
             background-color: #e5e5e5;
             /*overflow: hidden;*/
@@ -27,7 +26,6 @@
             /*max-width: 450px;*/
             margin: 20px;
         }
-
     </style>
 </head>
 
@@ -50,9 +48,12 @@
                             <td class="top aligned left aligned">
                                 <div class="header">
                                     <h3><label id="firstname"></label></h3>
-                                    <div class="sub header"><i class="checked calendar blue icon"></i><label id="attndate"></label></div>
-                                    <div class="sub header"><i class="sign in green icon"></i><label id="intime"></label></div>
-                                    <div class="sub header"><i class="sign out red icon"></i><label id="outtime"></label></div>
+                                    <div class="sub header"><i class="checked calendar blue icon"></i><label
+                                            id="attndate"></label></div>
+                                    <div class="sub header"><i class="sign in green icon"></i><label
+                                            id="intime"></label></div>
+                                    <div class="sub header"><i class="sign out red icon"></i><label
+                                            id="outtime"></label></div>
                                 </div>
                             </td>
                         </tr>
@@ -123,14 +124,14 @@
 
 </html>
 <script type="text/javascript">
-    //var apiURL = '../../NtraktApi/api/';
-    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    var apiURL = '../../NtraktApi/api/';
+    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
     var qsParm = new Array();
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", function(e) {
+        document.addEventListener("backbutton", function (e) {
             e.preventDefault();
         }, false);
     }
@@ -156,43 +157,47 @@
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         qs();
         $(".dimmer").show();
-        $.get(apiURL + 'User/Info/' + $("#hempid").val(), function(response) {
-            //debugger;
-            $("#firstname").text(response.data[0].Name);
-            $("#dob").text(response.data[0].Dob);
-            $("#doj").text(response.data[0].Doj);
-            $("#desig").text(response.data[0].Designation);
-            $("#empid").text(response.data[0].BioEmpNo);
-            $("#mobile").text(response.data[0].MobileNo);
-            $("#email").text();
-            $("#empimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
-        }).done(function() {
-            //debugger;
-            var timeout = setTimeout(function runMe() {
-                $.get(apiURL + 'Attendance/Current/' + $("#hempid").val(), function(response) {
-                    //debugger;
-                    if (response.data.length > 0) {
-                        $("#attndate").text(response.data[0].AttendanceDate);
-                        $("#intime").text(response.data[0].InTime);
-                        $("#outtime").text(response.data[0].OutTime);
-                    } else {
+        var timeout = setTimeout(function Info() {
+            $.get(apiURL + 'User/Info/' + $("#hempid").val(), function (response) {
+                //debugger;
+                $("#firstname").text(response.data[0].Name);
+                $("#dob").text(response.data[0].Dob);
+                $("#doj").text(response.data[0].Doj);
+                $("#desig").text(response.data[0].Designation);
+                $("#empid").text(response.data[0].BioEmpNo);
+                $("#mobile").text(response.data[0].MobileNo);
+                $("#email").text();
+                //$("#empimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
+                $("#empimg").attr('src', 'http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + $("#hempid").val());
+            }).done(function () {
+                //debugger;
+                var timeout = setTimeout(function runMe() {
+                    $.get(apiURL + 'Attendance/Current/' + $("#hempid").val(),
+                        function (response) {
+                            //debugger;
+                            if (response.data.length > 0) {
+                                $("#attndate").text(response.data[0]
+                                .AttendanceDate);
+                                $("#intime").text(response.data[0].InTime);
+                                $("#outtime").text(response.data[0].OutTime);
+                            } else {
+                                $("#attndate").text('--');
+                                $("#intime").text('--');
+                                $("#outtime").text('--');
+                            }
+                        }).done(function (response) {
+                        $(".dimmer").hide();
+                    }).fail(function () {
                         $("#attndate").text('--');
                         $("#intime").text('--');
                         $("#outtime").text('--');
-                    }
-                }).done(function(response) {
-                    $(".dimmer").hide();
-                }).fail(function() {
-                    $("#attndate").text('--');
-                    $("#intime").text('--');
-                    $("#outtime").text('--');
-                    $(".dimmer").hide();
-                });
-            }, 2000)
-        });
+                        $(".dimmer").hide();
+                    });
+                }, 2000);
+            })
+        }, 2000);
     });
-
 </script>
