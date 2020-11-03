@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>Confirm Concession Entry</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,31 +25,26 @@
     </style>
 
     <script type="text/javascript">
-
         var apiURL = '../../NtraktApi/api/InvConcession/';
         //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
 
         var RegNo = getParameterByName("rno");
         var Pid = getParameterByName("pno");
         var glbUser = getParameterByName("uname");
-        var glbType = getParameterByName("type");  //ASHOK: C for crditscreen : P for Hospital Pay Screen
+        var glbType = getParameterByName("type"); //ASHOK: C for crditscreen : P for Hospital Pay Screen
 
         $(function () {
-
             var IsApproved = getParameterByName("IsApproved");
 
             if (IsApproved == null) {
                 LoadPatientDetails();
                 $("#divMain").show();
                 $("#divApproved").hide();
-            }
-            else {
+            } else {
                 $("#divMain").hide();
                 $("#divApproved").show();
                 $("#lblAppBillNo").text(BillNo);
             }
-
-
         });
 
         function getParameterByName(name, url) {
@@ -58,16 +54,17 @@
                 results = regex.exec(url);
             if (!results) return null;
             if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            if (name == 'uname')
+                return atob(results[2]);
+            else
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
 
-        function LoadPatientDetails()
-        {
+        function LoadPatientDetails() {
             var ConData = {};
             ConData.PRNo = RegNo;
 
-            $.post(apiURL + "PateintDetails", ConData, function (response) {
-            }).done(function (result) {
+            $.post(apiURL + "PateintDetails", ConData, function (response) {}).done(function (result) {
 
                 var data = result.data;
                 $.each(data, function (index, rData) {
@@ -83,15 +80,13 @@
 
         }
 
-        function LoadConcessionDetails()
-        {
+        function LoadConcessionDetails() {
             var ConData = {};
 
             ConData.PRNo = RegNo;
             ConData.Code = Pid;
 
-            $.post(apiURL + "IpConcessDetails", ConData, function (response) {
-            }).done(function (result) {
+            $.post(apiURL + "IpConcessDetails", ConData, function (response) {}).done(function (result) {
 
                 var rdata = result.data;
 
@@ -106,7 +101,8 @@
                 $("#lblConCN").text(rdata.Name);
                 $("#lblRemarks").text(rdata.OtherInfo);
 
-                var NetAmount = parseFloat(rdata.BillAmount) - parseFloat(rdata.GcAmt) - parseFloat(rdata.NetAmount);
+                var NetAmount = parseFloat(rdata.BillAmount) - parseFloat(rdata.GcAmt) - parseFloat(rdata
+                    .NetAmount);
 
                 $("#lblNetAmount").text(parseInt(NetAmount));
 
@@ -120,10 +116,8 @@
 
 
 
-        function SubmitTheData()
-        {
-            if (ValidateData() == false)
-            {
+        function SubmitTheData() {
+            if (ValidateData() == false) {
                 return;
             }
 
@@ -147,14 +141,12 @@
             ConData.NetAmount = ConAmt;
             ConData.User = glbUser;
 
-            $.post(apiURL + "IpConcessApprove", ConData, function (response) {
-            }).done(function (result) {
+            $.post(apiURL + "IpConcessApprove", ConData, function (response) {}).done(function (result) {
 
-                if (result.data == "success")
-                    {
-                        alert("Bill Approved successfully...");
-                        window.location = "IpConcessList.html?uname=" + glbUser + "&type=" + glbType;
-                    }
+                if (result.data == "success") {
+                    alert("Bill Approved successfully...");
+                    window.location = "IpConcessList.html?uname=" + btoa(glbUser) + "&type=" + glbType;
+                }
             }).fail(function (jqxhr, settings, ex) {
                 console.log(ex)
             });
@@ -163,9 +155,8 @@
 
 
 
-        function GoToList()
-        {
-            window.location = "IpConcessList.html?uname=" + glbUser + "&type=" + glbType;
+        function GoToList() {
+            window.location = "IpConcessList.html?uname=" + btoa(glbUser) + "&type=" + glbType;
         }
 
 
@@ -188,8 +179,7 @@
                 $("#txtCreAmount").val("");
                 //document.frmDR.txtcdtamt.value = 0;
                 cdtamt = 0;
-            }
-            else {
+            } else {
                 cdtamt = parseFloat($("#txtCreAmount").val());
             }
 
@@ -215,8 +205,7 @@
             if ($("#txtConAmount").val() == "") {
                 $("#txtConAmount").val(0)
                 conamt = 0;
-            }
-            else {
+            } else {
                 conamt = parseFloat($("#txtConAmount").val());
             }
 
@@ -248,8 +237,7 @@
 
                 // If decimal_places is greater than zero, tack on a decimal point
                 value_string += decimal_places > 0 ? "." : ""
-            }
-            else {
+            } else {
 
                 // If yes, then only the extra decimal places will be padded with 0s
                 decimal_part_length = value_string.length - decimal_location - 1
@@ -297,17 +285,16 @@
 
             if (!x) {
                 return false;
-            }
-            else {
+            } else {
                 return true;
             }
 
         }
-
     </script>
 
 
 </head>
+
 <body>
     <br />
     <div class="ui container" id="divMain">
@@ -322,23 +309,23 @@
                     <div id="lblPatName"></div>
                 </div>
             </div>
-            <br/>
+            <br />
             <div class="fields">
                 <div>
                     <table class="ui celled unstackable table">
-                      <tr>
-                          <td><b>Pat. Reg No / ID / Type</b></td>
-                          <td>
-                              <div id="lblPatData"></div>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td><b>Date</b></td>
-                          <td>
-                              <div id="lblDate"></div>
-                          </td>
-                      </tr>
-                      <tr>
+                        <tr>
+                            <td><b>Pat. Reg No / ID / Type</b></td>
+                            <td>
+                                <div id="lblPatData"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Date</b></td>
+                            <td>
+                                <div id="lblDate"></div>
+                            </td>
+                        </tr>
+                        <tr>
                             <td><b>Bill Amount</b></td>
                             <td>
                                 <div id="lblAmount"></div>
@@ -355,7 +342,9 @@
                                 <b>Credit Amount</b>
                             </td>
                             <td>
-                                <div><input type="text" id="txtCreAmount" onkeyup="funcdt()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" /></div>
+                                <div><input type="text" id="txtCreAmount" onkeyup="funcdt()"
+                                        onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                                </div>
                                 <div class="ui right labeled input" style="margin-top: 3px;">
                                     <input type="text" id="txtCrePer" style="width:80%;" readonly />
                                     <div class="ui  label">
@@ -375,7 +364,9 @@
                                 <b> Con.Amount</b>
                             </td>
                             <td>
-                                <div><input type="text" id="txtConAmount" onkeyup="funcon()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" /> </div>
+                                <div><input type="text" id="txtConAmount" onkeyup="funcon()"
+                                        onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                                </div>
                                 <div class="ui right labeled input" style="margin-top:5px;">
                                     <input type="text" id="txtConPer" style="width:80%;" readonly />
                                     <div class="ui  label">
@@ -420,11 +411,12 @@
                 <b>
                     Investigation Concession Bill Approved ConcessionNo <span id="lblAppBillNo"></span>
                 </b>
-              </font>
+            </font>
         </center>
     </div>
 
     <input type="hidden" id="hdnSNo" />
 
 </body>
+
 </html>

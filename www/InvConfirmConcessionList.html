@@ -31,7 +31,6 @@
             border-radius: 4px;
             margin: 8px;
         }
-
     </style>
 
     <script type="text/javascript">
@@ -41,7 +40,7 @@
 
 
 
-        $(function() {
+        $(function () {
             //debugger;
             CheckDoctorAcess();
         });
@@ -54,29 +53,30 @@
                 results = regex.exec(url);
             if (!results) return null;
             if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            if (name == 'uname')
+                return atob(results[2]);
+            else
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
 
         function CheckDoctorAcess() {
 
             var ConData = {};
 
-            ConData.User = atob(glbUser);
+            ConData.User = glbUser;
 
-            $.post(apiURL + "CheckConcess", ConData, function(response) {
+            $.post(apiURL + "CheckConcess", ConData, function (response) {
 
-            }).done(function(result) {
+            }).done(function (result) {
                 //debugger;
                 if (result.data == "Y") {
                     LoadConcessionMemList();
                 } else {
-                    window.location = "error.html";
+                    //window.location = "error.html";
                 }
-            }).fail(function(jqxhr, settings, ex) {
+            }).fail(function (jqxhr, settings, ex) {
                 console.log(ex)
             });
-
-
         }
 
 
@@ -84,10 +84,9 @@
         function LoadConcessionMemList() {
             $("#listConcess").empty();
 
-            $.get(apiURL + "ConcessList", function(response) {
+            $.get(apiURL + "ConcessList", function (response) {
 
-            }).done(function(result) {
-
+            }).done(function (result) {
                 var mData = result.data;
 
                 if (result.data == '') {
@@ -100,12 +99,16 @@
 
                 //tabHtml = '<table class="ui celled unstackable table"><thead><tr class="ui inverted teal table"><th>&nbsp;</th><th>&nbsp;</th><th>RegNo</th><th>RefferedBy</th><th>BillAmt</th><th>Con(%)</th><th>NetAmt</th><th>ConfirmNo</th><th>Billdate</th></tr></thead>'
 
-                $.each(mData, function(index, rData) {
+                $.each(mData, function (index, rData) {
 
                     tabHtml = tabHtml + '<div class="item">' +
                         '<div class="right floated content">' +
-                        '<button class="btnApprove circular basic tiny green  ui icon button" rno="' + rData.PRNo + '" bno="' + rData.BillNo + '"><i class="check green icon"></i></button>' +
-                        '<button class="btnReject circular basic tiny red  ui icon button" bno="' + rData.BillNo + '" prno="' + rData.PRNo + '" oinfo="' + rData.OtherInfo + '"><i class="delete red icon"></i></button>' +
+                        '<button class="btnApprove circular basic tiny green  ui icon button" rno="' +
+                        rData.PRNo + '" bno="' + rData.BillNo +
+                        '"><i class="check green icon"></i></button>' +
+                        '<button class="btnReject circular basic tiny red  ui icon button" bno="' +
+                        rData.BillNo + '" prno="' + rData.PRNo + '" oinfo="' + rData.OtherInfo +
+                        '"><i class="delete red icon"></i></button>' +
                         '</div>' +
                         '<div class="content">' +
                         '<table><tr><td><b>RegNo</b></td><td>: ' + rData.PRNo + '</td></tr>' +
@@ -127,7 +130,7 @@
 
                 $("#listConcess").append(tabHtml);
 
-                $(".btnReject").click(function() {
+                $(".btnReject").click(function () {
                     var billno, prno, oinfo;
                     billno = $(this).attr("bno");
                     prno = $(this).attr("prno");
@@ -140,33 +143,26 @@
                     if (confirm("Are you sure you want to reject this bill?") == true) {
                         RejectTheConcession(billno, prno, oinfo);
                     }
-
                 });
 
-                $(".btnApprove").click(function() {
+                $(".btnApprove").click(function () {
                     var billno, prno, oinfo;
                     billno = $(this).attr("bno");
                     prno = $(this).attr("rno");
-
-                    window.location = "InConfirmConcessApproval.html?rno=" + prno + "&bno=" + billno + "&uname=" + glbUser;
-
+                    window.location = "InConfirmConcessApproval.html?rno=" + prno + "&bno=" + billno +
+                        "&uname=" + btoa(glbUser);
                 });
 
                 $(".dimmer").hide();
-
-            }).fail(function(jqxhr, settings, ex) {
+            }).fail(function (jqxhr, settings, ex) {
                 console.log(ex)
             });
         }
-
-
-
 
         function RejectTheConcession(bno, prno, otherinfo) {
             $(".dimmer").show();
 
             var ConData = {};
-
             ConData.BillNo = bno;
             ConData.PRNo = prno;
 
@@ -177,20 +173,18 @@
             ConData.OtherInfo = otherinfo;
             ConData.User = glbUser;
 
-            $.post(apiURL + "ConcessReject", ConData, function(response) {
+            $.post(apiURL + "ConcessReject", ConData, function (response) {
 
-            }).done(function(result) {
+            }).done(function (result) {
 
                 if (result.data == "success") {
                     alert("Application rejected successfully...");
                     LoadConcessionMemList();
                 }
-            }).fail(function(jqxhr, settings, ex) {
+            }).fail(function (jqxhr, settings, ex) {
                 console.log(ex)
             });
-
         }
-
     </script>
 
 </head>

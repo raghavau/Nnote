@@ -34,37 +34,36 @@
         <div class="column">
             <h4 class="ui dividing header"><i class="angle right icon"></i>Attendance</h4>
             <div class="ui two cards" name="wtcards" id="wtcards">
-                <div class="ui card" onclick="Click(1);">
+                <div class="ui card">
                     <div class="content">
                         <div class="center aligned description">
-                            <span class="ico-width" style="color: #009688;"><i class="fas fa-calendar-alt fa-4x"></i></span>
+                            <span class="ico-width" style="color: #009688;"><i
+                                    class="fas fa-calendar-alt fa-4x"></i></span>
                         </div>
                     </div>
-                    <div class="ui bottom attached button">
+                    <div class="ui bottom attached button" onclick="Click(1);">
                         Daily Attendance
-                        <input type="hidden" name="hsrvhead18" id="hsrvhead18" value="40800948">
                     </div>
                 </div>
-                <div class="ui card" onclick="Click(2);">
+                <div class="ui card">
                     <div class="content">
                         <div class="center aligned description">
-                            <span class="ico-width" style="color: #2196f3;"><i class="fas fa-calendar-check fa-4x"></i></span>
+                            <span class="ico-width" style="color: #2196f3;"><i
+                                    class="fas fa-calendar-check fa-4x"></i></span>
                         </div>
                     </div>
-                    <div class="ui bottom attached button">
+                    <div class="ui bottom attached button" onclick="Click(2);">
                         Leave Request
-                        <input type="hidden" name="hsrvhead20" id="hsrvhead20" value="45604014">
                     </div>
                 </div>
-                <div class="ui card" onclick="Click(3);">
+                <div class="ui card">
                     <div class="content">
                         <div class="center aligned description">
                             <span class="ico-width" style="color: #ff5722;"><i class="fas fa-user-md fa-4x"></i></span>
                         </div>
                     </div>
-                    <div class="ui bottom attached button">
+                    <div id="btnAvailability" class="ui bottom attached disabled button" onclick="Click(3);">
                         Doctor Availability
-                        <input type="hidden" name="hsrvhead20" id="hsrvhead20" value="45604014">
                     </div>
                 </div>
             </div>
@@ -156,6 +155,24 @@
                 window.location.href = "availability.html?empid=" + btoa($("#hempid").val());
                 break;
         }
+    }
+
+    function CheckStatus() {
+        //debugger;
+        $('.dimmer').show();
+        $.get(apiURL + 'User/CheckDoctor/' + $("#hempid").val(), function (response) {
+            //debugger;
+        }).done(function (response) {
+            //debugger;
+            if (response.data != 'Success') {
+                $("#btnAvailability").removeClass('ui bottom attached button');
+                $("#btnAvailability").addClass('ui bottom attached disabled button');
+            } else {
+                $("#btnAvailability").removeClass('ui bottom attached disabled button');
+                $("#btnAvailability").addClass('ui bottom attached button');
+            }
+            $(".dimmer").hide();
+        });
     }
 
     function CheckLeaveApprovalStatus() {
@@ -355,6 +372,7 @@
         $("#btnVehAprLst").click(function () {
             document.location.href = "VehicleReqApprovedList.html?uid=" + btoa($("#hempid").val());
         });
+        CheckStatus();
         setTimeout(CheckLeaveApprovalStatus(), 1000);
         setTimeout(CheckAlternateApproveAccess(), 1000);
         setTimeout(CheckConcession(), 1000);
