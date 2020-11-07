@@ -126,6 +126,8 @@
         qs();
         $.get("./version.xml", function (data) {
             alert($(data).find('content').attr('version'));
+        }).fail(function(jqxhr, settings, ex) {
+            alert('Failed: ' + ex);
         });
         var ifrmheight = $('body').height() - $('.bottom').height();
         $('#ifrm').css('top', $('.top').height());
