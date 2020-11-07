@@ -39,7 +39,7 @@
             </a>
             <a class="item" id="notifications">
                 <span style="color: #ffffff;">
-                    <i class="alarm icon"></i> <span id="ntfCount" class="ui tiny red circular label"></span>
+                    <i class="alarm icon"></i> <span id="ntfCount" class="ui mini red circular label"></span>
                 </span>
             </a>
             <a class="item" id="signout">
@@ -78,13 +78,14 @@
         </a>
     </div>
     <input type="hidden" id="hempid" />
+    <input type="hidden" id="hvno" />
 </body>
 
 </html>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    //var apiURL = '../../NtraktApi/api/';
-    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    var apiURL = '../../NtraktApi/api/';
+    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -125,7 +126,8 @@
     $(document).ready(function () {
         qs();
         $.get("./version.xml", function (data) {}).done(function (result) {
-            alert($(result).find('content').attr('version'));
+            var version = $(result).find('content').attr('version');
+            $("#hvno").val(version);
         }).fail(function (jqxhr, settings, ex) {
             alert('Failed: ' + ex);
         });
@@ -138,6 +140,7 @@
         $("#ntfCount").text("");
         $("#ntfCount").hide();
         //ShowNotifications();
+        ShowAppUpdate();
 
         $('#download').click(function () {
             $(this).attr('href', 'http://narayanagroup.co.in/nNote.apk');
@@ -195,6 +198,19 @@
             }
         }).fail(function () {
             setTimeout(ShowNotifications(), 3000);
+        });
+    }
+
+    function ShowAppUpdate() {
+        $("#ntfapp").text("");
+        $.get(apiURL + 'Notifications/App/4029038', function (response) {
+            //debugger;
+            var arrdata = response.data;
+            if (arrdata != $("#hvno").val()) {
+                window.location.href = "download.html";
+            }
+        }).fail(function () {
+            //setTimeout(ShowAppUpdate(), 60000);
         });
     }
 </script>
