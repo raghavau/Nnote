@@ -125,7 +125,7 @@
     $(document).ready(function () {
         qs();
         $.get("./version.xml", function (data) {}).done(function (result) {
-            alert($(data).find('content').attr('version'));
+            alert($(result).find('content').attr('version'));
         }).fail(function (jqxhr, settings, ex) {
             alert('Failed: ' + ex);
         });
