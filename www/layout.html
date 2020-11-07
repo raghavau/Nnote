@@ -83,8 +83,8 @@
 </html>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    //var apiURL = '../../NnoteApi/Api/Nnote/';
-    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    var apiURL = '../../NtraktApi/api/';
+    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -124,6 +124,9 @@
 
     $(document).ready(function () {
         qs();
+        $.get("./version.xml", function (data) {
+            alert($(data).find('content').attr('version'));
+        });
         var ifrmheight = $('body').height() - $('.bottom').height();
         $('#ifrm').css('top', $('.top').height());
         $('#ifrm').height(ifrmheight - 45);
@@ -142,7 +145,9 @@
             //$('#ifrm').attr('src', 'notifications.html?empid=' + btoa($("#hempid").val()));
         });
         $('#signout').click(function () {
-            window.location.href = 'index.html';
+            $.get(apiURL + 'User/LogOut/' + $("#hempid").val(), function (response) {
+                window.location.href = 'index.html';
+            });
         });
 
         $('#profile').click(function () {
