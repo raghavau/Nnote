@@ -15,16 +15,16 @@
             background-color: #e5e5e5;
             overflow: hidden;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             max-width: 400px;
             /*margin: 20px;*/
         }
-
+        
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -32,25 +32,25 @@
             appearance: none;
             margin: 0;
         }
-
+        
         input#emppin {
             -webkit-text-security: none;
             -moz-text-security: none;
             text-security: none;
         }
-
+        
         input#emppin {
             -webkit-text-security: circle;
             -moz-text-security: circle;
             text-security: circle;
         }
-
+        
         input#emppin {
             -webkit-text-security: square;
             -moz-text-security: square;
             text-security: square;
         }
-
+        
         input#emppin {
             -webkit-text-security: disc;
             -moz-text-security: disc;
@@ -132,16 +132,23 @@
             navigator.app.exitApp(); // exit the app
     }
 
-    $(document).ready(function () {
-        $(".dimmer").hide();
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+    }
+
+    $(document).ready(function() {
+        CheckAppUpdate();
+        //$(".dimmer").hide();
         $("#empid").focus();
-        $.get("./version.xml", function (data) {}).done(function (result) {
+        $.get("./version.xml", function(data) {}).done(function(result) {
             var version = $(result).find('content').attr('version');
             $("#version").text("Version " + version);
-        }).fail(function (jqxhr, settings, ex) {
+        }).fail(function(jqxhr, settings, ex) {
             alert('Failed: ' + ex);
         });
-        $("#empid").keypress(function (e) {
+        $("#empid").keypress(function(e) {
             //debugger;
             var current_val = $(this).val();
             var typing_char = String.fromCharCode(e.which);
@@ -150,7 +157,7 @@
             }
         });
 
-        $("#emppin").keypress(function (e) {
+        $("#emppin").keypress(function(e) {
             var current_val = $(this).val();
             var typing_char = String.fromCharCode(e.which);
             if (parseFloat(current_val + "" + typing_char) > 99999) {
@@ -158,7 +165,7 @@
             }
         });
 
-        $('#login').click(function () {
+        $('#login').click(function() {
             //debugger;
             var userData = {};
             userData.OperatorCode = $("#empid").val();
@@ -174,10 +181,10 @@
                 return false;
             } else {
                 $(".dimmer").show();
-                $.post(apiURL + 'CheckPin', userData, function (response) {
+                $.post(apiURL + 'CheckPin', userData, function(response) {
                     //debugger;
                     if (response.data == 'Success')
-                        setTimeout(function () {
+                        setTimeout(function() {
                             window.location.href = 'layout.html?empid=' + btoa($("#empid")
                                 .val());
                         }, 3000);
@@ -188,19 +195,36 @@
                         $("#emppin").val("");
                         $("#empid").focus();
                     }
-                }, 'json').fail(function (jqxhr, settings, ex) {
+                }, 'json').fail(function(jqxhr, settings, ex) {
                     $(".dimmer").hide();
                     alert("error: " + ex);
                 });
             }
         });
 
-        $('#register').click(function () {
+        $('#register').click(function() {
             window.location.href = 'registration.html';
         });
 
-        $('#forgotpin').click(function () {
+        $('#forgotpin').click(function() {
             window.location.href = 'resetpin.html?empid=' + btoa($("#empid").val());
         });
     });
+
+    function CheckAppUpdate() {
+        $(".dimmer").show();
+        $.get(apiURL + 'Notifications/App/4029038', function(response) {
+            //debugger;
+            var arrdata = response.data;
+            if (arrdata != $("#hvno").val()) {
+                if (isPhoneGap())
+                    window.location.href = "download.html";
+                else
+                    $(".dimmer").hide();
+            } else
+                $(".dimmer").hide();
+        }).fail(function() {
+            $(".dimmer").hide();
+        });
+    }
 </script>

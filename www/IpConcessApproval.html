@@ -25,15 +25,15 @@
     </style>
 
     <script type="text/javascript">
-        var apiURL = '../../NtraktApi/api/InvConcession/';
-        //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
+        //var apiURL = '../../NtraktApi/api/InvConcession/';
+        var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
 
         var RegNo = getParameterByName("rno");
         var Pid = getParameterByName("pno");
         var glbUser = getParameterByName("uname");
         var glbType = getParameterByName("type"); //ASHOK: C for crditscreen : P for Hospital Pay Screen
 
-        $(function () {
+        $(function() {
             var IsApproved = getParameterByName("IsApproved");
 
             if (IsApproved == null) {
@@ -64,17 +64,17 @@
             var ConData = {};
             ConData.PRNo = RegNo;
 
-            $.post(apiURL + "PateintDetails", ConData, function (response) {}).done(function (result) {
+            $.post(apiURL + "PateintDetails", ConData, function(response) {}).done(function(result) {
 
                 var data = result.data;
-                $.each(data, function (index, rData) {
+                $.each(data, function(index, rData) {
                     var patdata = rData.Name + " / " + rData.Age + " / " + rData.Sex;
                     $("#lblPatName").text(patdata);
                 });
 
                 LoadConcessionDetails();
 
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
 
@@ -86,7 +86,7 @@
             ConData.PRNo = RegNo;
             ConData.Code = Pid;
 
-            $.post(apiURL + "IpConcessDetails", ConData, function (response) {}).done(function (result) {
+            $.post(apiURL + "IpConcessDetails", ConData, function(response) {}).done(function(result) {
 
                 var rdata = result.data;
 
@@ -108,7 +108,7 @@
 
 
 
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
 
@@ -141,13 +141,13 @@
             ConData.NetAmount = ConAmt;
             ConData.User = glbUser;
 
-            $.post(apiURL + "IpConcessApprove", ConData, function (response) {}).done(function (result) {
+            $.post(apiURL + "IpConcessApprove", ConData, function(response) {}).done(function(result) {
 
                 if (result.data == "success") {
                     alert("Bill Approved successfully...");
                     window.location = "IpConcessList.html?uname=" + btoa(glbUser) + "&type=" + glbType;
                 }
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
 
@@ -342,8 +342,7 @@
                                 <b>Credit Amount</b>
                             </td>
                             <td>
-                                <div><input type="text" id="txtCreAmount" onkeyup="funcdt()"
-                                        onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                                <div><input type="text" id="txtCreAmount" onkeyup="funcdt()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
                                 </div>
                                 <div class="ui right labeled input" style="margin-top: 3px;">
                                     <input type="text" id="txtCrePer" style="width:80%;" readonly />
@@ -364,8 +363,7 @@
                                 <b> Con.Amount</b>
                             </td>
                             <td>
-                                <div><input type="text" id="txtConAmount" onkeyup="funcon()"
-                                        onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                                <div><input type="text" id="txtConAmount" onkeyup="funcon()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
                                 </div>
                                 <div class="ui right labeled input" style="margin-top:5px;">
                                     <input type="text" id="txtConPer" style="width:80%;" readonly />

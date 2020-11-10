@@ -20,11 +20,11 @@
             cursor: pointer;
             color: red;
         }
-
+        
         body {
             overflow: auto;
         }
-
+        
         .item {
             border: 1px solid #dcdcdc !important;
             padding: 8px !important;
@@ -35,12 +35,12 @@
 
     <script type="text/javascript">
         var glbUser = getParameterByName("uname");
-        var apiURL = '../../NtraktApi/api/InvConcession/';
-        //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
+        //var apiURL = '../../NtraktApi/api/InvConcession/';
+        var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
 
 
 
-        $(function () {
+        $(function() {
             //debugger;
             CheckDoctorAcess();
         });
@@ -65,16 +65,16 @@
 
             ConData.User = glbUser;
 
-            $.post(apiURL + "CheckConcess", ConData, function (response) {
+            $.post(apiURL + "CheckConcess", ConData, function(response) {
 
-            }).done(function (result) {
+            }).done(function(result) {
                 //debugger;
                 if (result.data == "Y") {
                     LoadConcessionMemList();
                 } else {
                     //window.location = "error.html";
                 }
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
         }
@@ -84,9 +84,9 @@
         function LoadConcessionMemList() {
             $("#listConcess").empty();
 
-            $.get(apiURL + "ConcessList", function (response) {
+            $.get(apiURL + "ConcessList", function(response) {
 
-            }).done(function (result) {
+            }).done(function(result) {
                 var mData = result.data;
 
                 if (result.data == '') {
@@ -99,7 +99,7 @@
 
                 //tabHtml = '<table class="ui celled unstackable table"><thead><tr class="ui inverted teal table"><th>&nbsp;</th><th>&nbsp;</th><th>RegNo</th><th>RefferedBy</th><th>BillAmt</th><th>Con(%)</th><th>NetAmt</th><th>ConfirmNo</th><th>Billdate</th></tr></thead>'
 
-                $.each(mData, function (index, rData) {
+                $.each(mData, function(index, rData) {
 
                     tabHtml = tabHtml + '<div class="item">' +
                         '<div class="right floated content">' +
@@ -130,7 +130,7 @@
 
                 $("#listConcess").append(tabHtml);
 
-                $(".btnReject").click(function () {
+                $(".btnReject").click(function() {
                     var billno, prno, oinfo;
                     billno = $(this).attr("bno");
                     prno = $(this).attr("prno");
@@ -145,7 +145,7 @@
                     }
                 });
 
-                $(".btnApprove").click(function () {
+                $(".btnApprove").click(function() {
                     var billno, prno, oinfo;
                     billno = $(this).attr("bno");
                     prno = $(this).attr("rno");
@@ -154,7 +154,7 @@
                 });
 
                 $(".dimmer").hide();
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
         }
@@ -173,15 +173,15 @@
             ConData.OtherInfo = otherinfo;
             ConData.User = glbUser;
 
-            $.post(apiURL + "ConcessReject", ConData, function (response) {
+            $.post(apiURL + "ConcessReject", ConData, function(response) {
 
-            }).done(function (result) {
+            }).done(function(result) {
 
                 if (result.data == "success") {
                     alert("Application rejected successfully...");
                     LoadConcessionMemList();
                 }
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
         }

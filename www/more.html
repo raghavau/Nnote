@@ -17,11 +17,11 @@
             background-color: #fff;
             overflow-y: auto;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             /*max-width: 450px;*/
             margin: 20px;
@@ -71,6 +71,9 @@
             <h4 class="ui dividing header"><i class="angle right icon"></i>Report</h4>
             <button class="ui fluid labeled icon orange button" id="btnCensus">
                 <i class="right arrow icon"></i> Census Report
+            </button><br>
+            <button class="ui fluid labeled icon blue button" id="btnDocDash">
+                <i class="right arrow icon"></i> Doctor Availability
             </button>
 
             <h4 class="ui dividing header"><i class="angle right icon"></i>Leave Approvals</h4>
@@ -116,9 +119,15 @@
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", function (e) {
+        document.addEventListener("backbutton", function(e) {
             e.preventDefault();
         }, false);
+    }
+
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
     }
 
     function qs() {
@@ -160,9 +169,9 @@
     function CheckStatus() {
         //debugger;
         $('.dimmer').show();
-        $.get(apiURL + 'User/CheckDoctor/' + $("#hempid").val(), function (response) {
+        $.get(apiURL + 'User/CheckDoctor/' + $("#hempid").val(), function(response) {
             //debugger;
-        }).done(function (response) {
+        }).done(function(response) {
             //debugger;
             if (response.data != 'Success') {
                 $("#btnAvailability").removeClass('ui bottom attached button');
@@ -178,9 +187,9 @@
     function CheckLeaveApprovalStatus() {
         //debugger;
         $('.dimmer').show();
-        $.get(apiURL + 'User/CheckLeaveApprovalAccess/' + $("#hempid").val(), function (response) {
+        $.get(apiURL + 'User/CheckLeaveApprovalAccess/' + $("#hempid").val(), function(response) {
             //debugger;
-        }).done(function (response) {
+        }).done(function(response) {
             //debugger;
             if (response.data == 'Success') {
                 $("#btnLeaveApprove").removeClass('ui fluid labeled icon orange disabled button');
@@ -198,9 +207,9 @@
     function CheckAlternateApproveAccess() {
         //debugger;
         $('.dimmer').show();
-        $.get(apiURL + 'Attendance/AlternateLeavesToApprove/' + $("#hempid").val(), function (response) {
+        $.get(apiURL + 'Attendance/AlternateLeavesToApprove/' + $("#hempid").val(), function(response) {
 
-        }).done(function (response) {
+        }).done(function(response) {
             //debugger;
             if (response.data.length > 0) {
                 $("#btnAltLeaveApprove").removeClass('ui fluid labeled icon blue disabled button');
@@ -211,7 +220,7 @@
 
                 //setTimeout(CheckAlternateApproveAccess(), 3000);
             }
-        }).fail(function () {
+        }).fail(function() {
             $('.dimmer').hide();
         });
         $('.dimmer').hide();
@@ -222,9 +231,9 @@
         $('.dimmer').show();
         var ConData = {};
         ConData.User = $("#hempid").val();
-        $.post(apiURL + "InvConcession/CheckConcess", ConData, function (response) {
+        $.post(apiURL + "InvConcession/CheckConcess", ConData, function(response) {
             //debugger;
-        }).done(function (response) {
+        }).done(function(response) {
             //debugger;
             $(".column").show();
             if (response.data != 'Y') {
@@ -250,7 +259,7 @@
         var userData = {};
         userData.ID = $("#hempid").val();
 
-        $.post(apiURL + 'Vehicle/CheckUserAccess', userData, function (response) {
+        $.post(apiURL + 'Vehicle/CheckUserAccess', userData, function(response) {
             //debugger;
             $(".column").show();
 
@@ -338,38 +347,46 @@
         });
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         //debugger;
         qs();
-        $("#btnCensus").click(function () {
+        //
+        $("#btnCensus").click(function() {
             document.location.href = "censussummaryrpt.html?empid=" + btoa($("#hempid").val());
         });
 
-        $("#btnLeaveApprove").click(function () {
+        $("#btnDocDash").click(function() {
+            if (isPhoneGap())
+                document.location.href = "doc_dashboard.mobile.html?empid=" + btoa($("#hempid").val());
+            else
+                document.location.href = "doc_dashboard.html?empid=" + btoa($("#hempid").val());
+        });
+
+        $("#btnLeaveApprove").click(function() {
             document.location.href = "leave_approve.html?empid=" + btoa($("#hempid").val());
         });
 
-        $("#btnAltLeaveApprove").click(function () {
+        $("#btnAltLeaveApprove").click(function() {
             document.location.href = "alt_leave_approve.html?empid=" + btoa($("#hempid").val());
         });
 
-        $("#btnOP").click(function () {
+        $("#btnOP").click(function() {
             document.location.href = "InvConfirmConcessionList.html?uname=" + btoa($("#hempid").val());
         });
 
-        $("#btnIP").click(function () {
+        $("#btnIP").click(function() {
             document.location.href = "IpConcessList.html?uname=" + btoa($("#hempid").val());
         });
 
-        $("#btnVeh").click(function () {
+        $("#btnVeh").click(function() {
             document.location.href = "VehicleReqForm.html?uid=" + btoa($("#hempid").val());
         });
 
-        $("#btnVehApr").click(function () {
+        $("#btnVehApr").click(function() {
             document.location.href = "VehicleReqApproval.html?uid=" + btoa($("#hempid").val());
         });
 
-        $("#btnVehAprLst").click(function () {
+        $("#btnVehAprLst").click(function() {
             document.location.href = "VehicleReqApprovedList.html?uid=" + btoa($("#hempid").val());
         });
         CheckStatus();

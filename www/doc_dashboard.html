@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Doctor Availability Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery.blockui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <style type="text/css">
+        body>.grid {
+            height: 100%;
+        }
+        
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+        
+        .dimmer {
+            background-color: #e9ecef;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1999;
+            opacity: 0.5;
+        }
+        
+        #countdown {
+            position: absolute;
+            margin: auto;
+            height: 40px;
+            width: 40px;
+            text-align: center;
+            top: 5px;
+            right: 5px;
+        }
+        
+        #countdown-number {
+            color: red;
+            display: inline-block;
+            line-height: 40px;
+        }
+        
+        svg {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            transform: rotateY(-180deg) rotateZ(-90deg);
+        }
+        
+        svg circle {
+            stroke-dasharray: 113px;
+            stroke-dashoffset: 0px;
+            stroke-linecap: round;
+            stroke-width: 3px;
+            stroke: red;
+            fill: none;
+            /*animation: countdown 30s linear infinite forwards;*/
+        }
+        
+        @keyframes countdown {
+            from {
+                stroke-dashoffset: 0px;
+            }
+            to {
+                stroke-dashoffset: 113px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <br>
+    <div id="countdown">
+        <div id="countdown-number"></div>
+        <svg>
+        <circle r="18" cx="20" cy="20"></circle>
+      </svg>
+    </div>
+    <div class="ui container">
+        <div class="page-header">
+            <h3>Doctor Availability Dashboard</h3>
+            <div class="ui divider"></div>
+        </div>
+
+        <div class="ui small form">
+            <div class="fields">
+                <div class="four wide field">
+                    <label>Speciality Type</label>
+                    <select name="depttype" id="depttype" class="ui dropdown">
+                        <option value="A">All</option>
+                        <option value="G">Broad Speciality</option>
+                        <option value="S">Super Speciality</option>
+                    </select>
+                </div>
+                <div class="eight wide field">
+                    <label>Departments</label>
+                    <select name="depts" id="depts" multiple="" class="ui dropdown">
+                        <option value="">Select Department</option>
+                    </select>
+                </div>
+                <div class="four wide field">
+                    <label>Status</label>
+                    <select name="status" id="status" class="ui dropdown">
+                        <option value="0">All</option>
+                        <option value="1" selected>OP</option>
+                        <option value="3">OT</option>
+                        <option value="5">Others</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui error small message">
+                    <p>Please wait while loading the data.</p>
+                </div>
+            </div>
+            <div class="field">
+                <div id="grid"></div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <div class="dimmer" id="dimmer"></div>
+    <input type="hidden" id="hempid" />
+</body>
+
+</html>
+<script type="text/javascript">
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+
+    var qsParm = new Array(),
+        empid = null;
+
+    var deptsArray = [],
+        izoom = 0,
+        timer = null,
+        countdownNumberEl = null,
+        countdown = 30;
+    var timeout = setTimeout(function runMe() {
+        //debugger;
+        $(".dimmer").hide();
+        clearInterval(timer);
+        izoom = 0;
+        $.get(apiURL + 'DoctorStatus/Status/', function(response) {
+            //debugger;
+        }).done(function(response) {
+            //debugger;
+            var len = $("select[name='depts']").find("option:selected").length;
+            deptsArray = [];
+            for (var i = 0; i <= len - 1; i++) {
+                if ($("select[name='depts']").find("option:selected")[i].value == "GYN" ||
+                    $("select[name='depts']").find("option:selected")[i].value == "OBS") {
+                    deptsArray.push("OBS & GYN");
+                    deptsArray.push("GYN");
+                    deptsArray.push("OBS");
+                } else {
+                    deptsArray.push($("select[name='depts']").find("option:selected")[i].value);
+                }
+            }
+
+            if (deptsArray.length > 0) {
+                selectedArray = jQuery.grep(response.data, function(data, i) {
+                    //debugger;
+                    return deptsArray.indexOf(data.DeptSlno) > -1;
+                });
+            } else
+                selectedArray = response.data;
+
+            //debugger;
+            if ($("#depttype option:selected").val() != "A") {
+                selectedArray = jQuery.grep(selectedArray, function(data, i) {
+                    //debugger;
+                    return data.SpecialityType == $("#depttype option:selected").val();
+                });
+            }
+
+            if ($("#status option:selected").val() != "0") {
+                selectedArray = jQuery.grep(selectedArray, function(data, i) {
+                    //debugger;
+                    return data.AvailTypeSlno == $("#status option:selected").val();
+                });
+            }
+
+            var htmlStr = '';
+            $("#grid").empty();
+            if (selectedArray.length > 0) {
+                $('.error.message').hide();
+                htmlStr += '<table class="ui celled unstackable table"><thead><tr class="ui inverted teal table">' +
+                    '<th>Slno</th><th></th><th>Name</th><th>Department</th><th>Status</th><th>Notes</th>' +
+                    '</tr></thead><tbody>';
+                for (var i = 0; i <= selectedArray.length - 1; i++) {
+                    //debugger;
+                    htmlStr += '<tr class="top aligned"><td class="center aligned one wide">' + (i + 1) + '</td><td class="center aligned one wide"><img alt="" ';
+                    htmlStr += 'src="http://narayanagroup.co.in/NtraktApi/Content/images/' + selectedArray[i].DoctorId + '.png"';
+                    htmlStr += 'width="40px" height="50px" onclick="ZoomImage(this)" style="border: 1px solid #e3e3e3" /></td>' +
+                        '<td>' + selectedArray[i].FirstName + '<input type="hidden" value="' + selectedArray[i].DoctorId + '" /></td>' +
+                        '<td>' + selectedArray[i].Department + '</td><td class="one wide center aligned">';
+                    if (selectedArray[i].AvailType == "OP")
+                        htmlStr += '<label class="ui green fluid label">' + selectedArray[i].AvailType + '</label>';
+                    else
+                        htmlStr += '<label class="ui fluid label">' + selectedArray[i].AvailType + '</label>';
+                    htmlStr += '</td><td class="four wide">' + selectedArray[i].Notes + '</td></tr>';
+                }
+                htmlStr += '</tbody></table>';
+                $("#grid").append(htmlStr);
+                timer = setInterval(counter, 1000);
+                timeout = setTimeout(runMe, 30000);
+            } else {
+                $('.error.message').show();
+                timeout = setTimeout(runMe, 5000);
+            }
+        }).fail(function() {
+            $('.error.message').show();
+            timeout = setTimeout(runMe, 3000);
+        });
+    }, 300);
+
+    $(document).ajaxStop($.unblockUI);
+
+    $(document).ready(function() {
+        $('.dimmer').hide();
+        $('.error.message').hide();
+        $('.ui.dropdown').dropdown();
+
+        Departments();
+        $("#depttype").change(function() {
+            var selectedType = this.value;
+            Departments(selectedType);
+            setTimeout(function() {
+                Grid()
+            }, 2000);
+        });
+
+        $("#depts").change(function() {
+            Grid();
+        });
+
+        $("#status").change(function() {
+            Grid();
+        });
+
+        countdownNumberEl = $('#countdown-number');
+        countdownNumberEl[0].textContent = countdown;
+
+        //timer = setInterval(counter, 1000);
+        //debugger;
+    });
+
+    function counter() {
+        countdown = --countdown <= 0 ? 30 : countdown;
+        countdownNumberEl[0].textContent = countdown;
+        //$("circle")[0].style.animation = 'countdown 30s linear infinite forwards';
+    }
+
+    function Grid() {
+        //debugger;
+        $(".dimmer").hide();
+        $.get(apiURL + 'DoctorStatus/Status/', function(response) {
+            //debugger;
+        }).done(function(response) {
+            //debugger;
+            var len = $("select[name='depts']").find("option:selected").length;
+            deptsArray = [];
+            for (var i = 0; i <= len - 1; i++) {
+                if ($("select[name='depts']").find("option:selected")[i].value == "GYN" ||
+                    $("select[name='depts']").find("option:selected")[i].value == "OBS") {
+                    deptsArray.push("OBS & GYN");
+                    deptsArray.push("GYN");
+                    deptsArray.push("OBS");
+                } else {
+                    deptsArray.push($("select[name='depts']").find("option:selected")[i].value);
+                }
+            }
+
+            if (deptsArray.length > 0) {
+                selectedArray = jQuery.grep(response.data, function(data, i) {
+                    //debugger;
+                    return deptsArray.indexOf(data.DeptSlno) > -1;
+                });
+            } else
+                selectedArray = response.data;
+
+            //debugger;
+            if ($("#depttype option:selected").val() != "A") {
+                selectedArray = jQuery.grep(selectedArray, function(data, i) {
+                    //debugger;
+                    return data.SpecialityType == $("#depttype option:selected").val();
+                });
+            }
+
+            if ($("#status option:selected").val() != "0") {
+                selectedArray = jQuery.grep(selectedArray, function(data, i) {
+                    //debugger;
+                    return data.AvailTypeSlno == $("#status option:selected").val();
+                });
+            }
+
+            var htmlStr = '';
+            $("#grid").empty();
+            if (selectedArray.length > 0) {
+                $('.error.message').hide();
+                htmlStr += '<table class="ui celled unstackable table"><thead><tr class="ui inverted teal table">' +
+                    '<th>Slno</th><th></th><th>Name</th><th>Department</th><th>Status</th><th>Notes</th>' +
+                    '</tr></thead><tbody>';
+                for (var i = 0; i <= selectedArray.length - 1; i++) {
+                    //debugger;
+                    htmlStr += '<tr class="top aligned"><td class="center aligned one wide">' + (i + 1) + '</td><td class="center aligned one wide"><img alt="" ';
+                    htmlStr += 'src="http://narayanagroup.co.in/NtraktApi/Content/images/' + selectedArray[i].DoctorId + '.png"';
+                    htmlStr += 'width="40px" height="50px" onclick="ZoomImage(this)" style="border: 1px solid #e3e3e3" /></td>' +
+                        '<td>' + selectedArray[i].FirstName + '<input type="hidden" value="' + selectedArray[i].DoctorId + '" /></td>' +
+                        '<td>' + selectedArray[i].Department + '</td><td class="one wide center aligned">';
+                    if (selectedArray[i].AvailType == "OP")
+                        htmlStr += '<label class="ui green fluid label">' + selectedArray[i].AvailType + '</label>';
+                    else
+                        htmlStr += '<label class="ui fluid label">' + selectedArray[i].AvailType + '</label>';
+                    htmlStr += '</td><td class="four wide">' + selectedArray[i].Notes + '</td></tr>';
+                }
+                htmlStr += '</tbody></table>';
+
+                $("#grid").append(htmlStr);
+            } else {
+                $('.error.message').show();
+            }
+        }).fail(function() {
+            $('.error.message').show();
+        });
+    }
+
+    function Departments(spl) {
+        $.get(apiURL + 'Departments', function(response) {
+            //debugger;
+        }).done(function(response) {
+            if (spl != undefined && spl != 'A') {
+                selectedArray = jQuery.grep(response.data, function(data, i) {
+                    //debugger;
+                    return data.Speciality == spl;
+                });
+            } else
+                selectedArray = response.data;
+            //debugger;
+            $('#depts').dropdown('clear');
+            var htmlStr = '';
+            $("#depts").empty();
+            if (selectedArray.length > 0) {
+                for (var i = 0; i <= selectedArray.length - 1; i++)
+                    htmlStr += '<option value="' + selectedArray[i].DepartmentCode + '">' + selectedArray[i].DepartmentName + '</option>';
+
+                $("#depts").append(htmlStr);
+            } else {
+                $('.error.message').show();
+                $("#depts").empty();
+            }
+            //Grid();
+        }).fail(function() {
+            $('.error.message').show();
+            $("#depts").empty();
+        });
+    }
+
+    function ZoomImage(obj) {
+        //debugger;
+        if (izoom == 0) {
+            obj.style.width = "250px";
+            obj.style.height = "270px";
+            /*obj.style.position = "absolute";
+            obj.style.zIndex = "9999";*/
+            //$("#dimmer").show();
+            $.blockUI({
+                message: $(obj),
+                css: {
+                    border: 'none',
+                    //top: ($(window).height() - 400) / 2 + 'px',
+                    //left: ($(window).width() - 400) / 2 + 'px',
+                    width: '250px',
+                    cursor: 'default'
+                },
+                centerX: true,
+                centerY: true,
+                fadeIn: 300,
+                fadeOut: 300
+            });
+            izoom = 1;
+        } else {
+            obj.style.width = "40px";
+            obj.style.height = "50px";
+            obj.style.position = "relative";
+            obj.style.zIndex = "99";
+            //$("#dimmer").hide();
+            $.unblockUI();
+            izoom = 0;
+        }
+    }
+</script>

@@ -18,15 +18,15 @@
         body {
             background-color: #e5e5e5;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             max-width: 450px;
         }
-
+        
         .thumbnail {
             width: 200px;
             height: 250px;
@@ -45,7 +45,6 @@
             -moz-transform: scale(1);
             transition: all 500ms ease-in;*/
         }
-
     </style>
 </head>
 
@@ -96,8 +95,8 @@
             navigator.app.exitApp(); // exit the app
     }
 
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
     var qsParm = new Array(),
         empid = null;
 
@@ -123,7 +122,9 @@
     }
 
     $(document).ready(function() {
-        $.ajaxSetup({ cache: false });
+        $.ajaxSetup({
+            cache: false
+        });
         $('.ui.dropdown').dropdown();
         qs();
         empid = $("#hempid").val();
@@ -162,14 +163,14 @@
         });
     });
 
-    function CheckStatus(){
+    function CheckStatus() {
         //debugger;
         $('.dimmer').show();
         $.get(apiURL + 'User/CheckLeaveApprovalAccess/' + $("#hempid").val(), function(response) {
             //debugger;
         }).done(function(response) {
             //debugger;
-            if(response.data == 'Success')
+            if (response.data == 'Success')
                 getLeaveApprovalDates();
             else
                 window.location.href = 'error.html';
@@ -191,7 +192,7 @@
                 $("#btnApproveAll").removeClass('disabled');
                 for (var i = 0; i <= response.data.length - 1; i++) {
                     //debugger;
-                    htmlStr +='<option value="' + response.data[i] + '">' + response.data[i] + '</option>';
+                    htmlStr += '<option value="' + response.data[i] + '">' + response.data[i] + '</option>';
                 }
                 $("#seldate").append(htmlStr);
             } else {
@@ -311,5 +312,4 @@
             imgClick = 0;
         }
     }
-
 </script>

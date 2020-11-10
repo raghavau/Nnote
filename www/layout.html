@@ -14,11 +14,11 @@
         body {
             /*overflow: hidden;*/
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             max-width: 450px;
         }
@@ -28,8 +28,7 @@
 <body>
     <div class="ui top fixed fluid teal inverted labeled menu">
         <a class="header item">
-            <img class="ui mini image" src="img/logo.png" style="width: 24px !important;">&nbsp;&nbsp;&nbsp;<span
-                style="font-size: 25px; font-weight: bold; color:white">nNote</span>
+            <img class="ui mini image" src="img/logo.png" style="width: 24px !important;">&nbsp;&nbsp;&nbsp;<span style="font-size: 25px; font-weight: bold; color:white">nNote</span>
         </a>
         <div class="right icon menu">
             <a class="item" id="download">
@@ -53,44 +52,41 @@
     <iframe frameborder="0" width="100%" id="ifrm" style="position: absolute" scrolling="auto"></iframe>
     <div class="ui bottom fixed fluid six item labeled icon tiny menu" style="overflow: auto;">
         <a class="item" id="profile">
-            <i class="id card teal icon"></i>
-            Profile
+            <i class="id card teal icon"></i> Profile
         </a>
         <a class="item" id="services">
-            <i class="calendar plus red icon"></i>
-            Services
+            <i class="calendar plus red icon"></i> Services
         </a>
         <a class="item" id="status">
-            <i class="tasks blue icon"></i>
-            Service Status
+            <i class="tasks blue icon"></i> Service Status
         </a>
         <a class="item" id="reopen">
-            <i class="clone brown icon"></i>
-            ReOpen Request
+            <i class="clone brown icon"></i> ReOpen Request
         </a>
         <a class="item" id="reports">
-            <i class="clipboard list green icon"></i>
-            Reports
+            <i class="clipboard list green icon"></i> Reports
         </a>
         <a class="item" id="more">
-            <i class="bars gray icon"></i>
-            More
+            <i class="bars gray icon"></i> More
         </a>
     </div>
     <input type="hidden" id="hempid" />
     <input type="hidden" id="hvno" />
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
 </body>
 
 </html>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", function (e) {
+        document.addEventListener("backbutton", function(e) {
             e.preventDefault();
         }, false);
     }
@@ -117,20 +113,27 @@
         }
     }
 
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+    }
     /*var timeout = setTimeout(function runMe() {
         //debugger;
         ShowNotifications();
         timeout = setTimeout(runMe, 10000);
     }, 10000);*/
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         qs();
-        $.get("./version.xml", function (data) {}).done(function (result) {
+        $(".dimmer").hide();
+        $.get("./version.xml", function(data) {}).done(function(result) {
             var version = $(result).find('content').attr('version');
             $("#hvno").val(version);
-        }).fail(function (jqxhr, settings, ex) {
+        }).fail(function(jqxhr, settings, ex) {
             alert('Failed: ' + ex);
         });
+
         var ifrmheight = $('body').height() - $('.bottom').height();
         $('#ifrm').css('top', $('.top').height());
         $('#ifrm').height(ifrmheight - 45);
@@ -140,47 +143,54 @@
         $("#ntfCount").text("");
         $("#ntfCount").hide();
         //ShowNotifications();
-        ShowAppUpdate();
+        //ShowAppUpdate();
 
-        $('#download').click(function () {
-            $(this).attr('href', 'http://narayanagroup.co.in/nNote.apk');
-            //$(this).attr('href', 'https://build.phonegap.com/apps/4029038/download/android');
-        });
-        $('#notifications').click(function () {
+        if (isPhoneGap()) {
+            $('#download').show();
+            $('#download').click(function() {
+                $(this).attr('href', 'http://narayanagroup.co.in/nNote.apk');
+                //$(this).attr('href', 'https://build.phonegap.com/apps/4029038/download/android');
+            });
+        } else
+            $('#download').hide();
+
+        $('#notifications').click(function() {
             //$('#ifrm').attr('src', 'notifications.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#signout').click(function () {
-            $.get(apiURL + 'User/LogOut/' + $("#hempid").val(), function (response) {
+        $('#signout').click(function() {
+            $.get(apiURL + 'User/LogOut/' + $("#hempid").val(), function(response) {
+                window.location.href = 'index.html';
+            }).fail(function() {
                 window.location.href = 'index.html';
             });
         });
 
-        $('#profile').click(function () {
+        $('#profile').click(function() {
             $('#ifrm').attr('src', 'profile.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#services').click(function () {
+        $('#services').click(function() {
             $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#status').click(function () {
+        $('#status').click(function() {
             $('#ifrm').attr('src', 'editrequest.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#reopen').click(function () {
+        $('#reopen').click(function() {
             $('#ifrm').attr('src', 'reopen.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#reports').click(function () {
+        $('#reports').click(function() {
             $('#ifrm').attr('src', 'complaintsList.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#more').click(function () {
+        $('#more').click(function() {
             $('#ifrm').attr('src', 'more.html?empid=' + btoa($("#hempid").val()));
         });
     });
 
     function ShowNotifications() {
-        $.get(apiURL + 'Notifications/' + $("#hempid").val(), function (response) {
+        $.get(apiURL + 'Notifications/' + $("#hempid").val(), function(response) {
             //debugger;
             var arrdata = response.data;
             if (arrdata.length > 0) {
-                selectedArray = jQuery.grep(arrdata, function (data, i) {
+                selectedArray = jQuery.grep(arrdata, function(data, i) {
                     //debugger;
                     return data.Status == 1;
                 });
@@ -196,20 +206,20 @@
                 $("#ntfCount").text("");
                 $("#ntfCount").hide();
             }
-        }).fail(function () {
+        }).fail(function() {
             setTimeout(ShowNotifications(), 3000);
         });
     }
 
     function ShowAppUpdate() {
         $("#ntfapp").text("");
-        $.get(apiURL + 'Notifications/App/4029038', function (response) {
+        $.get(apiURL + 'Notifications/App/4029038', function(response) {
             //debugger;
             var arrdata = response.data;
             if (arrdata != $("#hvno").val()) {
                 window.location.href = "download.html";
             }
-        }).fail(function () {
+        }).fail(function() {
             //setTimeout(ShowAppUpdate(), 60000);
         });
     }

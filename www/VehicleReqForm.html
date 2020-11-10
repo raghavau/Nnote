@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>Vehilce Requistion Form</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,22 +16,26 @@
     <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
 
     <script type="text/javascript">
-        var apiURL = '../../NtraktApi/api/Vehicle/';
-        //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/Vehicle/';
+        //var apiURL = '../../NtraktApi/api/Vehicle/';
+        var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/Vehicle/';
 
         var glbUser = atob(getQueryString("uid"));
 
-        $(function () {
+        $(function() {
             LoadDivisionList();
             LoadVehTypes();
 
             SetDate();
 
             //$("#txtReqDate").datepicker({ dateFormat: "dd/M/yy" });
-            $("#txtFromDate").datepicker({ dateFormat: "dd/M/yy" });
-            $("#txtToDate").datepicker({ dateFormat: "dd/M/yy" });
+            $("#txtFromDate").datepicker({
+                dateFormat: "dd/M/yy"
+            });
+            $("#txtToDate").datepicker({
+                dateFormat: "dd/M/yy"
+            });
 
-            $('#txtNOV').keypress(function (e) {
+            $('#txtNOV').keypress(function(e) {
                 var len = $(this).val();
                 if (len.length > 1) {
                     e.preventDefault();
@@ -39,8 +44,7 @@
         });
 
 
-        function SetDate()
-        {
+        function SetDate() {
             var mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             var d = new Date();
             $("#txtReqDate").val(d.getDate() + "/" + mon[d.getMonth()] + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
@@ -50,13 +54,12 @@
         function getQueryString(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
+                results = regex.exec(location.search);
             return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
 
 
-        function SaveData()
-        {
+        function SaveData() {
             var appname = $("#txtNameApp").val();
             var dept = $("#txtDept").val();
             var division = $("#ddlDivision").val();
@@ -72,8 +75,7 @@
             var reptime = $("#txtRepTime").val();
 
 
-            if (appname == "")
-            {
+            if (appname == "") {
                 alert("Please enter applicant name");
                 return;
             }
@@ -103,8 +105,7 @@
                 return;
             } else {
                 var rvalid = new Date(reqdate);
-                if (rvalid == "Invalid Date")
-                {
+                if (rvalid == "Invalid Date") {
                     alert("Please enter valid requistion date");
                     return;
                 }
@@ -135,38 +136,32 @@
             var fval = +new Date(from);
             var tval = +new Date(to);
 
-            if (fval > tval)
-            {
+            if (fval > tval) {
                 alert("To date must greater than from date");
                 return;
             }
 
-            if (name == "")
-            {
+            if (name == "") {
                 alert("Please enter name of the official");
                 return;
             }
 
-            if (name.length > 50)
-            {
+            if (name.length > 50) {
                 alert("Name of the official chareters must less than 50");
                 return;
             }
 
-            if (source == "")
-            {
+            if (source == "") {
                 alert("Please enter source");
                 return;
             }
 
-            if (dest == "")
-            {
+            if (dest == "") {
                 alert("Please enter destination");
                 return;
             }
 
-            if (reptime == "")
-            {
+            if (reptime == "") {
                 alert("Please enter report time & place");
                 return;
             }
@@ -196,84 +191,76 @@
             vData.Dest = dest;
             vData.RepTime = reptime;
 
-            $.post(apiURL + "SaveVehReq", vData, function (response) {
-            }).done(function (result) {
+            $.post(apiURL + "SaveVehReq", vData, function(response) {}).done(function(result) {
                 var data = result.data;
-                if (data == "success")
-                {
+                if (data == "success") {
                     ClearFields();
                     alert("Record saved successfully...");
                     $("#btnSave").text("Submit");
                     $("#btnSave").prop('disabled', false);
                 }
 
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
 
         }
 
-        function LoadDivisionList()
-        {
+        function LoadDivisionList() {
             var vData = {};
 
             vData.ID = glbUser;
-            $.post(apiURL + "CampusList", vData, function (response) {
-            }).done(function (result) {
+            $.post(apiURL + "CampusList", vData, function(response) {}).done(function(result) {
                 var data = result.data;
 
                 var Opts = "";
-                $.each(data, function (index, rData) {
+                $.each(data, function(index, rData) {
                     Opts = Opts + '<option value="' + rData.ID + '">' + rData.Name + '</option>';
                 });
 
                 $("#ddlDivision").append(Opts);
 
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
         }
 
-        function LoadVehTypes()
-        {
-            $.get(apiURL + "EngineList", function (response) {
-            }).done(function (result) {
+        function LoadVehTypes() {
+            $.get(apiURL + "EngineList", function(response) {}).done(function(result) {
                 var data = result.data;
 
                 var Opts = "";
-                $.each(data, function (index, rData) {
+                $.each(data, function(index, rData) {
                     Opts = Opts + '<option value="' + rData.ID + '">' + rData.Name + '</option>';
                 });
 
                 $("#ddlType").append(Opts);
 
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
         }
 
-        function ClearFields()
-        {
-             $("#txtNameApp").val("");
-             $("#txtDept").val("");
-             $("#ddlDivision").val("-1");
-             $("#ddlType").val("-1");
-             $("#txtNOV").val("");
-             $("#txtReqDate").val("");
-             $("#txtFromDate").val("");
-             $("#txtToDate").val("");
-             $("#txtNOO").val("");
-             $("#txtPurpose").val("");
-             $("#txtSource").val("");
-             $("#txtDest").val("");
-             $("#txtRepTime").val("");
-             SetDate();
+        function ClearFields() {
+            $("#txtNameApp").val("");
+            $("#txtDept").val("");
+            $("#ddlDivision").val("-1");
+            $("#ddlType").val("-1");
+            $("#txtNOV").val("");
+            $("#txtReqDate").val("");
+            $("#txtFromDate").val("");
+            $("#txtToDate").val("");
+            $("#txtNOO").val("");
+            $("#txtPurpose").val("");
+            $("#txtSource").val("");
+            $("#txtDest").val("");
+            $("#txtRepTime").val("");
+            SetDate();
         }
-
-
     </script>
 
 </head>
+
 <body>
 
     <br />
@@ -283,37 +270,37 @@
             <div class="ui divider"></div>
         </div>
         <div class="ui small form">
-           <div class="row">
-               <div class="fields">
-                   <div class="four wide field">
-                       <label>Name Of Applicant</label>
-                       <div>
-                           <input id="txtNameApp" type="text" />
-                       </div>
-                   </div>
-                   <div class="four wide field">
-                       <label>Department</label>
-                       <div>
-                           <input id="txtDept" type="text" />
-                       </div>
-                   </div>
-                   <div class="four wide field">
-                       <label>Division</label>
+            <div class="row">
+                <div class="fields">
+                    <div class="four wide field">
+                        <label>Name Of Applicant</label>
+                        <div>
+                            <input id="txtNameApp" type="text" />
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <label>Department</label>
+                        <div>
+                            <input id="txtDept" type="text" />
+                        </div>
+                    </div>
+                    <div class="four wide field">
+                        <label>Division</label>
 
-                           <select id="ddlDivision" class="ui dropdown">
+                        <select id="ddlDivision" class="ui dropdown">
                                <option value="-1">-Select-</option>
                            </select>
 
 
-                   </div>
-               </div>
-           </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="fields">
                     <div class="four wide field">
                         <label>Vehilce Type</label>
 
-                            <select id="ddlType" class="ui dropdown">
+                        <select id="ddlType" class="ui dropdown">
                                 <option value="-1">-Select-</option>
                             </select>
 
@@ -367,7 +354,7 @@
                     <div class="four wide field">
                         <label>Destination</label>
                         <div>
-                            <input id="txtDest" type="text"  />
+                            <input id="txtDest" type="text" />
                         </div>
                     </div>
                     <div class="four wide field">
@@ -389,7 +376,7 @@
                         </div>
                     </div>
                     <div class="four wide field">
-                       <div>&nbsp;</div>
+                        <div>&nbsp;</div>
                     </div>
                     <div class="four wide field">
                         <div>&nbsp;</div>
@@ -410,7 +397,8 @@
             </div>
         </div>
         <br />
-  </div>
+    </div>
 
 </body>
+
 </html>

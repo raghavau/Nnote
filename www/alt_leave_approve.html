@@ -19,15 +19,15 @@
         body {
             background-color: #e5e5e5;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             max-width: 450px;
         }
-
+        
         .thumbnail {
             width: 200px;
             height: 250px;
@@ -46,7 +46,6 @@
             -moz-transform: scale(1);
             transition: all 500ms ease-in;*/
         }
-
     </style>
 </head>
 
@@ -66,7 +65,7 @@
 </html>
 <script type="text/javascript">
     document.addEventListener("deviceready", onDeviceReady, false);
-    
+
     function onDeviceReady() {
         document.addEventListener("backbutton", onBackKeyDown, false);
     }
@@ -77,8 +76,8 @@
             navigator.app.exitApp(); // exit the app
     }
 
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
     var qsParm = new Array(),
         empid = null;
 
@@ -213,5 +212,4 @@
             $('.dimmer').hide();
         });
     }
-
 </script>

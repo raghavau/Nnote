@@ -19,15 +19,15 @@
         .ico-width {
             font-size: 48px !important;
         }
-
+        
         .extra-background {
             background-color: #f1f1f1 !important;
         }
-
+        
         .extra-color-black {
             color: black !important;
         }
-
+        
         .column {
             /*max-width: 450px;*/
             margin: 20px;
@@ -79,8 +79,8 @@
         document.addEventListener("backbutton", onBackKeyDown, false);
     }
 
-    var apiURL = '../../NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = '../../NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
 
     function onBackKeyDown() {
         var state = confirm('Are You Sure you want to Exit.');
@@ -111,7 +111,7 @@
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         $(".dimmer").hide();
         $('.ui.dropdown').dropdown();
         $('#fromDate').attr("readonly", "true");
@@ -121,7 +121,7 @@
         Dates();
         ShowWorkTypes();
 
-        $('#services').change(function () {
+        $('#services').change(function() {
             ShowRequests();
         });
     });
@@ -135,7 +135,7 @@
             minDate: new Date(2020, 9 - 1, 1),
             maxDate: '+0d',
             defaultDate: -7,
-            onClose: function (minDate) {
+            onClose: function(minDate) {
                 $("#toDate").datepicker("option", "minDate", minDate);
             }
         });
@@ -148,18 +148,18 @@
             minDate: new Date(2020, 9 - 1, 1), //minDate: new Date(1, 09, 2020),
             maxDate: '+0d',
             maxDate: new Date(),
-            onClose: function (selectedDate) {
+            onClose: function(selectedDate) {
                 $("#fromDate").datepicker("option", "maxDate", selectedDate);
             }
         });
 
-        $("#fromDate").datepicker().datepicker("setDate", new Date(2020, 9-1, 1));
+        $("#fromDate").datepicker().datepicker("setDate", new Date(2020, 9 - 1, 1));
         $("#toDate").datepicker().datepicker("setDate", new Date());
 
-        $("#fromDate").on('change', function () {
+        $("#fromDate").on('change', function() {
             ShowRequests();
         });
-        $("#toDate").on('change', function () {
+        $("#toDate").on('change', function() {
             ShowRequests();
         });
     }
@@ -168,7 +168,7 @@
         //debugger;
         $(".dimmer").show();
         $('#services').empty();
-        $.get(apiURL + 'GetWorkTypes', function (response) {
+        $.get(apiURL + 'GetWorkTypes', function(response) {
             //debugger;
             var arrdata = response.data;
             var content = '';
@@ -182,7 +182,7 @@
                 $('#services').append(content);
                 ShowRequests();
             }
-        }).fail(function () {
+        }).fail(function() {
             $(".dimmer").hide();
             alert('Failed to load WorkTypes. Please Check.');
         });
@@ -193,7 +193,7 @@
         $('#list').empty();
         $.get(apiURL + 'getresolvedrequests/' + $("#fromDate").val() + '/' + $("#toDate").val() + '/' + $("#services")
             .val(),
-            function (response) {
+            function(response) {
                 //debugger;
                 var arrdata = response.data;
                 var content = '';
@@ -206,7 +206,7 @@
                 } else {
                     $(".dimmer").hide();
                 }
-            }).fail(function () {
+            }).fail(function() {
             $(".dimmer").hide();
             alert('Failed to load Resolved Requests. Please Check.');
         });
@@ -230,7 +230,7 @@
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
-            success: function (result) {
+            success: function(result) {
                 //debugger;
                 if (result.data == 'Success') {
                     alert('Your Request Reopned Successfully');
@@ -240,7 +240,7 @@
                     alert('Your Request Failed to Submit.');
                 }
             },
-            error: function (xhr, status, error) {
+            error: function(xhr, status, error) {
                 alert('Error occurred while submitting data.\n\r' + xhr.responseText);
                 $(".dimmer").hide();
             }

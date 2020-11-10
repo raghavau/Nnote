@@ -14,16 +14,15 @@
             background-color: #e5e5e5;
             /*overflow: hidden;*/
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             /*max-width: 450px;*/
             margin: 20px;
         }
-
     </style>
 </head>
 
@@ -44,8 +43,8 @@
 
 </html>
 <script type="text/javascript">
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
     var qsParm = new Array();
 
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -106,7 +105,7 @@
             if (response.data.length > 0) {
                 for (i = 0; i <= response.data.length - 1; i++) {
                     htmlStr += "<div class='item'><div class='right floated content'></div>";
-                    if(response.data[i].Status == "1")
+                    if (response.data[i].Status == "1")
                         htmlStr += "<i class='right triangle red icon'></i>";
                     else
                         htmlStr += "<i class='right triangle gray icon'></i>";
@@ -141,5 +140,4 @@
             alert("error: " + ex);
         });
     }
-
 </script>

@@ -25,15 +25,15 @@
     </style>
 
     <script type="text/javascript">
-        var apiURL = '../../NtraktApi/api/InvConcession/';
-        //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
+        //var apiURL = '../../NtraktApi/api/InvConcession/';
+        var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
 
 
         var RegNo = getParameterByName("rno");
         var BillNo = getParameterByName("bno");
         var glbUser = getParameterByName("uname");
 
-        $(function () {
+        $(function() {
 
             var IsApproved = getParameterByName("IsApproved");
 
@@ -67,17 +67,17 @@
             var ConData = {};
             ConData.PRNo = RegNo;
 
-            $.post(apiURL + "PateintDetails", ConData, function (response) {}).done(function (result) {
+            $.post(apiURL + "PateintDetails", ConData, function(response) {}).done(function(result) {
 
                 var data = result.data;
-                $.each(data, function (index, rData) {
+                $.each(data, function(index, rData) {
                     var patdata = rData.Name + " / " + rData.Age + " / " + rData.Sex;
                     $("#lblPatName").text(patdata);
                 });
 
                 LoadPatientLabTests();
 
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
 
@@ -88,11 +88,11 @@
             ConData.PRNo = RegNo;
             ConData.BillNo = BillNo;
 
-            $.post(apiURL + "PateintConcessDetails", ConData, function (response) {}).done(function (result) {
+            $.post(apiURL + "PateintConcessDetails", ConData, function(response) {}).done(function(result) {
 
                 var rdata = result.data;
 
-                $.each(rdata, function (index, data) {
+                $.each(rdata, function(index, data) {
 
                     var gcAmount = parseFloat(data.GcAmt);
                     var conAmount = parseFloat(data.NetAmount);
@@ -121,7 +121,7 @@
 
 
 
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
 
@@ -132,14 +132,14 @@
             var ConData = {};
             ConData.BillNo = BillNo;
 
-            $.post(apiURL + "LabTestList", ConData, function (response) {}).done(function (result) {
+            $.post(apiURL + "LabTestList", ConData, function(response) {}).done(function(result) {
                 var data = result.data;
                 var tabHtml = "";
                 var totaAmount = 0;
                 var sno = 1;
                 tabHtml =
                     '<table class="ui celled small unstackable table"><thead><tr class="ui inverted teal table"><th>Test</th><th>Total</th><th>Con Charge</th><th>Net Charge</th></tr></thead>';
-                $.each(data, function (index, rData) {
+                $.each(data, function(index, rData) {
                     tabHtml = tabHtml + '<tr><td>' + rData.Name + '<input id="txtCode' + sno +
                         '" type="hidden" value ="' + rData.OtherInfo +
                         '" /></td><td><input class="txt_inv" id="txtTotAmt' + sno +
@@ -161,7 +161,7 @@
                 $("#gridTest").append(tabHtml);
                 LoadConcessionDetails();
 
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
 
@@ -180,7 +180,7 @@
 
             if (parseInt(ConsAmt, 10) != parseInt(ConsAmt, 10)) {
                 $("#txtAmountPay").val(parseInt(TotalCrg, 10) -
-                ConsAmt); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - ConsAmt;
+                    ConsAmt); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - ConsAmt;
                 $("#txtConPer").val("");
                 //document.f1.txtConPer.value = "";
 
@@ -195,21 +195,21 @@
                     $("#txtConAmt").val(0); //document.f1.txtConAmt.value = 0;
                     $("#txtConPer").val(""); //document.f1.txtConPer.value = "";
                     $("#txtAmountPay").val(parseInt(TotalCrg, 10) - parseInt(ConsAmt,
-                    10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
+                        10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
                     return;
                 }
 
                 AmtPay = parseInt(TotalCrg, 10) - parseInt(ConsAmt,
-                10); //parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
+                    10); //parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
 
                 if (AmtPay < 0) {
                     alert("The sum of Concession Amount and Credit Amount should not be greater than the Total Charge");
                     $("#txtConAmt").val(0);
                     $("#txtConPer").val("");
                     $("#txtAmountPay").val(parseInt(TotalCrg, 10) - parseInt(ConsAmt,
-                    10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
+                        10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10) - parseInt(ConsAmt.value, 10);
                 } else
-                    //document.f1.txtDisAmtPay.value = AmtPay;
+                //document.f1.txtDisAmtPay.value = AmtPay;
                     $("#txtAmountPay").val(AmtPay);
             }
         }
@@ -235,7 +235,7 @@
                     $("#txtConAmt").val(0);
                     $("#txtConPer").val("");
                     $("#txtAmountPay").val(parseInt(TotalCrg,
-                    10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10);
+                        10)); //document.f1.txtDisAmtPay.value = parseInt(TotalCrg.value, 10);
                     return;
                 }
 
@@ -368,11 +368,11 @@
             ConData.NetAmount = PayAmt;
             ConData.User = glbUser;
 
-            $.post(apiURL + "ConcessApprove", ConData, function (response) {}).done(function (result) {
+            $.post(apiURL + "ConcessApprove", ConData, function(response) {}).done(function(result) {
                 if (result.data == "success") {
                     UpdtePatientLabTest();
                 }
-            }).fail(function (jqxhr, settings, ex) {
+            }).fail(function(jqxhr, settings, ex) {
                 console.log(ex)
             });
         }
@@ -412,15 +412,15 @@
                 ConData.BillAmount = TotAmount;
                 ConData.Code = TestCode;
 
-                $.post(apiURL + "LabDataUpdate", ConData, function (response) {}).done(function (result) {
+                $.post(apiURL + "LabDataUpdate", ConData, function(response) {}).done(function(result) {
 
-                }).fail(function (jqxhr, settings, ex) {
+                }).fail(function(jqxhr, settings, ex) {
                     console.log(ex)
                 });
 
             }
 
-            setTimeout(function () {
+            setTimeout(function() {
                 if (parseInt(i) == parseInt(CountTest)) {
                     alert("Concession approved successfully...");
                     window.location = "InvConfirmConcessionList.html?uname=" + btoa(glbUser);
@@ -494,9 +494,7 @@
                             <td>&nbsp;</td>
                             <td>
                                 <div class="ui right labeled input">
-                                    <input type="text" id="txtConPer" onkeyup="fnConcPC()"
-                                        onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;"
-                                        style="width:70%" />
+                                    <input type="text" id="txtConPer" onkeyup="fnConcPC()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" style="width:70%" />
                                     <div class="ui  label">
                                         %
                                     </div>
@@ -504,8 +502,7 @@
 
                             </td>
                             <td>
-                                <input type="text" id="txtConAmt" onkeyup="fnConcAmt()"
-                                    onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                                <input type="text" id="txtConAmt" onkeyup="fnConcAmt()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
                             </td>
                         </tr>
                         <tr class="trGc" style="display:none;">
@@ -521,17 +518,14 @@
                             <td>&nbsp;</td>
                             <td>
                                 <div class="ui right labeled input">
-                                    <input type="text" id="txtGcPer" onkeyup="fnCreditPC()"
-                                        onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;"
-                                        style="width:70%" />
+                                    <input type="text" id="txtGcPer" onkeyup="fnCreditPC()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" style="width:70%" />
                                     <div class="ui  label">
                                         %
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <input type="text" id="txtGcAmt" onkeyup="fnCreditAmt()"
-                                    onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
+                                <input type="text" id="txtGcAmt" onkeyup="fnCreditAmt()" onkeypress="if ((event.keyCode < 48) || (event.keyCode > 57) ) event.returnValue = false;" />
                             </td>
                         </tr>
                         <tr>

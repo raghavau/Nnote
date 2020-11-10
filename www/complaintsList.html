@@ -17,15 +17,15 @@
         body {
             background-color: #e5e5e5;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             max-width: 450px;
         }
-
+        
         .thumbnail {
             width: 200px;
             height: 250px;
@@ -119,8 +119,8 @@
             navigator.app.exitApp(); // exit the app
     }
 
-    var apiURL = '../../NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = '../../NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
     var qsParm = new Array();
 
     function qs() {
@@ -149,7 +149,7 @@
         }
     }
 
-    $(function () {
+    $(function() {
         $('#fromdate').attr("readonly", "true");
         $("#fromdate").datepicker({
             dateFormat: "dd-M-yy",
@@ -159,28 +159,28 @@
             minDate: new Date(2020, 9 - 1, 1),
             maxDate: '+0d',
             defaultDate: -7,
-            onClose: function (minDate) {
+            onClose: function(minDate) {
                 $("#todate").datepicker("option", "minDate", minDate);
             }
         });
     });
-    $(function () {
+    $(function() {
         $('#todate').attr("readonly", "true");
         $("#todate").datepicker({
             dateFormat: "dd-M-yy",
             changeMonth: true,
             numberOfMonths: 1,
             gotoCurrent: true,
-            minDate: new Date(2020, 9 - 1, 1),//minDate: new Date(1, 09, 2020),
+            minDate: new Date(2020, 9 - 1, 1), //minDate: new Date(1, 09, 2020),
             maxDate: '+0d',
             maxDate: new Date(),
-            onClose: function (selectedDate) {
+            onClose: function(selectedDate) {
                 $("#fromdate").datepicker("option", "maxDate", selectedDate);
             }
         });
     });
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         qs();
         var minDate = new Date(2020, 9 - 1, 1);
         //$("#fromdate").datepicker().datepicker("setDate", "-6d");
@@ -197,31 +197,29 @@
 
         $('.ui.sticky').sticky();
 
-        $('.message .close').on('click', function () {
+        $('.message .close').on('click', function() {
             $(this).closest('.message').transition('fade');
         });
 
         //Getdates();
 
-        $("#fromdate").on('change', function () {
+        $("#fromdate").on('change', function() {
             var hinval = $("#hinId").val();
             if (hinval != "") {
                 getComplaintsList(hinval);
-            }
-            else {
+            } else {
                 getComplaintsList(0);
             }
         });
-        $("#todate").on('change', function () {
+        $("#todate").on('change', function() {
             var hinval = $("#hinId").val();
             if (hinval != "") {
                 getComplaintsList(hinval);
-            }
-            else {
+            } else {
                 getComplaintsList(0);
             }
         });
-        $("button").click(function () {
+        $("button").click(function() {
             var val = $(this).val();
             $("#hinId").val(val);
             getComplaintsList(val);
@@ -240,14 +238,13 @@
             dataType: "json",
             contentType: "application/json",
             //data: JSON.stringify(objdata),
-            success: function (response) {
+            success: function(response) {
                 if (response.data[0] != '') {
                     $('.error.message').hide();
                     $("#fromdate").val(response.data[0].fromdateval);
                     $("#todate").val(response.data[0].todateval);
                     getComplaintsList(0);
-                }
-                else {
+                } else {
                     $('.error.message').show();
                 }
             }
@@ -270,7 +267,7 @@
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
-            success: function (response) {
+            success: function(response) {
                 var htmlStr = '';
                 $(".divided.list").empty();
                 //alert(response.data.length);
@@ -283,7 +280,7 @@
                             htmlStr +=
                                 '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
                                 response.data[i].IMP + '  <div class="ui left tiny teal label">' + response
-                                    .data[i].total + '</div></label>';
+                                .data[i].total + '</div></label>';
                         }
                         if (val == '1') {
                             // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui red ribbon label">' + 'Service-'+ response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
@@ -297,8 +294,8 @@
                         }
                         if (val == '2') {
                             htmlStr +=
-                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">'
-                                + response.data[i].IMP +
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
+                                response.data[i].IMP +
                                 '  <div class="ui left tiny teal label">' + response.data[i].total +
                                 '</div></label>';
                         }
@@ -311,24 +308,24 @@
                         htmlStr +=
                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: orange;" id="lblpending" > Pending </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick="PendingwiseReport(1,' + response.data[i].pending + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
                             response.data[i].pending + ' </a></td><td style="text-align:right;"><a class="ui orange label">' + response
-                                .data[i].pending_per + '</a> </td></tr>';
+                            .data[i].pending_per + '</a> </td></tr>';
                         htmlStr +=
                             '<td style="text-align:left;"> <label style="color: #21BA45;" id="lblresolved"> Resolved </label></td><td style="text-align:right;"><a class="ui green circular label" onclick="PendingwiseReport(2,' + response.data[i].resolved + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
                             response.data[i].resolved + '</a></td><td style="text-align:right;"><a class="ui green label">' + response
-                                .data[i].resolved_per + '</a> </td></tr>'
+                            .data[i].resolved_per + '</a> </td></tr>'
                         htmlStr +=
                             '<tr><td style="text-align:left;"> <label style="color: blue;" id="lbltepost"> Repost</label></td><td style="text-align:right;"><a class="ui blue circular label" onclick="PendingwiseReport(3,' + response.data[i].repost + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
                             response.data[i].repost + '</a></td><td style="text-align:right;"><a class="ui blue label">' + response.data[i].repost_per + '<a></td></tr>';
                         htmlStr +=
                             '<tr><td style="text-align:left;"> <label style="color: gray;" id="lblNotfeasible"> Not Feasible </label></td><td style="text-align:right;"><a class="ui gray circular label" onclick="PendingwiseReport(4,' + response.data[i].notfeasible + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
                             response.data[i].notfeasible + '</a></td><td style="text-align:right;"><a class="ui grey label">' + response
-                                .data[i].notfeasible_per + '</a></td></tr>';
+                            .data[i].notfeasible_per + '</a></td></tr>';
                         htmlStr +=
                             '<tr><td style="text-align:left;" > <label style="color: red;" id="lbloverdue">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label" onclick="PendingwiseReport(5,' + response.data[i].overdue + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
                             response.data[i].overdue + '</a></td></tr>';
                         htmlStr +=
                             '<tr><td style="text-align:left;" > <label style="color: violet" id="lblRepost">Re Open</label></td><td style="text-align:right;"><a class="ui violet  circular label" onclick="PendingwiseReport(6,' + response.data[i].reopen + ',' + val + ',' + "'" + response.data[i].srvcode + "'" + ')">' +
-                                response.data[i].reopen + '</a></td></tr>';
+                            response.data[i].reopen + '</a></td></tr>';
 
                         htmlStr += '</table></div></div></div></div>';
                     }
@@ -362,7 +359,7 @@
         if (clickvalue == "6") {
             labletext = "Reopen";
         }
-        if (Count != '0') {//$("#hempid").val()
+        if (Count != '0') { //$("#hempid").val()
             document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" + btoa($("#fromdate").val()) +
                 "&todate=" + btoa($("#todate").val()) + "&Statustext=" + btoa(labletext) +
                 "&ComplateType=" + btoa(ComplateType) + "&ServiceId=" + btoa(ServiceID);

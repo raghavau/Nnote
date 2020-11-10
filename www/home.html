@@ -17,11 +17,11 @@
             background-color: #e5e5e5;
             overflow: hidden;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             /*max-width: 450px;*/
             margin: 20px;
@@ -61,13 +61,13 @@
 
 </html>
 <script type="text/javascript">
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
     var qsParm = new Array();
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", function (e) {
+        document.addEventListener("backbutton", function(e) {
             e.preventDefault();
         }, false);
     }
@@ -93,7 +93,7 @@
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         qs();
         OnLoad();
     });
@@ -101,7 +101,7 @@
     function OnLoad() {
         $(".dimmer").show();
         var timeout = setTimeout(function info() {
-            $.get(apiURL + 'User/Info/' + $("#hempid").val(), function (response) {
+            $.get(apiURL + 'User/Info/' + $("#hempid").val(), function(response) {
                 //debugger;
                 var userData = response.data;
                 if (userData.length > 0) {
@@ -112,11 +112,11 @@
                         'http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + $(
                             "#hempid").val());
                 }
-            }).done(function () {
+            }).done(function() {
                 //debugger;
                 $(".dimmer").hide();
                 //$("#empimg").attr('src', apiURL + 'User/ShowPicture/' + $("#hempid").val());
-            }).fail(function () {
+            }).fail(function() {
                 //setTimeout(OnLoad(), 3000);
             })
         }, 2000);

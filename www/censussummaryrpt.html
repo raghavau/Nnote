@@ -17,15 +17,15 @@
         body {
             background-color: #e5e5e5;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             max-width: 450px;
         }
-
+        
         .thumbnail {
             width: 200px;
             height: 250px;
@@ -119,8 +119,8 @@
             navigator.app.exitApp(); // exit the app
     }
 
-    var apiURL = '../../NnoteApi/api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = '../../NnoteApi/api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
     var qsParm = new Array();
 
     function qs() {
@@ -146,7 +146,7 @@
         }
     }
 
-    $(function () {
+    $(function() {
         $('#fromdate').attr("readonly", "true");
         $("#fromdate").datepicker({
             dateFormat: "dd/M/yy",
@@ -157,12 +157,12 @@
             // onClose: function (selectedDate) {
             //     $("#todate").datepicker("option", "minDate", selectedDate);
             // }
-            onSelect: function (selectedDate) {
+            onSelect: function(selectedDate) {
                 $("#todate").datepicker("option", "minDate", selectedDate);
             }
         });
     });
-    $(function () {
+    $(function() {
         $('#todate').attr("readonly", "true");
         $("#todate").datepicker({
             dateFormat: "dd/M/yy",
@@ -174,13 +174,13 @@
             // onClose: function (selectedDate) {
             //     $("#fromdate").datepicker("option", "maxDate", selectedDate);
             // }
-            onSelect: function (selectedDate) {
+            onSelect: function(selectedDate) {
                 $("#fromdate").datepicker("option", "maxDate", selectedDate);
             }
         });
     });
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#fromdate").datepicker().datepicker("setDate", new Date());
         $("#todate").datepicker().datepicker("setDate", new Date());
 
@@ -194,18 +194,18 @@
 
         $('.ui.sticky').sticky();
 
-        $('.message .close').on('click', function () {
+        $('.message .close').on('click', function() {
             $(this).closest('.message').transition('fade');
         });
-        $("#fromdate").on('change', function () {
+        $("#fromdate").on('change', function() {
             var hinval = $("#hinId").val();
             getComplaintsList(hinval);
         });
-        $("#todate").on('change', function () {
+        $("#todate").on('change', function() {
             var hinval = $("#hinId").val();
             getComplaintsList(hinval);
         });
-        $("button").click(function () {
+        $("button").click(function() {
             var val = $(this).val();
             $("#hinId").val(val);
             getComplaintsList(val);
@@ -215,7 +215,7 @@
     });
 
     function getComplaintsList(val) {
-        
+
         $('.dimmer').show();
         var objdata = {
             censustype: val,
@@ -228,71 +228,66 @@
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
-            success: function (response) {
+            success: function(response) {
                 var htmlStr = '';
                 $(".divided.list").empty();
                 //alert(response.data.length);
                 if (response.data.length > 0) {
                     $('.error.message').hide();
                     if (val == '0') {
-                    for (var i = 0; i <= response.data.length - 1; i++) {
+                        for (var i = 0; i <= response.data.length - 1; i++) {
 
-                        if (response.data[i].typename == 'Admissions')
-                        {
-                            htmlStr +=
-                            '<div class="item"><div class="left floated content" style="width: 100%;">';
-                        htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                ' </label></td><td style="text-align:right;"><a class="ui steel blue circular label">' +
-                            response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
-                        htmlStr += '</table></div></div></div></div>';
+                            if (response.data[i].typename == 'Admissions') {
+                                htmlStr +=
+                                    '<div class="item"><div class="left floated content" style="width: 100%;">';
+                                htmlStr +=
+                                    '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                    ' </label></td><td style="text-align:right;"><a class="ui steel blue circular label">' +
+                                    response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
+                                htmlStr += '</table></div></div></div></div>';
+                            } else if (response.data[i].typename == 'Discharge') {
+                                htmlStr +=
+                                    '<div class="item"><div class="left floated content" style="width: 100%;">';
+                                htmlStr +=
+                                    '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                    ' </label></td><td style="text-align:right;"><a class="ui gray circular label">' +
+                                    response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
+                                htmlStr += '</table></div></div></div></div>';
+                            } else {
+                                htmlStr +=
+                                    '<div class="item"><div class="left floated content" style="width: 100%;">';
+                                htmlStr +=
+                                    '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                    ' </label></td><td style="text-align:right;"><a class="ui orange circular label">' +
+                                    response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
+                                htmlStr += '</table></div></div></div></div>';
+                            }
                         }
-                        else if (response.data[i].typename == 'Discharge')
-                        {
-                            htmlStr +=
-                            '<div class="item"><div class="left floated content" style="width: 100%;">';
-                        htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                ' </label></td><td style="text-align:right;"><a class="ui gray circular label">' +
-                            response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
-                        htmlStr += '</table></div></div></div></div>';
-                        }
-                        else
-                        {
-                            htmlStr +=
-                            '<div class="item"><div class="left floated content" style="width: 100%;">';
-                        htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                ' </label></td><td style="text-align:right;"><a class="ui orange circular label">' +
-                            response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
-                        htmlStr += '</table></div></div></div></div>';
-                        }
-                    }
                     }
                     if (val == '1') {
                         for (var i = 0; i <= response.data.length - 1; i++) {
-                        htmlStr +=
-                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                             '</label></td><td style="text-align:right;width: 15%;"><a class="ui orange circular label">' +
-                             response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui steel blue circular label">' +
-                             response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui gray circular label">' +
-                             response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' + response
-                                  .data[i].censuscntperc + '</a></td></tr>';
-                        htmlStr += '</table></div></div></div></div>';
-                     }
+                            htmlStr +=
+                                '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                '</label></td><td style="text-align:right;width: 15%;"><a class="ui orange circular label">' +
+                                response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui steel blue circular label">' +
+                                response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui gray circular label">' +
+                                response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' + response
+                                .data[i].censuscntperc + '</a></td></tr>';
+                            htmlStr += '</table></div></div></div></div>';
+                        }
                     }
                     if (val == '2') {
                         for (var i = 0; i <= response.data.length - 1; i++) {
-                         htmlStr +=
-                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                 ' </label></td><td style="text-align:right;width: 15%;"><a class="ui orange circular label">' +
-                             response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui steel blue circular label">' +
-                             response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui gray circular label">' +
-                             response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' + response
-                                  .data[i].censuscntperc + '</a></td></tr>';
-                        
-                        htmlStr += '</table></div></div></div></div>';
-                     } 
+                            htmlStr +=
+                                '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                ' </label></td><td style="text-align:right;width: 15%;"><a class="ui orange circular label">' +
+                                response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui steel blue circular label">' +
+                                response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui gray circular label">' +
+                                response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' + response
+                                .data[i].censuscntperc + '</a></td></tr>';
+
+                            htmlStr += '</table></div></div></div></div>';
+                        }
                     }
                     $(".divided.list").append(htmlStr);
                 } else {
@@ -303,5 +298,4 @@
             }
         });
     }
-
 </script>

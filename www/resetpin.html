@@ -14,42 +14,41 @@
             background-color: #e5e5e5;
             overflow: hidden;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             max-width: 450px;
         }
-
+        
         #show {
             display: none;
         }
-
+        
         #generate {
             opacity: 0;
             /*transform: translateX(0) rotate(0deg);
             transition: all .75s linear;*/
         }
-
+        
         #generate.show2 {
             /*transform: translateX(0px) rotate(360deg);*/
             opacity: 1;
         }
-
+        
         .sticky {
             position: absolute;
             bottom: 0px;
             width: 100%;
             text-align: center;
         }
-
+        
         .resend {
             color: blue;
             cursor: pointer;
         }
-
     </style>
 </head>
 
@@ -141,8 +140,8 @@
 
 </html>
 <script type="text/javascript">
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
 
     var qsParm = new Array();
 
@@ -365,5 +364,4 @@
             }
         });
     });
-
 </script>

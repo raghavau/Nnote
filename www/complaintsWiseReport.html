@@ -18,11 +18,11 @@
         body {
             background-color: #e5e5e5;
         }
-
+        
         body>.grid {
             height: 100%;
         }
-
+        
         .column {
             max-width: 450px;
         }
@@ -72,14 +72,14 @@
 
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    var apiURL = '../../NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = '../../NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
     var qsParm = new Array();
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", function (e) {
+        document.addEventListener("backbutton", function(e) {
             e.preventDefault();
         }, false);
     }
@@ -111,7 +111,7 @@
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         qs();
         //debugger;
         $(".dimmer").show();
@@ -131,7 +131,7 @@
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
-            success: function (response) {
+            success: function(response) {
                 var htmlStr = '';
                 $(".divided.list").empty();
                 //alert(response.data.length);
@@ -164,8 +164,7 @@
                     }
                     htmlStr += '</div>';
                     $(".divided.list").append(htmlStr);
-                }
-                else {
+                } else {
                     $('.error.message').show();
                     $(".divided.list").empty();
                 }
@@ -176,9 +175,9 @@
         });
     });
 
-    $('#btnCancel').click(function () {
-        document.location.href = "complaintsList.html?empid=" + btoa($("#hempid").val())
-            + "&fdate=" + btoa($("#hinfromdate").val()) + "&tdate=" + btoa($("#hintodate").val())
-            + "&ComplateType=" + btoa($("#hinval").val());
+    $('#btnCancel').click(function() {
+        document.location.href = "complaintsList.html?empid=" + btoa($("#hempid").val()) +
+            "&fdate=" + btoa($("#hinfromdate").val()) + "&tdate=" + btoa($("#hintodate").val()) +
+            "&ComplateType=" + btoa($("#hinval").val());
     });
 </script>

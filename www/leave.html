@@ -147,8 +147,8 @@
     var year = date.getFullYear();
     var month = date.getMonth();
 
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
     var qsParm = new Array(),
         holdday = new Array();
 
@@ -697,7 +697,7 @@
 
         isbeforeDate = moment(year + '-' + (m + 1) + '-' + obj1).isBefore(moment().subtract(subtractDays, 'days'));
         //isbeforeDate = moment(year + '-' + m + '-' + obj1).isBefore(moment().subtract(subtractDays, 'days'));
-        
+
         if (chkValue == "8")
             isfutureDate = moment(new Date(year, m, obj1)).isAfter(new Date());
         if (leaveStatus == 'L') {
@@ -705,8 +705,7 @@
                 $(this).val('');
                 return;
             } else {
-                if (!isfutureDate && !isbeforeDate) 
-                {
+                if (!isfutureDate && !isbeforeDate) {
                     var allowcount = parseInt($("#hleavestoavail").val()) - holdday.length;
                     if (selectedDates.length <= parseInt(allowcount - 1)) {
                         if (selectedDates.indexOf($.datepicker.formatDate('dd/mm/yy', new Date(year, m, obj1))) == -1) {
@@ -810,5 +809,4 @@
             }
         }
     }
-
 </script>

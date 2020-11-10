@@ -17,15 +17,15 @@
         .ico-width {
             font-size: 48px !important;
         }
-
+        
         .extra-background {
             background-color: #f1f1f1 !important;
         }
-
+        
         .extra-color-black {
             color: black !important;
         }
-
+        
         .column {
             /*max-width: 450px;*/
             margin: 20px;
@@ -112,9 +112,9 @@
 <script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    var apiURL = '../../NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-    
+    //var apiURL = '../../NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+
     var cameraOptions = {
         sourceType: Camera.PictureSourceType.CAMERA,
         saveToPhotoAlbum: true,
@@ -134,10 +134,10 @@
     }
 
     function init() {
-        document.addEventListener("deviceready", function () {
+        document.addEventListener("deviceready", function() {
             deviceReady = true;
         }, false);
-        window.setTimeout(function () {
+        window.setTimeout(function() {
             if (!deviceReady) {
                 alert("Error: Camera not initialised.");
             }
@@ -175,18 +175,18 @@
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         $(".dimmer").hide();
         qs();
 
         $("#lblHeading").text($("#hsname").val() + ' Service Request');
         //document.getElementById('lblHeading').innerText = $("#hsname").val();
         var phoneGap = isPhoneGap();
-        $('#btnSave').click(function () {
+        $('#btnSave').click(function() {
             SaveRequest();
         });
 
-        $('#btnCancel').click(function () {
+        $('#btnCancel').click(function() {
             document.location.href = "services.html?empid=" + btoa($("#hempid").val());
         });
     });
@@ -211,7 +211,7 @@
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
-            success: function (result) {
+            success: function(result) {
                 //debugger;
                 if (result.data == 'Success') {
                     alert('Your Service Request Submitted Successfully');
@@ -221,7 +221,7 @@
                     alert('Your Service Request Failed to Submit.');
                 }
             },
-            error: function (xhr, status, error) {
+            error: function(xhr, status, error) {
                 alert('Error occurred while submitting data.\n\r' + xhr.responseText);
                 $(".dimmer").hide();
             }
@@ -230,14 +230,14 @@
 
     function takePicture() {
         navigator.camera.getPicture(
-            function (uri) {
+            function(uri) {
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = 'img/logo.png';
                 document.getElementById('camera_status').innerHTML = "Success";
             },
-            function (e) {
+            function(e) {
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
@@ -249,14 +249,14 @@
 
     function selectPicture() {
         navigator.camera.getPicture(
-            function (uri) {
+            function(uri) {
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
                 document.getElementById('camera_status').innerHTML = "Success";
             },
-            function (e) {
+            function(e) {
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
@@ -265,5 +265,4 @@
             }
         );
     };
-
 </script>

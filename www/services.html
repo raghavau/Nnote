@@ -18,15 +18,15 @@
         .ico-width {
             font-size: 48px !important;
         }
-
+        
         .extra-background {
             background-color: #f1f1f1 !important;
         }
-
+        
         .extra-color-black {
             color: black !important;
         }
-
+        
         .column {
             /*max-width: 450px;*/
             margin: 20px;
@@ -59,8 +59,8 @@
         document.addEventListener("backbutton", onBackKeyDown, false);
     }
 
-    var apiURL = '../../NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = '../../NnoteApi/Api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
 
     function onBackKeyDown() {
         var state = confirm('Are You Sure you want to Exit.');
@@ -91,9 +91,9 @@
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         $(".dimmer").hide();
-        
+
         qs();
         ShowWorkTypes();
     });
@@ -102,7 +102,7 @@
         //debugger;
         $(".dimmer").show();
         $('#wtcards').empty();
-        $.get(apiURL + 'GetWorkTypes', function (response) {
+        $.get(apiURL + 'GetWorkTypes', function(response) {
             //debugger;
             var arrdata = response.data;
             var content = '<br><br>';
@@ -113,7 +113,7 @@
                 $(".dimmer").hide();
                 $('#wtcards').append(content);
             }
-        }).fail(function () {
+        }).fail(function() {
             $(".dimmer").hide();
             alert('Failed to load WorkTypes. Please Check.');
         });
