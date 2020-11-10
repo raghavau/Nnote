@@ -35,7 +35,7 @@
 <body>
     <div>
         <h3 class="ui center aligned icon header">
-            <i id="download" class="circular download big green icon"></i><br> New updated version available. Please download.
+            <a id="download"><i class="circular download big green icon"></i></a><br> New updated version available. Please download.
         </h3>
     </div>
 </body>
@@ -59,8 +59,6 @@
     }
 
     $(document).ready(function() {
-        $('#download').click(function() {
-            $(this).attr('href', 'http://narayanagroup.co.in/nNote.apk');
-        });
+        $("#download").attr('href', 'http://narayanagroup.co.in/nNote.apk');
     });
 </script>
