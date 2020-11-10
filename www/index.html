@@ -142,13 +142,7 @@
         CheckAppUpdate();
         //$(".dimmer").hide();
         $("#empid").focus();
-        $.get("./version.xml", function(data) {}).done(function(result) {
-            var version = $(result).find('content').attr('version');
-            $("#version").text("Version " + version);
-            $("#hvno").val(version);
-        }).fail(function(jqxhr, settings, ex) {
-            alert('Failed: ' + ex);
-        });
+
         $("#empid").keypress(function(e) {
             //debugger;
             var current_val = $(this).val();
@@ -214,17 +208,27 @@
 
     function CheckAppUpdate() {
         $(".dimmer").show();
-        $.get(apiURL + 'Notifications/App/4029038', function(response) {
-            //debugger;
-            var arrdata = response.data;
-            if (arrdata != $("#hvno").val()) {
-                if (isPhoneGap())
-                    window.location.href = "download.html";
-                else
+        $.get("./version.xml", function(data) {}).done(function(result) {
+            var version = $(result).find('content').attr('version');
+            $("#version").text("Version " + version);
+            $("#hvno").val(version);
+            $.get(apiURL + 'Notifications/App/4029038', {
+                version: $("#hvno").val()
+            }, function(response) {
+                //debugger;
+                var arrdata = response.data;
+                if (arrdata != version) {
+                    if (isPhoneGap())
+                        window.location.href = "download.html";
+                    else
+                        $(".dimmer").hide();
+                } else
                     $(".dimmer").hide();
-            } else
+            }).fail(function() {
                 $(".dimmer").hide();
-        }).fail(function() {
+            });
+        }).fail(function(jqxhr, settings, ex) {
+            $("#hvno").val('0');
             $(".dimmer").hide();
         });
     }
