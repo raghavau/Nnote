@@ -228,6 +228,9 @@
     $(document).ajaxStop($.unblockUI);
 
     $(document).ready(function() {
+        if (isPhoneGap()) {
+            document.location.href = "doc_dashboard.mobile.html?empid=" + btoa($("#hempid").val());
+        }
         $('.dimmer').hide();
         $('.error.message').hide();
         $('.ui.dropdown').dropdown();
