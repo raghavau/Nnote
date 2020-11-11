@@ -119,11 +119,10 @@
             /^file:\/{3}[^\/]/i.test(window.location.href) &&
             /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
     }
-    /*var timeout = setTimeout(function runMe() {
+    var timeout = setInterval(function runMe() {
         //debugger;
-        ShowNotifications();
-        timeout = setTimeout(runMe, 10000);
-    }, 10000);*/
+        ShowAppUpdate();
+    }, 60000);
 
     $(document).ready(function () {
         qs();
@@ -175,8 +174,7 @@
             $('#ifrm').attr('src', 'more.html?empid=' + btoa($("#hempid").val()));
         });
 
-        //ShowNotifications();
-        setInterval(ShowAppUpdate(), 60000);
+        //ShowNotifications();        
     });
 
     function ShowNotifications() {
