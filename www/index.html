@@ -133,6 +133,7 @@
     }
 
     function isPhoneGap() {
+        alert(window.cordova || window.PhoneGap || window.phonegap || window.location.href || navigator.userAgent);
         return (window.cordova || window.PhoneGap || window.phonegap) &&
             /^file:\/{3}[^\/]/i.test(window.location.href) &&
             /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
