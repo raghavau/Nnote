@@ -15,12 +15,12 @@
         body>.grid {
             height: 100%;
         }
-        
+
         .column {
             /*max-width: 450px;*/
             margin: 20px;
         }
-        
+
         .dimmer {
             background-color: #e9ecef;
             position: fixed;
@@ -31,7 +31,7 @@
             z-index: 1999;
             opacity: 0.5;
         }
-        
+
         #countdown {
             position: absolute;
             margin: auto;
@@ -41,13 +41,13 @@
             top: 5px;
             right: 5px;
         }
-        
+
         #countdown-number {
             color: red;
             display: inline-block;
             line-height: 40px;
         }
-        
+
         svg {
             position: absolute;
             top: 0;
@@ -56,7 +56,7 @@
             height: 40px;
             transform: rotateY(-180deg) rotateZ(-90deg);
         }
-        
+
         svg circle {
             stroke-dasharray: 113px;
             stroke-dashoffset: 0px;
@@ -66,11 +66,12 @@
             fill: none;
             /*animation: countdown 30s linear infinite forwards;*/
         }
-        
+
         @keyframes countdown {
             from {
                 stroke-dashoffset: 0px;
             }
+
             to {
                 stroke-dashoffset: 113px;
             }
@@ -98,6 +99,7 @@
                 </div>
                 <div class="eight wide field">
                     <label>Departments</label>
+                    <button id="btnClear" class="ui mini button">Clear All</button>
                     <select name="depts" id="depts" multiple="" class="ui dropdown">
                         <option value="">Select Department</option>
                     </select>
@@ -185,9 +187,9 @@
         $(".dimmer").hide();
         clearInterval(timer);
         izoom = 0;
-        $.get(apiURL + 'DoctorStatus/Status/', function(response) {
+        $.get(apiURL + 'DoctorStatus/Status/', function (response) {
             //debugger;
-        }).done(function(response) {
+        }).done(function (response) {
             //debugger;
             var len = $("select[name='depts']").find("option:selected").length;
             deptsArray = [];
@@ -203,7 +205,7 @@
             }
 
             if (deptsArray.length > 0) {
-                selectedArray = jQuery.grep(response.data, function(data, i) {
+                selectedArray = jQuery.grep(response.data, function (data, i) {
                     //debugger;
                     return deptsArray.indexOf(data.DeptSlno) > -1;
                 });
@@ -212,14 +214,14 @@
 
             //debugger;
             if ($("#depttype option:selected").val() != "A") {
-                selectedArray = jQuery.grep(selectedArray, function(data, i) {
+                selectedArray = jQuery.grep(selectedArray, function (data, i) {
                     //debugger;
                     return data.SpecialityType == $("#depttype option:selected").val();
                 });
             }
 
             if ($("#status option:selected").val() != "0") {
-                selectedArray = jQuery.grep(selectedArray, function(data, i) {
+                selectedArray = jQuery.grep(selectedArray, function (data, i) {
                     //debugger;
                     return data.AvailTypeSlno == $("#status option:selected").val();
                 });
@@ -239,7 +241,7 @@
                 $('.error.message').show();
                 timeout = setTimeout(runMe, 5000);
             }
-        }).fail(function() {
+        }).fail(function () {
             $('.error.message').show();
             timeout = setTimeout(runMe, 3000);
         });
@@ -247,25 +249,30 @@
 
     $(document).ajaxStop($.unblockUI);
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.dimmer').hide();
         $('.error.message').hide();
         $('.ui.dropdown').dropdown();
+        $("#btnClear").hide();
 
         Departments();
-        $("#depttype").change(function() {
+        $("#depttype").change(function () {
             var selectedType = this.value;
             Departments(selectedType);
-            setTimeout(function() {
+            setTimeout(function () {
                 Grid()
             }, 2000);
         });
 
-        $("#depts").change(function() {
+        $("#btnClear").click(function () {
+            $('#depts').dropdown('clear');
+        });
+
+        $("#depts").change(function () {
             Grid();
         });
 
-        $("#status").change(function() {
+        $("#status").change(function () {
             Grid();
         });
     });
@@ -273,9 +280,10 @@
     function Grid() {
         //debugger;
         $(".dimmer").hide();
-        $.get(apiURL + 'DoctorStatus/Status/', function(response) {
+        $("#btnClear").hide();
+        $.get(apiURL + 'DoctorStatus/Status/', function (response) {
             //debugger;
-        }).done(function(response) {
+        }).done(function (response) {
             //debugger;
             var len = $("select[name='depts']").find("option:selected").length;
             deptsArray = [];
@@ -289,9 +297,12 @@
                     deptsArray.push($("select[name='depts']").find("option:selected")[i].value);
                 }
             }
+            if (deptsArray.length > 5) {
+                $("#btnClear").show();
+            }
 
             if (deptsArray.length > 0) {
-                selectedArray = jQuery.grep(response.data, function(data, i) {
+                selectedArray = jQuery.grep(response.data, function (data, i) {
                     //debugger;
                     return deptsArray.indexOf(data.DeptSlno) > -1;
                 });
@@ -300,14 +311,14 @@
 
             //debugger;
             if ($("#depttype option:selected").val() != "A") {
-                selectedArray = jQuery.grep(selectedArray, function(data, i) {
+                selectedArray = jQuery.grep(selectedArray, function (data, i) {
                     //debugger;
                     return data.SpecialityType == $("#depttype option:selected").val();
                 });
             }
 
             if ($("#status option:selected").val() != "0") {
-                selectedArray = jQuery.grep(selectedArray, function(data, i) {
+                selectedArray = jQuery.grep(selectedArray, function (data, i) {
                     //debugger;
                     return data.AvailTypeSlno == $("#status option:selected").val();
                 });
@@ -327,17 +338,17 @@
             } else {
                 $('.error.message').show();
             }
-        }).fail(function() {
+        }).fail(function () {
             $('.error.message').show();
         });
     }
 
     function Departments(spl) {
-        $.get(apiURL + 'Departments', function(response) {
+        $.get(apiURL + 'Departments', function (response) {
             //debugger;
-        }).done(function(response) {
+        }).done(function (response) {
             if (spl != undefined && spl != 'A') {
-                selectedArray = jQuery.grep(response.data, function(data, i) {
+                selectedArray = jQuery.grep(response.data, function (data, i) {
                     //debugger;
                     return data.Speciality == spl;
                 });
@@ -358,7 +369,7 @@
                 $("#depts").empty();
             }
             //Grid();
-        }).fail(function() {
+        }).fail(function () {
             $('.error.message').show();
             $("#depts").empty();
         });
