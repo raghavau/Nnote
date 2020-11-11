@@ -34,7 +34,7 @@
         <div class="right icon menu">
             <a class="item" id="download">
                 <span style="color: #ffffff;">
-                    <i class="download icon"></i>
+                    <i class="download yellow icon"></i>
                 </span>
             </a>
             <a class="item" id="notifications">
@@ -204,7 +204,7 @@
     }
 
     function ShowAppUpdate() {
-        $("#ntfapp").text("");
+        $('#download').hide();
         $.get(apiURL + 'Notifications/App/4029038', function (response) {
             //debugger;
             var arrdata = response.data;
@@ -214,8 +214,7 @@
                     $('#download').click(function () {
                         $(this).attr('href', 'http://narayanagroup.co.in/nNote.apk');
                     });
-                } else
-                    $('#download').hide();
+                }
             }
         }).fail(function () {
             //setTimeout(ShowAppUpdate(), 60000);
