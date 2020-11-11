@@ -112,9 +112,10 @@
 </body>
 
 </html>
+<script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    var apiURL = '../../NtraktApi/api/';
-    //var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    //var apiURL = '../../NtraktApi/api/';
+    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
     var qsParm = new Array();
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -125,7 +126,6 @@
     }
 
     function isPhoneGap() {
-        alert(window.cordova || window.PhoneGap || window.phonegap || window.location.href || navigator.userAgent);
         return (window.cordova || window.PhoneGap || window.phonegap) &&
             /^file:\/{3}[^\/]/i.test(window.location.href) &&
             /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
