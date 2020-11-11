@@ -213,7 +213,7 @@
                 }
                 htmlStr += '</tbody></table>';
                 $("#grid").append(htmlStr);
-                timer = setInterval(counter, 1000);
+                timer = setInterval(counter, 100000);
                 timeout = setTimeout(runMe, 30000);
             } else {
                 $('.error.message').show();
@@ -228,7 +228,9 @@
     $(document).ajaxStop($.unblockUI);
 
     $(document).ready(function() {
+
         if (isPhoneGap()) {
+            alert('Phone Gap');
             document.location.href = "doc_dashboard.mobile.html?empid=" + btoa($("#hempid").val());
         }
         $('.dimmer').hide();
@@ -254,7 +256,7 @@
 
         countdownNumberEl = $('#countdown-number');
         countdownNumberEl[0].textContent = countdown;
-
+        counter();
         //timer = setInterval(counter, 1000);
         //debugger;
     });
