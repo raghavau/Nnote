@@ -280,7 +280,6 @@
     function Grid() {
         //debugger;
         $(".dimmer").hide();
-        $("#btnClear").hide();
         $.get(apiURL + 'DoctorStatus/Status/', function (response) {
             //debugger;
         }).done(function (response) {
@@ -297,9 +296,10 @@
                     deptsArray.push($("select[name='depts']").find("option:selected")[i].value);
                 }
             }
-            if (deptsArray.length > 5) {
+            if (deptsArray.length > 5)
                 $("#btnClear").show();
-            }
+            else
+                $("#btnClear").hide();
 
             if (deptsArray.length > 0) {
                 selectedArray = jQuery.grep(response.data, function (data, i) {
