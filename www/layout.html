@@ -14,11 +14,11 @@
         body {
             /*overflow: hidden;*/
         }
-        
+
         body>.grid {
             height: 100%;
         }
-        
+
         .column {
             max-width: 450px;
         }
@@ -28,7 +28,8 @@
 <body>
     <div class="ui top fixed fluid teal inverted labeled menu">
         <a class="header item">
-            <img class="ui mini image" src="img/logo.png" style="width: 24px !important;">&nbsp;&nbsp;&nbsp;<span style="font-size: 25px; font-weight: bold; color:white">nNote</span>
+            <img class="ui mini image" src="img/logo.png" style="width: 24px !important;">&nbsp;&nbsp;&nbsp;<span
+                style="font-size: 25px; font-weight: bold; color:white">nNote</span>
         </a>
         <div class="right icon menu">
             <a class="item" id="download">
@@ -86,7 +87,7 @@
     document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", function(e) {
+        document.addEventListener("backbutton", function (e) {
             e.preventDefault();
         }, false);
     }
@@ -124,13 +125,13 @@
         timeout = setTimeout(runMe, 10000);
     }, 10000);*/
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         qs();
         $(".dimmer").hide();
-        $.get("./version.xml", function(data) {}).done(function(result) {
+        $.get("./version.xml", function (data) {}).done(function (result) {
             var version = $(result).find('content').attr('version');
             $("#hvno").val(version);
-        }).fail(function(jqxhr, settings, ex) {
+        }).fail(function (jqxhr, settings, ex) {
             alert('Failed: ' + ex);
         });
 
@@ -142,54 +143,47 @@
 
         $("#ntfCount").text("");
         $("#ntfCount").hide();
-        //ShowNotifications();
-        //ShowAppUpdate();
 
-        if (isPhoneGap()) {
-            $('#download').show();
-            $('#download').click(function() {
-                $(this).attr('href', 'http://narayanagroup.co.in/nNote.apk');
-            });
-        } else
-            $('#download').hide();
-
-        $('#notifications').click(function() {
+        $('#notifications').click(function () {
             //$('#ifrm').attr('src', 'notifications.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#signout').click(function() {
-            $.get(apiURL + 'User/LogOut/' + $("#hempid").val(), function(response) {
+        $('#signout').click(function () {
+            $.get(apiURL + 'User/LogOut/' + $("#hempid").val(), function (response) {
                 window.location.href = 'index.html';
-            }).fail(function() {
+            }).fail(function () {
                 window.location.href = 'index.html';
             });
         });
 
-        $('#profile').click(function() {
+        $('#profile').click(function () {
             $('#ifrm').attr('src', 'profile.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#services').click(function() {
+        $('#services').click(function () {
             $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#status').click(function() {
+        $('#status').click(function () {
             $('#ifrm').attr('src', 'editrequest.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#reopen').click(function() {
+        $('#reopen').click(function () {
             $('#ifrm').attr('src', 'reopen.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#reports').click(function() {
+        $('#reports').click(function () {
             $('#ifrm').attr('src', 'complaintsList.html?empid=' + btoa($("#hempid").val()));
         });
-        $('#more').click(function() {
+        $('#more').click(function () {
             $('#ifrm').attr('src', 'more.html?empid=' + btoa($("#hempid").val()));
         });
+
+        //ShowNotifications();
+        setInterval(ShowAppUpdate(), 60000);
     });
 
     function ShowNotifications() {
-        $.get(apiURL + 'Notifications/' + $("#hempid").val(), function(response) {
+        $.get(apiURL + 'Notifications/' + $("#hempid").val(), function (response) {
             //debugger;
             var arrdata = response.data;
             if (arrdata.length > 0) {
-                selectedArray = jQuery.grep(arrdata, function(data, i) {
+                selectedArray = jQuery.grep(arrdata, function (data, i) {
                     //debugger;
                     return data.Status == 1;
                 });
@@ -205,20 +199,26 @@
                 $("#ntfCount").text("");
                 $("#ntfCount").hide();
             }
-        }).fail(function() {
+        }).fail(function () {
             setTimeout(ShowNotifications(), 3000);
         });
     }
 
     function ShowAppUpdate() {
         $("#ntfapp").text("");
-        $.get(apiURL + 'Notifications/App/4029038', function(response) {
+        $.get(apiURL + 'Notifications/App/4029038', function (response) {
             //debugger;
             var arrdata = response.data;
             if (arrdata != $("#hvno").val()) {
-                window.location.href = "download.html";
+                if (isPhoneGap()) {
+                    $('#download').show();
+                    $('#download').click(function () {
+                        $(this).attr('href', 'http://narayanagroup.co.in/nNote.apk');
+                    });
+                } else
+                    $('#download').hide();
             }
-        }).fail(function() {
+        }).fail(function () {
             //setTimeout(ShowAppUpdate(), 60000);
         });
     }
