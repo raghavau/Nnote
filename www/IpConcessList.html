@@ -22,11 +22,11 @@
             cursor: pointer;
             color: red;
         }
-        
+
         body {
             overflow: auto;
         }
-        
+
         .item {
             border: 1px solid #dcdcdc !important;
             padding: 8px !important;
@@ -41,12 +41,9 @@
         //var apiURL = '../../NtraktApi/api/InvConcession/';
         var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/InvConcession/';
 
-
-
-        $(function() {
+        $(function () {
             CheckDoctorAcess();
         });
-
 
         function getParameterByName(name, url) {
             if (!url) url = window.location.href;
@@ -60,43 +57,31 @@
 
         function CheckDoctorAcess() {
             var ConData = {};
-
             ConData.User = atob(glbUser);
 
-            $.post(apiURL + "CheckConcess", ConData, function(response) {
-
-            }).done(function(result) {
-
+            $.post(apiURL + "CheckConcess", ConData, function (response) {
+            }).done(function (result) {
                 if (result.data == "Y") {
                     LoadConcessionMemList();
                 } else {
                     //window.location = "error.html";
                 }
-            }).fail(function(jqxhr, settings, ex) {
+            }).fail(function (jqxhr, settings, ex) {
                 console.log(ex)
             });
-
         }
 
-
-
         function LoadConcessionMemList() {
-
-
             $("#listConcess").empty();
-
             var ConData = {};
-
             if (glbType == "C") {
                 ConData.ConType = "GEN";
             } else {
                 ConData.ConType = "SUPER";
             }
 
-            $.post(apiURL + "IpConcessList", ConData, function(response) {
-
-            }).done(function(result) {
-
+            $.post(apiURL + "IpConcessList", ConData, function (response) {
+            }).done(function (result) {
                 var mData = result.data;
 
                 if (result.data == '') {
@@ -104,20 +89,14 @@
                     $(".dimmer").hide();
                     return;
                 }
-
                 var tabHtml = '';
-
-                $.each(mData, function(index, rData) {
-
+                $.each(mData, function (index, rData) {
                     tabHtml = tabHtml + '<div class="item">' +
                         '<div class="right floated content">' +
-                        '<button class="btnApprove circular basic tiny green  ui icon button" rno="' +
-                        rData.PRNo + '" pno="' + rData.Code +
+                        '<button class="btnApprove circular basic tiny green  ui icon button" rno="' + rData.PRNo + '" pno="' + rData.Code +
                         '"><i class="check green icon"></i></button>' +
-                        '<button class="btnReject circular basic tiny red  ui icon button" prno="' +
-                        rData.PRNo + '" pno="' + rData.Code +
-                        '"><i class="delete red icon"></i></button>' +
-                        '</div>' +
+                        '<button class="btnReject circular basic tiny red  ui icon button" prno="' + rData.PRNo + '" pno="' + rData.Code +
+                        '"><i class="delete red icon"></i></button></div>' +
                         '<div class="content">' +
                         '<table><tr><td><b>RegNo</b></td><td>: ' + rData.PRNo + '</td></tr>' +
                         '<tr><td><b>IP No</b></td><td>: ' + rData.Code + '</td></tr>' +
@@ -125,69 +104,57 @@
                         '<tr><td><b>Cr RequestedBy</b></td><td>: ' + rData.CreditBy + '</td></tr>' +
                         '<tr><td><b>Cr Amount</b></td><td>: ' + rData.BillAmount + '</td></tr>' +
                         '<tr><td><b>Con RequestedBy</b></td><td>: ' + rData.ReferedBy + '</td></tr>' +
-                        '<tr><td><b>Con Amount</b></td><td>: ' + rData.Concession + '</td></tr>' +
-                        '<tr><td><b>Net Amount</b></td><td>: ' + parseInt(rData.NetAmount) +
-                        '</td></tr>' +
-                        '<tr><td><b>Date</b></td><td>: ' + rData.BillDate + '</td></tr>' +
+                        '<tr><td><b>Con Amount</b></td><td>: ' + rData.Concession + '</td></tr>';
+                        if(parseInt(rData.NetAmount) > 0)
+                        {
+                            tabHtml +='<tr><td><b>Net Amount</b></td><td>: ' + parseInt(rData.NetAmount) + '</td></tr>';
+                        }
+                    tabHtml += '<tr><td><b>Date</b></td><td>: ' + rData.BillDate + '</td></tr>' +
                         '</table></div></div>';
-
                 });
 
                 $("#listConcess").append(tabHtml);
 
-                $(".btnReject").click(function() {
+                $(".btnReject").click(function () {
                     var pno, prno;
                     pno = $(this).attr("pno");
                     prno = $(this).attr("prno");
-
-                    if (confirm("Are you sure you want to reject this bill?") == true) {
+                    if (confirm("Are you sure you want to reject this Concession?") == true) {
                         RejectTheConcession(pno, prno);
                     }
-
                 });
 
-                $(".btnApprove").click(function() {
+                $(".btnApprove").click(function () {
                     var pid, prno
                     pno = $(this).attr("pno");
                     prno = $(this).attr("rno");
 
-                    window.location = "IpConcessApproval.html?rno=" + prno + "&pno=" + pno + "&uname=" +
-                        glbUser + "&type=" + glbType;
-
+                    window.location = "IpConcessApproval.html?rno=" + prno + "&pno=" + pno + "&uname=" + glbUser + "&type=" + glbType;
                 });
 
                 $(".dimmer").hide();
 
-            }).fail(function(jqxhr, settings, ex) {
+            }).fail(function (jqxhr, settings, ex) {
                 console.log(ex)
             });
         }
 
-
-
-
         function RejectTheConcession(pno, prno) {
-
             $(".dimmer").show();
-
             var ConData = {};
-
             ConData.Code = pno;
             ConData.PRNo = prno;
-            ConData.User = glbUser;
+            ConData.User = atob(glbUser);
 
-            $.post(apiURL + "IpConcessReject", ConData, function(response) {
-
-            }).done(function(result) {
-
+            $.post(apiURL + "IpConcessReject", ConData, function (response) {
+            }).done(function (result) {
                 if (result.data == "success") {
-                    alert("Application rejected successfully...");
+                    alert("Concession rejected successfully...");
                     LoadConcessionMemList();
                 }
-            }).fail(function(jqxhr, settings, ex) {
+            }).fail(function (jqxhr, settings, ex) {
                 console.log(ex)
             });
-
         }
     </script>
 

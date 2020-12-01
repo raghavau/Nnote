@@ -358,7 +358,6 @@
 
         $("#btnDocDash").click(function () {
             if (!isPhoneGap()) {
-                alert(isPhoneGap());
                 document.location.href = "doc_dashboard.html?empid=" + btoa($("#hempid").val());
             } else
                 document.location.href = "doc_dashboard.mobile.html?empid=" + btoa($("#hempid").val());
