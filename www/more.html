@@ -181,6 +181,7 @@
                 $("#btnAvailability").removeClass('ui bottom attached disabled button');
                 $("#btnAvailability").addClass('ui bottom attached button');
             }
+            setTimeout(CheckLeaveApprovalStatus(), 1000);
             $(".dimmer").hide();
         });
     }
@@ -201,6 +202,7 @@
 
                 //setTimeout(CheckLeaveApprovalStatus(), 3000);
             }
+            setTimeout(CheckAlternateApproveAccess(), 1000);
             $(".dimmer").hide();
         });
     }
@@ -221,6 +223,7 @@
 
                 //setTimeout(CheckAlternateApproveAccess(), 3000);
             }
+            setTimeout(CheckConcession(), 1000);
         }).fail(function () {
             $('.dimmer').hide();
         });
@@ -250,6 +253,7 @@
                 $("#btnOP").addClass('ui fluid labeled icon orange button');
                 $("#btnIP").addClass('ui fluid labeled icon teal button');
             }
+            setTimeout(CheckTransportAuthority(), 1000);
             $(".dimmer").hide();
         });
     }
@@ -391,9 +395,5 @@
             document.location.href = "VehicleReqApprovedList.html?uid=" + btoa($("#hempid").val());
         });
         CheckStatus();
-        setTimeout(CheckLeaveApprovalStatus(), 1000);
-        setTimeout(CheckAlternateApproveAccess(), 1000);
-        setTimeout(CheckConcession(), 1000);
-        setTimeout(CheckTransportAuthority(), 1000);
     });
 </script>
