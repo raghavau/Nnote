@@ -34,11 +34,23 @@
 </head>
 
 <body onload="onLoad()">
-
-    <div class="divimg" style="background-color: #00AEAD;">
-        <img alt="Take Picture" src="img/logo.png" height="60" width="80" onclick="takePicture();"><br>
-        <label>Take Picture</label>
-    </div>
+    <table style="border: 0px solid;">
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <img alt="image" style="width:100px; visibility:hidden; display:none;" id="camera_image" src="" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">
+                <div class="divimg" style="background-color: #00AEAD;">
+                    <img alt="Take Picture" src="img/camera.PNG" height="60" width="80" onclick="takePicture();"><br>
+                    <label>Take Picture</label>
+                </div>
+            </td>
+        </tr>
+    </table>
 
 </body>
 
@@ -157,7 +169,7 @@
             var ft = new FileTransfer();
             ft.upload(imageURI, encodeURI(server), function (r) {
                 document.getElementById('camera_status').innerHTML =
-                "Picture Uploaded successfully."; // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
+                    "Picture Uploaded successfully."; // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
                 window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
                     btoa($("#hidEmail").val());
             }, function (error) {
