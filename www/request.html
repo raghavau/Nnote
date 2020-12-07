@@ -251,6 +251,7 @@
         navigator.camera.getPicture(
             function(uri) {
                 var img = document.getElementById('camera_image');
+                alert(img);
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
