@@ -248,8 +248,10 @@
     };
 
     function selectPicture() {
+        alert('33');
         navigator.camera.getPicture(
             function(uri) {
+                alert('44');
                 var img = document.getElementById('camera_image');
                 alert(img);
                 img.style.visibility = "visible";
