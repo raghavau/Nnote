@@ -56,6 +56,14 @@
                 </div>
             </td>
         </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <div class="divimg" style="background-color: #E74C3C;">
+                    <img alt="Select Picture from Gallery" src="img/upload.PNG" height="70" width="80" id="btnUpload" onclick="uploadPicture();"><br>
+                    <label>Upload Picture</label>
+                </div>
+            </td>
+        </tr>
     </table>
 
 </body>
@@ -159,7 +167,7 @@
             return;
         }
         document.getElementById('camera_image').style.display = "none";
-        var server = 'http://202.83.27.199/VPMSAPI/api/FileUpload/UploadFile';
+        var server = 'http://localhost/NtraktApi/api/FileUpload/UploadFile';
         if (server) {
             var options = new FileUploadOptions();
             options.fileKey = "file";
@@ -174,10 +182,9 @@
 
             var ft = new FileTransfer();
             ft.upload(imageURI, encodeURI(server), function (r) {
-                document.getElementById('camera_status').innerHTML =
-                    "Picture Uploaded successfully."; // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
-                    btoa($("#hidEmail").val());
+                document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
+                // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
+                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' + btoa($("#hidEmail").val());
             }, function (error) {
                 $("#loading").hide();
                 document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
