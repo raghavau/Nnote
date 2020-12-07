@@ -17,15 +17,15 @@
         .ico-width {
             font-size: 48px !important;
         }
-        
+
         .extra-background {
             background-color: #f1f1f1 !important;
         }
-        
+
         .extra-color-black {
             color: black !important;
         }
-        
+
         .column {
             /*max-width: 450px;*/
             margin: 20px;
@@ -48,37 +48,37 @@
                     </div>
 
                     <!-- <div class="field"> -->
-                        <table style="border: 0px solid; width: 100%;">
-                            <tr>
-                                <td colspan="2" style="text-align: center;">
-                                    <img alt="image" style="width:100px; " id="camera_image" src="" /></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center;">
-                                    <div class="divimg">
-                                        <span class="fa-stack fa-2x" style="color: #009688;" onclick="takePicture();">
-                                            <i class="fas fa-circle fa-stack-2x"></i>
-                                            <i class="fas fa-camera fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                        <br>
-                                        <label>Take Picture</label>
-                                    </div>
-                                </td>
-                                <td style="text-align: center;">
-                                    <div class="divimg">
-                                        <span class="fa-stack fa-2x" style="color: #03a9f4;" onclick="selectPicture();">
-                                            <i class="fas fa-circle fa-stack-2x"></i>
-                                            <i class="fas fa-images fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                        <br>
-                                        <label>Select Picture</label>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                    <table style="border: 0px solid; width: 100%;">
+                        <tr>
+                            <td colspan="2" style="text-align: center;">
+                                <img alt="image" style="width:100px; " id="camera_image" src="" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">
+                                <div class="divimg">
+                                    <span class="fa-stack fa-2x" style="color: #009688;" onclick="takePicture();">
+                                        <i class="fas fa-circle fa-stack-2x"></i>
+                                        <i class="fas fa-camera fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                    <br>
+                                    <label>Take Picture</label>
+                                </div>
+                            </td>
+                            <td style="text-align: center;">
+                                <div class="divimg">
+                                    <span class="fa-stack fa-2x" style="color: #03a9f4;" onclick="selectPicture();">
+                                        <i class="fas fa-circle fa-stack-2x"></i>
+                                        <i class="fas fa-images fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                    <br>
+                                    <label>Select Picture</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                     <!-- </div> -->
 
                     <div class="two fields">
@@ -112,6 +112,7 @@
 <script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
+    var deviceReady = false;
     var apiURL = '../../NnoteApi/Api/Nnote/';
     //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
 
@@ -128,10 +129,10 @@
     }
 
     function init() {
-        document.addEventListener("deviceready", function() {
+        document.addEventListener("deviceready", function () {
             deviceReady = true;
         }, false);
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             if (!deviceReady) {
                 alert("Error: Camera not initialised.");
             }
@@ -169,18 +170,18 @@
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $(".dimmer").hide();
         qs();
 
         $("#lblHeading").text($("#hsname").val() + ' Service Request');
         //document.getElementById('lblHeading').innerText = $("#hsname").val();
         var phoneGap = isPhoneGap();
-        $('#btnSave').click(function() {
+        $('#btnSave').click(function () {
             SaveRequest();
         });
 
-        $('#btnCancel').click(function() {
+        $('#btnCancel').click(function () {
             document.location.href = "services.html?empid=" + btoa($("#hempid").val());
         });
     });
@@ -205,7 +206,7 @@
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
-            success: function(result) {
+            success: function (result) {
                 //debugger;
                 if (result.data == 'Success') {
                     alert('Your Service Request Submitted Successfully');
@@ -215,7 +216,7 @@
                     alert('Your Service Request Failed to Submit.');
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 alert('Error occurred while submitting data.\n\r' + xhr.responseText);
                 $(".dimmer").hide();
             }
@@ -243,7 +244,7 @@
     };
 
     function selectPicture() {
-        document.location.href = "sample.html";
+        window.open("sample.html");
         // navigator.camera.getPicture(
         //     function (uri) {
         //         var img = document.getElementById('camera_image');
