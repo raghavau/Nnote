@@ -47,7 +47,7 @@
                         </div>
                     </div>
 
-                    <div class="field">
+                    <!-- <div class="field"> -->
                         <table style="border: 0px solid; width: 100%;">
                             <tr>
                                 <td colspan="2" style="text-align: center;">
@@ -79,7 +79,7 @@
                                 </td>
                             </tr>
                         </table>
-                    </div>
+                    <!-- </div> -->
 
                     <div class="two fields">
                         <div class="field">
@@ -114,12 +114,6 @@
 <script type="text/javascript">
     var apiURL = '../../NnoteApi/Api/Nnote/';
     //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-
-    var cameraOptions = {
-        sourceType: Camera.PictureSourceType.CAMERA,
-        saveToPhotoAlbum: true,
-        allowEdit: true
-    };
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -230,14 +224,15 @@
 
     function takePicture() {
         navigator.camera.getPicture(
-            function(uri) {
+            function (uri) {
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
-                img.src = 'img/logo.png';
+                img.src = uri;
                 document.getElementById('camera_status').innerHTML = "Success";
             },
-            function(e) {
+            function (e) {
+                console.log("Error getting picture: " + e);
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
@@ -248,18 +243,16 @@
     };
 
     function selectPicture() {
-        alert('33');
         navigator.camera.getPicture(
-            function(uri) {
-                alert('44');
+            function (uri) {
                 var img = document.getElementById('camera_image');
-                alert(img);
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
                 document.getElementById('camera_status').innerHTML = "Success";
             },
-            function(e) {
+            function (e) {
+                console.log("Error getting picture: " + e);
                 document.getElementById('camera_status').innerHTML = "Error getting picture.";
             }, {
                 quality: 50,
