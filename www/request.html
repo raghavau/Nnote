@@ -224,7 +224,7 @@
     }
 
     function takePicture() {
-        navigator.camera.getPicture(
+        parent.navigator.camera.getPicture(
             function (uri) {
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
