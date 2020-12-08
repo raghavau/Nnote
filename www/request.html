@@ -113,6 +113,7 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
     var deviceReady = false;
+    var qsParm = new Array();
     var apiURL = '../../NnoteApi/Api/Nnote/';
     //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
 
@@ -144,8 +145,6 @@
             /^file:\/{3}[^\/]/i.test(window.location.href) &&
             /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
     }
-
-    var qsParm = new Array();
 
     function qs() {
         //debugger;
@@ -224,7 +223,7 @@
     }
 
     function takePicture() {
-        parent.navigator.camera.getPicture(
+        navigator.camera.getPicture(
             function (uri) {
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
