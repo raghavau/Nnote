@@ -259,9 +259,10 @@
                     },
                     function (directory) {
                         entry.moveTo(directory, newFileName, successMove, resOnError);
-                        alert('Moved');
+                        alert('1');
                     },
                     resOnError);
+                    alert('2');
             },
             resOnError);
     }
@@ -271,9 +272,11 @@
         //Store imagepath in session for future use
         // like to store it in database
         sessionStorage.setItem('imagepath', entry.fullPath);
+        alert('3');
     }
 
     function resOnError(error) {
+        alert('4');
         alert(error.code);
     }
 </script>
