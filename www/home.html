@@ -108,8 +108,7 @@
                     $("#firstname").text(response.data[0].Name);
                     $("#desig").text(response.data[0].Designation);
                     //$("#empimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
-                    $("#empimg").attr('src',
-                        'http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + $("#hempid").val());
+                    $("#empimg").attr('src', 'http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + $("#hempid").val());
                 }
             }).done(function() {
                 //debugger;
