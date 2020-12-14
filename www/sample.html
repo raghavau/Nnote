@@ -37,7 +37,8 @@
     <table style="border: 0px solid;">
         <tr>
             <td colspan="2" style="text-align: center;">
-                <img alt="image" style="width:100px; " id="camera_image" src="" /></td><!-- visibility:hidden; display:none; -->
+                <img alt="image" style="width:100px; " id="camera_image" src="" /></td>
+            <!-- visibility:hidden; display:none; -->
         </tr>
         <tr>
             <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
@@ -59,7 +60,8 @@
         <tr>
             <td colspan="2" style="text-align: center;">
                 <div class="divimg" style="background-color: #E74C3C;">
-                    <img alt="Select Picture from Gallery" src="img/upload.PNG" height="70" width="80" id="btnUpload" onclick="uploadPicture();"><br>
+                    <img alt="Select Picture from Gallery" src="img/upload.PNG" height="70" width="80" id="btnUpload"
+                        onclick="uploadPicture();"><br>
                     <label>Upload Picture</label>
                 </div>
             </td>
@@ -185,7 +187,8 @@
             ft.upload(imageURI, encodeURI(server), function (r) {
                 document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
                 // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' + btoa($("#hidEmail").val());
+                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
+                    btoa($("#hidEmail").val());
             }, function (error) {
                 $("#loading").hide();
                 document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
@@ -204,7 +207,7 @@
             }
         }, 2000);
     }
-    
+
 
     function capturePhoto() {
         sessionStorage.removeItem('imagepath');
@@ -259,10 +262,10 @@
                     },
                     function (directory) {
                         entry.moveTo(directory, newFileName, successMove, resOnError);
-                        alert('1');
+                        alert('1:' + newFileName);
                     },
                     resOnError);
-                    alert('2');
+                alert('2');
             },
             resOnError);
     }
@@ -272,11 +275,10 @@
         //Store imagepath in session for future use
         // like to store it in database
         sessionStorage.setItem('imagepath', entry.fullPath);
-        alert('3' + entry.fullPath);
+        alert('3:' + entry.fullPath);
     }
 
     function resOnError(error) {
-        alert('4');
         alert(error.code);
     }
 </script>
