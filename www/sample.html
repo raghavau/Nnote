@@ -273,7 +273,8 @@
                     resOnError);
             },
             resOnError);
-        document.getElementById('camera_status').innerHTML = newFileName;
+        var filename = fileSystem.root.toURL() + myFolderApp + "/" + newFileName;
+        document.getElementById('camera_status').innerHTML = filename;
     }
 
     //Callback function when the file has been moved successfully - inserting the complete path
