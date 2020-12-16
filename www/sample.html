@@ -263,12 +263,12 @@
         var filename = '';
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
                 //The folder is created if doesn't exist
+                filename = fileSystem.root.toURL() + myFolderApp + "/" + newFileName;
                 fileSystem.root.getDirectory(myFolderApp, {
                         create: true,
                         exclusive: false
                     },
                     function (directory) {
-                        filename = fileSystem.root.toURL() + myFolderApp + "/" + newFileName;
                         entry.moveTo(directory, newFileName, successMove, resOnError);
                     },
                     resOnError);
