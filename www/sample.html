@@ -260,7 +260,7 @@
         //new file name
         var newFileName = n + ".jpg";
         var myFolderApp = "MyAppFolder";
-
+        var filename = '';
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
                 //The folder is created if doesn't exist
                 fileSystem.root.getDirectory(myFolderApp, {
@@ -268,12 +268,12 @@
                         exclusive: false
                     },
                     function (directory) {
+                        filename = fileSystem.root.toURL() + myFolderApp + "/" + newFileName;
                         entry.moveTo(directory, newFileName, successMove, resOnError);
                     },
                     resOnError);
             },
             resOnError);
-        var filename = fileSystem.root.toURL() + myFolderApp + "/" + newFileName;
         document.getElementById('camera_status').innerHTML = fileSystem.root.toURL();
     }
 
