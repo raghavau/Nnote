@@ -240,6 +240,7 @@
         if (sessionStorage.isprofileimage == 1) {
             getLocation();
         }
+        document.getElementById('camera_status').innerHTML = imageURI;
         movePic(imageURI);
     }
 
@@ -260,10 +261,9 @@
         //new file name
         var newFileName = n + ".jpg";
         var myFolderApp = "MyAppFolder";
-        var filename = '';
+
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
                 //The folder is created if doesn't exist
-                filename = fileSystem.root.toURL() + myFolderApp + "/" + newFileName;
                 fileSystem.root.getDirectory(myFolderApp, {
                         create: true,
                         exclusive: false
@@ -274,7 +274,7 @@
                     resOnError);
             },
             resOnError);
-        document.getElementById('camera_status').innerHTML = filename;
+        // document.getElementById('camera_status').innerHTML = newFileName;
     }
 
     //Callback function when the file has been moved successfully - inserting the complete path
