@@ -274,7 +274,7 @@
             },
             resOnError);
         var filename = fileSystem.root.toURL() + myFolderApp + "/" + newFileName;
-        document.getElementById('camera_status').innerHTML = filename;
+        document.getElementById('camera_status').innerHTML = fileSystem.root.toURL();
     }
 
     //Callback function when the file has been moved successfully - inserting the complete path
