@@ -277,7 +277,7 @@
         //Store imagepath in session for future use
         // like to store it in database
         sessionStorage.setItem('imagepath', entry.fullPath);
-
+        alert(sessionStorage.getItem('imagepath'));
         var imgProfile = document.getElementById('camera_image2');
         imgProfile.src = sessionStorage.getItem('imagepath');
     }
