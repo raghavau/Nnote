@@ -164,41 +164,44 @@
     };
 
     function uploadPicture() {
-        $("#loading").show();
-        var img = document.getElementById('camera_image');
-        var imageURI = img.src;
-        if (!imageURI || (img.style.display == "none")) {
-            alert('Take Picture or Select Picture from library.');
-            document.getElementById('camera_status').innerHTML = "Take picture or Select picture from library.";
-            $("#loading").hide();
-            return;
-        }
-        document.getElementById('camera_image').style.display = "none";
-        var server = 'http://localhost/NtraktApi/api/FileUpload/UploadFile';
-        if (server) {
-            var options = new FileUploadOptions();
-            options.fileKey = "file";
-            options.fileName = $("#hidRequestId").val();
-            options.mimeType = "image/jpeg";
-            options.chunkedMode = false;
-            options.headers = {
-                Connection: "close"
-            }
-            server = server + '/' + options.fileName;
-            //document.getElementById('camera_status').innerHTML = options.fileName;
+        // $("#loading").show();
+        // var img = document.getElementById('camera_image');
+        // var imageURI = img.src;
+        // if (!imageURI || (img.style.display == "none")) {
+        //     alert('Take Picture or Select Picture from library.');
+        //     document.getElementById('camera_status').innerHTML = "Take picture or Select picture from library.";
+        //     $("#loading").hide();
+        //     return;
+        // }
+        // document.getElementById('camera_image').style.display = "none";
+        // var server = 'http://localhost/NtraktApi/api/FileUpload/UploadFile';
+        // if (server) {
+        //     var options = new FileUploadOptions();
+        //     options.fileKey = "file";
+        //     options.fileName = $("#hidRequestId").val();
+        //     options.mimeType = "image/jpeg";
+        //     options.chunkedMode = false;
+        //     options.headers = {
+        //         Connection: "close"
+        //     }
+        //     server = server + '/' + options.fileName;
+        //     //document.getElementById('camera_status').innerHTML = options.fileName;
 
-            var ft = new FileTransfer();
-            ft.upload(imageURI, encodeURI(server), function (r) {
-                document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
-                // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
-                    btoa($("#hidEmail").val());
-            }, function (error) {
-                $("#loading").hide();
-                document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
-                    "\n upload error source " + error.source + "\n upload error target " + error.target;
-            }, options);
-        }
+        //     var ft = new FileTransfer();
+        //     ft.upload(imageURI, encodeURI(server), function (r) {
+        //         document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
+        //         // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
+        //         window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
+        //             btoa($("#hidEmail").val());
+        //     }, function (error) {
+        //         $("#loading").hide();
+        //         document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
+        //             "\n upload error source " + error.source + "\n upload error target " + error.target;
+        //     }, options);
+        // }
+        alert(sessionStorage.getItem('imagepath'));
+        var imgProfile = document.getElementById('camera_image2');
+        imgProfile.src = sessionStorage.getItem('imagepath');
     }
 
     function init() {
@@ -211,7 +214,6 @@
             }
         }, 2000);
     }
-
 
     function capturePhoto() {
         sessionStorage.removeItem('imagepath');
@@ -277,9 +279,6 @@
         //Store imagepath in session for future use
         // like to store it in database
         sessionStorage.setItem('imagepath', entry.fullPath);
-        alert(sessionStorage.getItem('imagepath'));
-        var imgProfile = document.getElementById('camera_image2');
-        imgProfile.src = sessionStorage.getItem('imagepath');
     }
 
     function resOnError(error) {
