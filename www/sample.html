@@ -201,7 +201,7 @@
         // }
         alert(sessionStorage.getItem('imagepath'));
         var imgProfile = document.getElementById('camera_image2');
-        imgProfile.src = sessionStorage.getItem('imagepath');
+        imgProfile.src = "file://" + sessionStorage.getItem('imagepath');
     }
 
     function init() {
@@ -220,7 +220,8 @@
         // Take picture using device camera and retrieve image as base64-encoded string
         navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
             quality: 50,
-            destinationType: Camera.DestinationType.FILE_URI
+            destinationType: Camera.DestinationType.FILE_URI,
+            saveToPhotoAlbum: true
         });
     }
 
@@ -260,9 +261,9 @@
         var newFileName = n + ".jpg";
         var myFolderApp = "MyAppFolder";
 
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSys) {
+        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
                 //The folder is created if doesn't exist
-                fileSys.root.getDirectory(myFolderApp, {
+                fileSystem.root.getDirectory(myFolderApp, {
                         create: true,
                         exclusive: false
                     },
