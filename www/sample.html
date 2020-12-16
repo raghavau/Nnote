@@ -41,6 +41,10 @@
             <!-- visibility:hidden; display:none; -->
         </tr>
         <tr>
+            <td colspan="2" style="text-align: center;">
+                <img alt="image" style="width:100px; " id="camera_image2" src="" /></td>
+        </tr>
+        <tr>
             <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
         </tr>
         <tr>
@@ -262,10 +266,8 @@
                     },
                     function (directory) {
                         entry.moveTo(directory, newFileName, successMove, resOnError);
-                        alert('1:' + newFileName);
                     },
                     resOnError);
-                alert('2');
             },
             resOnError);
     }
@@ -275,7 +277,9 @@
         //Store imagepath in session for future use
         // like to store it in database
         sessionStorage.setItem('imagepath', entry.fullPath);
-        alert('3:' + entry.fullPath);
+
+        var imgProfile = document.getElementById('camera_image2');
+        imgProfile.src = sessionStorage.getItem('imagepath');
     }
 
     function resOnError(error) {
