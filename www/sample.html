@@ -201,7 +201,7 @@
         // }
         alert(sessionStorage.getItem('imagepath'));
         var imgProfile = document.getElementById('camera_image2');
-        imgProfile.src = "file://" + sessionStorage.getItem('imagepath');
+        imgProfile.src = document.getElementById('camera_status').innerHTML;
     }
 
     function init() {
