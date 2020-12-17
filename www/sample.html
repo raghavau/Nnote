@@ -72,6 +72,8 @@
         </tr>
     </table>
     <input type="hidden" id="hempid" />
+    <input type="hidden" id="hsid" />
+    <input type="hidden" id="hsname" />
 </body>
 
 </html>
@@ -106,6 +108,8 @@
         }
         if (parms.length > 0) {
             $("#hempid").val(atob(qsParm["empid"]));
+            $("#hsid").val(atob(qsParm["sid"]));
+            $("#hsname").val(atob(qsParm["sname"]));
             return true;
         } else {
             window.location.href = 'index.html';
@@ -201,11 +205,14 @@
         //             "\n upload error source " + error.source + "\n upload error target " + error.target;
         //     }, options);
         // }
-        
+
         // var imgProfile = document.getElementById('camera_image2');
         // imgProfile.src = document.getElementById('camera_status').innerHTML;
 
-        window.open('layout.html?empid=' + btoa($("#empid").val()));
+        var fileName = document.getElementById('camera_status').innerHTML.split("/");
+        fileName = fileName[fileName.length - 1];
+        window.open('layout.html?empid=' + btoa($("#empid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
+            + "&fname=" + btoa(fileName));
     }
 
     function init() {

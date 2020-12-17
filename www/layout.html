@@ -72,6 +72,7 @@
         </a>
     </div>
     <input type="hidden" id="hempid" />
+    <input type="hidden" id="hfname" />
     <input type="hidden" id="hvno" />
     <div class="ui active inverted page dimmer">
         <div class="ui large text loader">Loading</div>
@@ -108,6 +109,9 @@
         }
         if (parms.length > 0) {
             $("#hempid").val(atob(qsParm["empid"]));
+            if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
+                $("#hfname").val(atob(qsParm["fname"]));
+            }
             return true;
         } else {
             window.location.href = 'index.html';
@@ -140,7 +144,10 @@
         $('#ifrm').css('top', $('.top').height());
         $('#ifrm').height(ifrmheight - 45);
 
-        $('#ifrm').attr('src', 'home.html?empid=' + btoa($("#hempid").val()));
+        if ($("#hfname").val() != "")
+            $('#ifrm').attr('src', 'request.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
+        else
+            $('#ifrm').attr('src', 'home.html?empid=' + btoa($("#hempid").val()));
 
         $("#ntfCount").text("");
         $("#ntfCount").hide();

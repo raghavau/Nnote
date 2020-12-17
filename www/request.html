@@ -229,7 +229,7 @@
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 img.src = uri;
-                document.getElementById('camera_status').innerHTML = "Success";
+                document.getElementById('camera_status').innerHTML = uri;
             },
             function (e) {
                 alert("Error getting picture: " + e);
@@ -243,7 +243,7 @@
     };
 
     function selectPicture() {
-        window.open('sample.html?empid=' + btoa($("#hempid").val()));
+        window.open('sample.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
         // navigator.camera.getPicture(
         //     function (uri) {
         //         var img = document.getElementById('camera_image');
