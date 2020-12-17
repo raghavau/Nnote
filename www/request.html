@@ -106,6 +106,7 @@
     <input type="hidden" id="hempid" />
     <input type="hidden" id="hsid" />
     <input type="hidden" id="hsname" />
+    <input type="hidden" id="hfname" />
 </body>
 
 </html>
@@ -162,6 +163,13 @@
             $("#hempid").val(atob(qsParm["empid"]));
             $("#hsid").val(atob(qsParm["sid"]));
             $("#hsname").val(atob(qsParm["sname"]));
+            if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
+                $("#hfname").val(atob(qsParm["fname"]));
+                var img = document.getElementById('camera_image');
+                img.style.visibility = "visible";
+                img.style.display = "block";
+                img.src = "file:///storage/emulated/0/Android/data/com.phonegap.nnote/cache/" + $("#hfname").val();
+            }
             return true;
         } else {
             window.location.href = 'index.html';
