@@ -180,8 +180,7 @@
                     //debugger;
                     if (response.data == 'Success')
                         setTimeout(function() {
-                            window.location.href = 'layout.html?empid=' + btoa($("#empid")
-                                .val());
+                            window.location.href = 'layout.html?empid=' + btoa($("#empid").val());
                         }, 3000);
                     else {
                         $(".dimmer").hide();

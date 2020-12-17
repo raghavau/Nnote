@@ -71,7 +71,7 @@
             </td>
         </tr>
     </table>
-
+    <input type="hidden" id="hempid" />
 </body>
 
 </html>
@@ -93,6 +93,7 @@
     function onBackKeyDown() {}
 
     function qs() {
+        //debugger;
         var query = window.location.search.substring(1);
         var parms = query.split('&');
         for (var i = 0; i < parms.length; i++) {
@@ -103,11 +104,12 @@
                 qsParm[key] = val;
             }
         }
-        if (parms.length > 1) {
-            $("#hidRequestId").val(atob(qsParm["reqid"]));
-            $("#hidEmail").val(atob(qsParm["mail"]));
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            return true;
         } else {
-            window.location.href = 'VisitorRequest.html';
+            window.location.href = 'index.html';
+            return false;
         }
     }
 
@@ -199,9 +201,11 @@
         //             "\n upload error source " + error.source + "\n upload error target " + error.target;
         //     }, options);
         // }
-        alert(sessionStorage.getItem('imagepath'));
-        var imgProfile = document.getElementById('camera_image2');
-        imgProfile.src = document.getElementById('camera_status').innerHTML;
+        
+        // var imgProfile = document.getElementById('camera_image2');
+        // imgProfile.src = document.getElementById('camera_status').innerHTML;
+
+        window.location.href = 'layout.html?empid=' + btoa($("#empid").val());
     }
 
     function init() {
@@ -220,8 +224,7 @@
         // Take picture using device camera and retrieve image as base64-encoded string
         navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
             quality: 50,
-            destinationType: Camera.DestinationType.FILE_URI,
-            saveToPhotoAlbum: true
+            destinationType: Camera.DestinationType.FILE_URI
         });
     }
 

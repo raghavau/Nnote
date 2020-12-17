@@ -7,7 +7,7 @@
     <author email="professionalcolleges.it@narayanagroup.com" href="http://nspira.in">
         Nspira IT Team
     </author>
-    <content src="sample.html" />
+    <content src="index.html" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="android-minSdkVersion" value="14" />
     <plugin name="cordova-plugin-battery-status" source="npm" />

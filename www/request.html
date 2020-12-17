@@ -243,7 +243,7 @@
     };
 
     function selectPicture() {
-        window.open("sample.html");
+        window.location.href = 'sample.html?empid=' + btoa($("#hempid").val());
         // navigator.camera.getPicture(
         //     function (uri) {
         //         var img = document.getElementById('camera_image');
