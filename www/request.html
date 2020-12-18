@@ -48,9 +48,9 @@
                     </div>                    
 
                     <div class="field">
-                        <img src="" alt="" id="camera_image" class="ui medium centered image">
+                        <img src="" alt="" id="camera_image" class="ui medium centered image" height="200px" width="200px">
                     </div>
-                    
+                    <br><br>
                     <div class="field" onclick="onSelectClick()">
                         <button id="btnSelectImage" class="ui blue fluid labeled icon button">
                             <i class="images icon"></i>
@@ -141,12 +141,8 @@
             $("#hsid").val(atob(qsParm["sid"]));
             $("#hsname").val(atob(qsParm["sname"]));
             if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
-                var fileName = atob(qsParm["fname"]);
-                //$("#hfname").val(atob(qsParm["fname"]));
+                $("#hfname").val(atob(qsParm["fname"]));
                 var img = document.getElementById('camera_image');
-                // img.style.visibility = "visible";
-                // img.style.display = "block";
-                //img.src = "file:///storage/emulated/0/Android/data/com.phonegap.nnote/cache/" + $("#hfname").val();
                 img.src = sessionStorage.getItem('imagepath');
             }
             return true;
