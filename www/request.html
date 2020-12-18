@@ -51,7 +51,7 @@
                         <table style="border: 0px solid; width: 100%;">
                             <tr>
                                 <td colspan="2" style="text-align: center;">
-                                    <img alt="image" style="width:100px; " id="camera_image" src="" /></td>
+                                    <img alt="image" style="width:100px; " id="" src="" /></td>
                             </tr>
                             <tr>
                                 <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
@@ -79,6 +79,17 @@
                                 </td>
                             </tr>
                         </table>
+                    </div>
+
+                    <div class="field">
+                        <img src="" alt="" id="camera_image" class="ui medium centered image">
+                    </div>
+                    
+                    <div class="field">
+                        <button id="btnSelectImage" class="ui blue fluid labeled icon button">
+                            <i class="images icon"></i>
+                            Select Image
+                        </button>
                     </div>
 
                     <div class="two fields">
@@ -184,6 +195,11 @@
         $("#lblHeading").text($("#hsname").val() + ' Service Request');
         //document.getElementById('lblHeading').innerText = $("#hsname").val();
         var phoneGap = isPhoneGap();
+
+        $('#btnSelectImage').click(function () {
+            window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
+        });
+
         $('#btnSave').click(function () {
             SaveRequest();
         });
@@ -230,44 +246,4 @@
         });
     }
 
-    function takePicture() {
-        navigator.camera.getPicture(
-            function (uri) {
-                var img = document.getElementById('camera_image');
-                img.style.visibility = "visible";
-                img.style.display = "block";
-                img.src = uri;
-                document.getElementById('camera_status').innerHTML = uri;
-            },
-            function (e) {
-                alert("Error getting picture: " + e);
-                document.getElementById('camera_status').innerHTML = "Error getting picture.";
-            }, {
-                quality: 50,
-                destinationType: navigator.camera.DestinationType.FILE_URI,
-                correctOrientation: true
-            }
-        );
-    };
-
-    function selectPicture() {
-        window.open('sample.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
-        // navigator.camera.getPicture(
-        //     function (uri) {
-        //         var img = document.getElementById('camera_image');
-        //         img.style.visibility = "visible";
-        //         img.style.display = "block";
-        //         img.src = uri;
-        //         document.getElementById('camera_status').innerHTML = "Success";
-        //     },
-        //     function (e) {
-        //         alert("Error getting picture: " + e);
-        //         document.getElementById('camera_status').innerHTML = "Error getting picture.";
-        //     }, {
-        //         quality: 50,
-        //         destinationType: navigator.camera.DestinationType.FILE_URI,
-        //         sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
-        //     }
-        // );
-    };
 </script>
