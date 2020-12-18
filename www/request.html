@@ -142,13 +142,12 @@
             $("#hsname").val(atob(qsParm["sname"]));
             if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
                 var fileName = atob(qsParm["fname"]);
-                alert(sessionStorage.getItem('imagepath'));
                 //$("#hfname").val(atob(qsParm["fname"]));
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
                 //img.src = "file:///storage/emulated/0/Android/data/com.phonegap.nnote/cache/" + $("#hfname").val();
-                // img.src = $("#hfname").val();
+                img.src = sessionStorage.getItem('imagepath');
             }
             return true;
         } else {
