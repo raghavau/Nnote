@@ -51,7 +51,7 @@
                         <img src="" alt="" id="camera_image" class="ui medium centered image">
                     </div>
                     
-                    <div class="field">
+                    <div class="field" onclick="onSelectClick()">
                         <button id="btnSelectImage" class="ui blue fluid labeled icon button">
                             <i class="images icon"></i>
                             Select Image
@@ -164,10 +164,6 @@
         //document.getElementById('lblHeading').innerText = $("#hsname").val();
         var phoneGap = isPhoneGap();
 
-        $('#btnSelectImage').click(function () {
-            window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
-        });
-
         $('#btnSave').click(function () {
             SaveRequest();
         });
@@ -176,6 +172,10 @@
             document.location.href = "services.html?empid=" + btoa($("#hempid").val());
         });
     });
+
+    function onSelectClick(){
+        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
+    }
 
     function SaveRequest() {
         //debugger;
