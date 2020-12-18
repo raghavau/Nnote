@@ -179,7 +179,8 @@
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
                 img.style.display = "block";
-                img.src = "file:///storage/emulated/0/Android/data/com.phonegap.nnote/cache/" + $("#hfname").val();
+                //img.src = "file:///storage/emulated/0/Android/data/com.phonegap.nnote/cache/" + $("#hfname").val();
+                img.src = $("#hfname").val();
             }
             return true;
         } else {
