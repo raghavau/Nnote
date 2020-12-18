@@ -45,16 +45,15 @@
                         <div class="field">
                             <textarea name="txtRemarks" id="txtRemarks" cols="30" rows="5" class="ui input"></textarea>
                         </div>
-                    </div>                    
-
-                    <div class="field" onclick="onSelectClick()">
-                        <button id="btnSelectImage" class="ui blue fluid labeled icon button">
-                            <i class="images icon"></i>
-                            Select Image
-                        </button>
                     </div>
 
-                    <div class="two fields">
+                    <div class="three fields">
+                        <div class="field">
+                            <button id="btnSelectImage" class="ui blue fluid labeled icon button">
+                                <i class="images icon"></i>
+                                Select Image
+                            </button>
+                        </div>
                         <div class="field">
                             <button id="btnSave" class="ui positive fluid labeled icon button">
                                 <i class="check icon"></i>
@@ -70,7 +69,8 @@
                     </div>
 
                     <div class="field">
-                        <img src="" alt="" id="camera_image" class="ui medium centered image" height="200px" width="200px">
+                        <img src="" alt="" id="camera_image" class="ui medium centered image" height="200px"
+                            width="200px">
                     </div>
                 </div>
             </div>
@@ -160,6 +160,10 @@
         //document.getElementById('lblHeading').innerText = $("#hsname").val();
         var phoneGap = isPhoneGap();
 
+        $('#btnSelectImage').click(function () {
+            onSelectClick();
+        });
+
         $('#btnSave').click(function () {
             SaveRequest();
         });
@@ -169,8 +173,9 @@
         });
     });
 
-    function onSelectClick(){
-        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
+    function onSelectClick() {
+        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
+            "&sname=" + btoa($("#hsname").val()));
     }
 
     function SaveRequest() {
@@ -209,5 +214,4 @@
             }
         });
     }
-
 </script>
