@@ -161,6 +161,7 @@
         var phoneGap = isPhoneGap();
 
         $('#btnSelectImage').click(function () {
+            alert($(this).val());
             onSelectClick();
         });
 
@@ -174,8 +175,10 @@
     });
 
     function onSelectClick() {
-        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
-            "&sname=" + btoa($("#hsname").val()));
+        alert($("#hempid").val());
+        alert($("#hsid").val());
+        alert($("#hsname").val());
+        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
     }
 
     function SaveRequest() {
