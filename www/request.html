@@ -142,7 +142,7 @@
             $("#hsname").val(atob(qsParm["sname"]));
             if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
                 var fileName = atob(qsParm["fname"]);
-                alert(fileName[0]);
+                alert(sessionStorage.getItem('imagepath'));
                 //$("#hfname").val(atob(qsParm["fname"]));
                 var img = document.getElementById('camera_image');
                 img.style.visibility = "visible";
