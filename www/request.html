@@ -162,9 +162,9 @@
 
         $('#btnSelectImage').click(function () {
             if($("#hfname").val() != "")
-                onSelectClick();
+            window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
             else
-                window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
+            onSelectClick();
         });
 
         $('#btnSave').click(function () {
