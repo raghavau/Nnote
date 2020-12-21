@@ -174,9 +174,7 @@
     });
 
     function onSelectClick() {
-        setTimeout(function () {
-            window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
-        }, 1000);
+        document.location.href = ('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
     }
 
     function SaveRequest() {
