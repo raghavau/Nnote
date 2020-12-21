@@ -47,6 +47,8 @@
                         </div>
                     </div>
 
+                    <input type="file" name="fileUpload" id="fileUpload" onchange="readURL(event);">
+
                     <div class="three fields">
                         <div class="field">
                             <button id="btnSelectImage" class="ui blue fluid labeled icon button">
@@ -174,8 +176,16 @@
         });
     });
 
+    function readURL(event) {
+        var img = document.getElementById('camera_image');
+        img.style.visibility = "visible";
+        img.style.display = "block";
+        img.src = URL.createObjectURL(event.target.files[0]);
+    }
+
     function onSelectClick() {
-        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
+        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
+            "&sname=" + btoa($("#hsname").val()));
     }
 
     function SaveRequest() {
@@ -227,7 +237,8 @@
             $("#loading").hide();
             return;
         }
-        document.getElementById('camera_image').style.display = "none";
+        // document.getElementById('camera_image').style.display = "none";
+        alert(imageURI);
         var server = 'http://115.241.194.19/NtraktApi/api/FileUpload/UploadFile';
         if (server) {
             var options = new FileUploadOptions();
