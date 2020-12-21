@@ -139,7 +139,7 @@
     }
 
     $(document).ready(function () {
-        //qs();
+        qs();
         $("#loading").hide();
         sessionStorage.removeItem('imagepath');
     });
@@ -224,7 +224,7 @@
         sessionStorage.setItem('imagepath', imageUrl);
         var fileName = imageUrl.split("/");
         fileName = fileName[fileName.length - 1];
-        window.open('layout.html?empid=' + btoa($("#empid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
+        window.open('layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
             + "&fname=" + btoa(fileName));
     }
 
