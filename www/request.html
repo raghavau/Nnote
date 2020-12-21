@@ -174,10 +174,9 @@
     });
 
     function onSelectClick() {
-        alert($("#hempid").val());
-        alert($("#hsid").val());
-        alert($("#hsname").val());
-        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
+        setTimeout(function () {
+            window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
+        }, 1000);
     }
 
     function SaveRequest() {
