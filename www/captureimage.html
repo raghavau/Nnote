@@ -227,7 +227,7 @@
             }, function (error) {
                 $("#loading").hide();
                 document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
-                    "\n upload error source " + error.source + "\n upload error target " + error.target;
+                    "\n upload error source " + error.source + "\n upload error target " + error.target + "\n error message " + error.message;
             }, options);
         }
 
