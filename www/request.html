@@ -161,7 +161,10 @@
         var phoneGap = isPhoneGap();
 
         $('#btnSelectImage').click(function () {
-            onSelectClick();
+            if($("#hfname").val() != "")
+                onSelectClick();
+            else
+                window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
         });
 
         $('#btnSave').click(function () {
