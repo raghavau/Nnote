@@ -44,7 +44,7 @@
     <table style="border: 0px solid; text-align: center">
         <tr>
             <td colspan="2" style="text-align: center;">
-                <img alt="image" style="width:100px; visibility:hidden; display:none;" id="camera_image" src="" /></td>
+                <img alt="image" style="width:200px; height: 200px; visibility:hidden; display:none;" id="camera_image" src="" /></td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
@@ -225,7 +225,7 @@
         var fileName = imageUrl.split("/");
         fileName = fileName[fileName.length - 1];
         // fileName ="test";
-        document.location.href = 'request.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
+        document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
             + "&fname=" + btoa(fileName);
     }
 
