@@ -44,7 +44,8 @@
     <table style="border: 0px solid; text-align: center">
         <tr>
             <td colspan="2" style="text-align: center;">
-                <img alt="image" style="width:300px; height: 200px; visibility:hidden; display:none;" id="camera_image" src="" /></td>
+                <img alt="image" style="width:300px; height: 200px; visibility:hidden; display:none;" id="camera_image"
+                    src="" /></td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
@@ -77,7 +78,8 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align: center;">
-                <button id="btnUpload" class="ui positive fluid labeled icon button" type="button" onclick="uploadPicture();">
+                <button id="btnUpload" class="ui positive fluid labeled icon button" type="button"
+                    onclick="uploadPicture();">
                     <i class="left arrow icon"></i>
                     Back
                 </button>
@@ -196,6 +198,8 @@
 
     function uploadPicture() {
         $("#loading").show();
+        var d = new Date();
+        var n = d.getTime();
         var img = document.getElementById('camera_image');
         var imageURI = img.src;
         if (!imageURI || (img.style.display == "none")) {
@@ -204,12 +208,12 @@
             $("#loading").hide();
             return;
         }
-        document.getElementById('camera_image').style.display = "none";
-        var server = 'http://115.241.194.19/NtraktApi/api/FileUpload/UploadFile';
+        // document.getElementById('camera_image').style.display = "none";
+        var server = 'http://115.241.194.19/NnoteApi/api/FileUpload/UploadFile';
         if (server) {
             var options = new FileUploadOptions();
             options.fileKey = "file";
-            options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+            options.fileName = n;
             options.mimeType = "image/jpeg";
             options.chunkedMode = false;
             options.headers = {
@@ -222,8 +226,8 @@
             ft.upload(imageURI, encodeURI(server), function (r) {
                 document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
                 // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-                // window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
-                //     btoa($("#hidEmail").val());
+                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
+                    btoa($("#hidEmail").val());
             }, function (error) {
                 $("#loading").hide();
                 document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
