@@ -92,8 +92,8 @@
 <script type="text/javascript">
     var deviceReady = false;
     var qsParm = new Array();
-    var apiURL = '../../NnoteApi/Api/Nnote/';
-    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = '../../NnoteApi/Api/Nnote/';
+    var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
 
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -161,14 +161,12 @@
         var phoneGap = isPhoneGap();
 
         $('#btnSelectImage').click(function () {
-            if($("#hfname").val() != "")
-            window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val()));
-            else
             onSelectClick();
         });
 
         $('#btnSave').click(function () {
-            SaveRequest();
+            // SaveRequest();
+            uploadPicture();
         });
 
         $('#btnCancel').click(function () {
@@ -215,5 +213,43 @@
                 $(".dimmer").hide();
             }
         });
+    }
+
+    function uploadPicture() {
+        $("#loading").show();
+        var img = document.getElementById('camera_image');
+        var imageURI = img.src;
+        if (!imageURI || (img.style.display == "none")) {
+            alert('Take Picture or Select Picture from library.');
+            document.getElementById('camera_status').innerHTML = "Take picture or Select picture from library.";
+            $("#loading").hide();
+            return;
+        }
+        document.getElementById('camera_image').style.display = "none";
+        var server = 'http://115.241.194.19/NtraktApi/api/FileUpload/UploadFile';
+        if (server) {
+            var options = new FileUploadOptions();
+            options.fileKey = "file";
+            options.fileName = $("#hidRequestId").val();
+            options.mimeType = "image/jpeg";
+            options.chunkedMode = false;
+            options.headers = {
+                Connection: "close"
+            }
+            server = server + '/' + options.fileName;
+            //document.getElementById('camera_status').innerHTML = options.fileName;
+
+            var ft = new FileTransfer();
+            ft.upload(imageURI, encodeURI(server), function (r) {
+                document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
+                // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
+                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
+                    btoa($("#hidEmail").val());
+            }, function (error) {
+                $("#loading").hide();
+                document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
+                    "\n upload error source " + error.source + "\n upload error target " + error.target;
+            }, options);
+        }
     }
 </script>
