@@ -217,11 +217,13 @@
 
     function uploadPicture() {
         $("#loading").show();
+        var d = new Date();
+        var n = d.getTime();
         var img = document.getElementById('camera_image');
         var imageURI = img.src;
         if (!imageURI || (img.style.display == "none")) {
             alert('Take Picture or Select Picture from library.');
-            document.getElementById('camera_status').innerHTML = "Take picture or Select picture from library.";
+            alert("Take picture or Select picture from library.");
             $("#loading").hide();
             return;
         }
@@ -230,7 +232,7 @@
         if (server) {
             var options = new FileUploadOptions();
             options.fileKey = "file";
-            options.fileName = $("#hidRequestId").val();
+            options.fileName = n;
             options.mimeType = "image/jpeg";
             options.chunkedMode = false;
             options.headers = {
@@ -241,14 +243,13 @@
 
             var ft = new FileTransfer();
             ft.upload(imageURI, encodeURI(server), function (r) {
-                document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
+                alert("Picture Uploaded successfully.");
                 // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
-                    btoa($("#hidEmail").val());
+                // window.location.href = "";
             }, function (error) {
                 $("#loading").hide();
-                document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
-                    "\n upload error source " + error.source + "\n upload error target " + error.target;
+                alert("Upload failed: Code = " + error.code +
+                    "\n upload error source " + error.source + "\n upload error target " + error.target);
             }, options);
         }
     }
