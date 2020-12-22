@@ -226,21 +226,17 @@
             ft.upload(imageURI, encodeURI(server), function (r) {
                 document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
                 // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-                window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
-                    btoa($("#hidEmail").val());
+                sessionStorage.setItem('imagepath', imageUrl);
+                var fileName = imageUrl.split("/");
+                fileName = fileName[fileName.length - 1];
+                document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + 
+                    "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa(fileName);
             }, function (error) {
                 $("#loading").hide();
                 document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
                     "\n upload error source " + error.source + "\n upload error target " + error.target;
             }, options);
         }
-
-        // sessionStorage.setItem('imagepath', imageUrl);
-        // var fileName = imageUrl.split("/");
-        // fileName = fileName[fileName.length - 1];
-        // // fileName ="test";
-        // document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
-        //     + "&fname=" + btoa(fileName);
     }
 
     function init() {
