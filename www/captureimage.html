@@ -87,6 +87,9 @@
             </td>
         </tr>
     </table>
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
     <input type="hidden" id="hempid" />
     <input type="hidden" id="hsid" />
     <input type="hidden" id="hsname" />
@@ -141,7 +144,7 @@
 
     $(document).ready(function () {
         qs();
-        $("#loading").hide();
+        $(".dimmer").hide();
         sessionStorage.removeItem('imagepath');
     });
 
@@ -186,7 +189,8 @@
     };
 
     function uploadPicture() {
-        $("#loading").show();
+        $(".dimmer").show();
+        document.getElementById('camera_status').innerHTML = "";
         var d = new Date();
         var n = d.getTime();
         var img = document.getElementById('camera_image');
@@ -221,7 +225,7 @@
                 document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + 
                     "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa(fileName);
             }, function (error) {
-                $("#loading").hide();
+                $(".dimmer").hide();
                 document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
                     "\n upload error source " + error.source + "\n upload error target " + error.target;
             }, options);
