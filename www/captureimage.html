@@ -51,10 +51,6 @@
             <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align: center;">
-                <input type="file" name="fileupload" id="fileupload" onchange="readURL(event);"></td>
-        </tr>
-        <tr>
             <td style="text-align: center;">
                 <div class="divimg">
                     <span class="fa-stack fa-3x" style="color: #009688;" onclick="takePicture();">
@@ -148,13 +144,6 @@
         $("#loading").hide();
         sessionStorage.removeItem('imagepath');
     });
-
-    function readURL(event) {
-        var img = document.getElementById('camera_image');
-        img.style.visibility = "visible";
-        img.style.display = "block";
-        img.src = URL.createObjectURL(event.target.files[0]);
-    }
 
     function takePicture() {
         navigator.camera.getPicture(

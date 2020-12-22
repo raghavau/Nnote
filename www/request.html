@@ -47,15 +47,18 @@
                         </div>
                     </div>
 
-                    <input type="file" name="fileUpload" id="fileUpload" onchange="readURL(event);">
+                    <div class="field" id="nonmobile">
+                        <input type="file" name="fileUpload" id="fileUpload" onchange="readURL(event);">
+                    </div>
 
-                    <div class="three fields">
-                        <div class="field">
-                            <button id="btnSelectImage" class="ui blue fluid labeled icon button">
-                                <i class="images icon"></i>
-                                Select Image
-                            </button>
-                        </div>
+                    <div class="field" id="mobile">
+                        <button id="btnSelectImage" class="ui blue fluid labeled icon button">
+                            <i class="images icon"></i>
+                            Select Image
+                        </button>
+                    </div>
+
+                    <div class="two fields">
                         <div class="field">
                             <button id="btnSave" class="ui positive fluid labeled icon button">
                                 <i class="check icon"></i>
@@ -157,11 +160,19 @@
     $(document).ready(function () {
         $(".dimmer").hide();
         qs();
-
+        $("#nonmobile").hide();
+        $("#mobile").hide();
         $("#lblHeading").text($("#hsname").val() + ' Service Request');
         //document.getElementById('lblHeading').innerText = $("#hsname").val();
         var phoneGap = isPhoneGap();
 
+        if (phoneGap) {
+            $("#nonmobile").hide();
+            $("#mobile").show();
+        } else {
+            $("#nonmobile").show();
+            $("#mobile").hide();
+        }
         $('#btnSelectImage').click(function () {
             onSelectClick();
         });
@@ -229,61 +240,29 @@
         $("#loading").show();
         var d = new Date();
         var n = d.getTime();
-        var img = document.getElementById('camera_image');
-        var imageURI = img.src;
-        if (!imageURI || (img.style.display == "none")) {
-            alert('Take Picture or Select Picture from library.');
-            $("#loading").hide();
+        
+        if ($('#fileUpload').val() == '') {
+            alert('Plase select file');
             return;
         }
-        // document.getElementById('camera_image').style.display = "none";
-        // var server = 'http://115.241.194.19/NnoteApi/api/FileUpload/UploadFile';
-        // if (server) {
-        //     var options = new FileUploadOptions();
-        //     options.fileKey = "file";
-        //     options.fileName = n;
-        //     options.mimeType = "image/jpeg";
-        //     options.chunkedMode = false;
-        //     options.headers = {
-        //         Connection: "close"
-        //     }
-        //     server = server + '/' + options.fileName;
-        //     //document.getElementById('camera_status').innerHTML = options.fileName;
 
-        //     var ft = new FileTransfer();
-        //     ft.upload(imageURI, encodeURI(server), function (r) {
-        //         document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
-        //         // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-        //         window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
-        //             btoa($("#hidEmail").val());
-        //     }, function (error) {
-        //         $("#loading").hide();
-        //         document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
-        //             "\n upload error source " + error.source + "\n upload error target " + error.target;
-        //     }, options);
-        // }
+        var formdata = new FormData();
+        var file = $('#fileUpload')[0];
+        formdata.append('file', file.files[0]);
 
-        // if ($('#fileupload').val() == '') {
-        //     alert('Plase select file');
-        //     return;
-        // }
-        
-        // var formdata = new FormData();
-        // var file = $('#fileupload')[0];
-        // formdata.append('file', file.files[0]);
-
-        // $.ajax({
-        //     url: 'http://115.241.194.19/NnoteApi/api/FileUpload/UploadFile/' + n,
-        //     type: 'POST',
-        //     data: formdata,
-        //     contentType: false,
-        //     processData: false,
-        //     success: function (d) {
-        //         alert('Success');
-        //     },
-        //     error: function () {
-        //         alert('Error in upload');
-        //     }
-        // });
+        $.ajax({
+            url: 'http://115.241.194.19/NnoteApi/api/FileUpload/UploadFile/' + n,
+            type: 'POST',
+            data: formdata,
+            contentType: false,
+            processData: false,
+            success: function (d) {
+                document.getElementById('camera_image').style.display = "none";
+                alert('Success');
+            },
+            error: function (err) {
+                alert('Error in upload');
+            }
+        });
     }
 </script>
