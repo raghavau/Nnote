@@ -178,8 +178,7 @@
         });
 
         $('#btnSave').click(function () {
-            // SaveRequest();
-            uploadPicture();
+            SaveRequest();
         });
 
         $('#btnCancel').click(function () {
@@ -222,6 +221,7 @@
             success: function (result) {
                 //debugger;
                 if (result.data == 'Success') {
+                    uploadPicture();
                     alert('Your Service Request Submitted Successfully');
                     document.location.href = "services.html?empid=" + btoa($("#hempid").val());
                 } else {
@@ -237,32 +237,30 @@
     }
 
     function uploadPicture() {
-        $("#loading").show();
+        //$(".dimmer").show();
         var d = new Date();
         var n = d.getTime();
-        
-        if ($('#fileUpload').val() == '') {
-            alert('Plase select file');
-            return;
+
+        if ($('#fileUpload').val() != '') {
+            var formdata = new FormData();
+            var file = $('#fileUpload')[0];
+            formdata.append('file', file.files[0]);
+
+            $.ajax({
+                url: apiURL + 'FileUpload/UploadFile/' + n,
+                type: 'POST',
+                data: formdata,
+                contentType: false,
+                processData: false,
+                success: function (d) {
+                    document.getElementById('camera_image').style.display = "none";
+                    $('#fileUpload').val('');
+                    alert('Success');
+                },
+                error: function (err) {
+                    alert('Error in upload');
+                }
+            });
         }
-
-        var formdata = new FormData();
-        var file = $('#fileUpload')[0];
-        formdata.append('file', file.files[0]);
-
-        $.ajax({
-            url: 'http://115.241.194.19/NnoteApi/api/FileUpload/UploadFile/' + n,
-            type: 'POST',
-            data: formdata,
-            contentType: false,
-            processData: false,
-            success: function (d) {
-                document.getElementById('camera_image').style.display = "none";
-                alert('Success');
-            },
-            error: function (err) {
-                alert('Error in upload');
-            }
-        });
     }
 </script>
