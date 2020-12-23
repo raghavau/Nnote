@@ -215,7 +215,7 @@
             // options.headers = {
             //     Connection: "close"
             // }
-            server = server + '/' + options.fileName + '/123';
+            server = server + '/' + options.fileName + '/0';
             //document.getElementById('camera_status').innerHTML = options.fileName;
 
             var ft = new FileTransfer();
@@ -224,9 +224,8 @@
                 sessionStorage.setItem('imagepath', imageUrl);
                 var fileName = imageUrl.split("/");
                 fileName = fileName[fileName.length - 1];
-                document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($(
-                        "#hsid").val()) +
-                    "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa(fileName) + "&fid=" + btoa(n);
+                document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
+                    "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa(n);
             }, function (error) {
                 $(".dimmer").hide();
                 document.getElementById('camera_status').innerHTML = "Upload failed: Error Code = " + error.code;
