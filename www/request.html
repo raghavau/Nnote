@@ -89,6 +89,7 @@
     <input type="hidden" id="hsid" />
     <input type="hidden" id="hsname" />
     <input type="hidden" id="hfname" />
+    <input type="hidden" id="hfid" />
 </body>
 
 </html>
@@ -148,6 +149,8 @@
             $("#hsname").val(atob(qsParm["sname"]));
             if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
                 $("#hfname").val(atob(qsParm["fname"]));
+                $("#hfid").val(atob(qsParm["fid"]));
+                $("#txtRemarks").val(atob(qsParm["fid"]));
                 var img = document.getElementById('camera_image');
                 img.src = sessionStorage.getItem('imagepath');
             }
