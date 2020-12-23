@@ -97,6 +97,7 @@
 <script type="text/javascript">
     var deviceReady = false;
     var qsParm = new Array();
+    var phoneGap = false;
     //var apiURL = '../../NnoteApi/Api/Nnote/';
     var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
 
@@ -164,7 +165,7 @@
         $("#mobile").hide();
         $("#lblHeading").text($("#hsname").val() + ' Service Request');
         //document.getElementById('lblHeading').innerText = $("#hsname").val();
-        var phoneGap = isPhoneGap();
+        phoneGap = isPhoneGap();
 
         if (phoneGap) {
             $("#nonmobile").hide();
@@ -220,10 +221,13 @@
             data: JSON.stringify(objdata),
             success: function (result) {
                 //debugger;
-                if (result.data == 'Success') {
-                    uploadPicture();
-                    alert('Your Service Request Submitted Successfully');
-                    document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+                if (result.data != '') {
+                    if (!phoneGap) {
+                        uploadPicture(result.data);
+                    } else {
+                        alert('Your Service Request Submitted Successfully');
+                        document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+                    }
                 } else {
                     $(".dimmer").hide();
                     alert('Your Service Request Failed to Submit.');
@@ -236,7 +240,7 @@
         });
     }
 
-    function uploadPicture() {
+    function uploadPicture(cslno) {
         //$(".dimmer").show();
         var d = new Date();
         var n = d.getTime();
@@ -247,7 +251,7 @@
             formdata.append('file', file.files[0]);
 
             $.ajax({
-                url: apiURL + 'FileUpload/UploadFile/' + n,
+                url: apiURL + 'FileUpload/UploadFile/' + n + '/' + cslno,
                 type: 'POST',
                 data: formdata,
                 contentType: false,
@@ -255,10 +259,12 @@
                 success: function (d) {
                     document.getElementById('camera_image').style.display = "none";
                     $('#fileUpload').val('');
-                    alert('Success');
+                    alert('Your Service Request Submitted Successfully');
+                    document.location.href = "services.html?empid=" + btoa($("#hempid").val());
                 },
                 error: function (err) {
                     alert('Error in upload');
+                    $(".dimmer").hide();
                 }
             });
         }

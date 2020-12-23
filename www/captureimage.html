@@ -48,7 +48,7 @@
                     src="" /></td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
+            <td colspan="2" style="text-align: center; width: 300px;"><span id="camera_status"></span></td>
         </tr>
         <tr>
             <td style="text-align: center;">
@@ -227,7 +227,7 @@
             }, function (error) {
                 $(".dimmer").hide();
                 document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
-                    "\n upload error source " + error.source + "\n upload error target " + error.target;
+                    "<br> upload error source " + error.source + "<br> upload error target " + error.target;
             }, options);
         }
     }
