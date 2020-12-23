@@ -209,7 +209,7 @@
         if (server) {
             var options = new FileUploadOptions();
             options.fileKey = "file";
-            options.fileName = n;
+            options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
             options.mimeType = "image/jpeg";
             options.chunkedMode = false;
             // options.headers = {
@@ -246,3 +246,11 @@
         }, 2000);
     }
 </script>
+<!-- 
+    Error Codes
+    1 = FileTransferError.FILE_NOT_FOUND_ERR
+    2 = FileTransferError.INVALID_URL_ERR
+    3 = FileTransferError.CONNECTION_ERR
+    4 = FileTransferError.ABORT_ERR
+    5 = FileTransferError.NOT_MODIFIED_ERR 
+-->
