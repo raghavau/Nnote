@@ -78,6 +78,10 @@
                     onclick="uploadPicture();">
                     <i class="left arrow icon"></i>
                     Back
+                </button><br>
+                <button id="btnCancel" class="ui positive fluid labeled icon button" type="button">
+                    <i class="left arrow icon"></i>
+                    Back
                 </button>
                 <!-- <div class="divimg" style="background-color: #E74C3C;">
                     <img alt="Select Picture from Gallery" src="img/upload.PNG" height="70" width="80" id="btnUpload"
@@ -146,6 +150,11 @@
         qs();
         $(".dimmer").hide();
         sessionStorage.removeItem('imagepath');
+
+        $("#btnCancel").click(function(){
+            document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
+                    "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa('nofile');
+        });
     });
 
     function takePicture() {

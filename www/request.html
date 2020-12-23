@@ -146,7 +146,7 @@
             $("#hempid").val(atob(qsParm["empid"]));
             $("#hsid").val(atob(qsParm["sid"]));
             $("#hsname").val(atob(qsParm["sname"]));
-            if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
+            if (qsParm["fname"] != null || qsParm["fname"] != undefined || qsParm["fname"] != 'nofile') {
                 $("#hfname").val(atob(qsParm["fname"]));
                 var img = document.getElementById('camera_image');
                 img.src = sessionStorage.getItem('imagepath');
