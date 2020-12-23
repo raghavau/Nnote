@@ -265,7 +265,7 @@
             });
         } else if ($('#hfname').val() != '') {
             $.ajax({
-                url: apiURL + 'FileUpload/UploadFile/mobile/' + n + '/' + cslno,
+                url: apiURL + 'FileUpload/UploadFile/mobile/' + $('#hfname').val() + '/' + cslno,
                 type: 'POST',
                 success: function (d) {
                     document.getElementById('camera_image').style.display = "none";
