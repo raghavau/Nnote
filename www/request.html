@@ -166,9 +166,8 @@
         $("#nonmobile").hide();
         $("#mobile").hide();
         $("#lblHeading").text($("#hsname").val() + ' Service Request');
-        //document.getElementById('lblHeading').innerText = $("#hsname").val();
-        phoneGap = isPhoneGap();
-
+        
+        phoneGap = isPhoneGap();        
         if (phoneGap) {
             $("#nonmobile").hide();
             $("#mobile").show();
