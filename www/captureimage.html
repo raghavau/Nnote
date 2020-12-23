@@ -215,21 +215,27 @@
             server = server + '/' + options.fileName + '/123';
             //document.getElementById('camera_status').innerHTML = options.fileName;
 
-            var ft = new FileTransfer();
-            ft.upload(imageURI, encodeURI(server), function (r) {
-                document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
-                // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-                sessionStorage.setItem('imagepath', imageUrl);
+            // var ft = new FileTransfer();
+            // ft.upload(imageURI, encodeURI(server), function (r) {
+            //     document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
+            //     // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
+            //     sessionStorage.setItem('imagepath', imageUrl);
+            //     var fileName = imageUrl.split("/");
+            //     fileName = fileName[fileName.length - 1];
+            //     document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($(
+            //             "#hsid").val()) +
+            //         "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa(fileName);
+            // }, function (error) {
+            //     $(".dimmer").hide();
+            //     document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
+            //         "<br> upload error source " + error.source + "<br> upload error target " + error.target;
+            // }, options);
+            sessionStorage.setItem('imagepath', imageUrl);
                 var fileName = imageUrl.split("/");
                 fileName = fileName[fileName.length - 1];
                 document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($(
                         "#hsid").val()) +
                     "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa(fileName);
-            }, function (error) {
-                $(".dimmer").hide();
-                document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
-                    "<br> upload error source " + error.source + "<br> upload error target " + error.target;
-            }, options);
         }
     }
 
