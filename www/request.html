@@ -150,6 +150,8 @@
                 $("#hfname").val(atob(qsParm["fname"]));
                 var img = document.getElementById('camera_image');
                 img.src = sessionStorage.getItem('imagepath');
+                $('#fileUpload').show();
+                $('#fileUpload').val(sessionStorage.getItem('imagepath'));
             }
             return true;
         } else {
