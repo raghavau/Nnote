@@ -148,7 +148,6 @@
             $("#hsname").val(atob(qsParm["sname"]));
             if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
                 $("#hfname").val(atob(qsParm["fname"]));
-                $("#txtRemarks").val($("#hfname").val());
                 var img = document.getElementById('camera_image');
                 img.src = sessionStorage.getItem('imagepath');
             }
