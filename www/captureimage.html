@@ -197,7 +197,7 @@
         var d = new Date();
         var n = d.getTime();
         var img = document.getElementById('camera_image');
-        var imageURI = img.src;
+        var imageURI = imageUrl;
         if (!imageURI || (img.style.display == "none")) {
             alert('Take Picture or Select Picture from library.');
             document.getElementById('camera_status').innerHTML = "Take picture or Select picture from library.";
