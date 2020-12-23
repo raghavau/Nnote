@@ -223,12 +223,7 @@
             success: function (result) {
                 //debugger;
                 if (result.data != '') {
-                    if (!phoneGap) {
-                        uploadPicture(result.data);
-                    } else {
-                        alert('Your Service Request Submitted Successfully');
-                        document.location.href = "services.html?empid=" + btoa($("#hempid").val());
-                    }
+                    uploadPicture(result.data);
                 } else {
                     $(".dimmer").hide();
                     alert('Your Service Request Failed to Submit.');
@@ -282,6 +277,9 @@
                     $(".dimmer").hide();
                 }
             });
+        } else {
+            alert('Your Service Request Submitted Successfully');
+            document.location.href = "services.html?empid=" + btoa($("#hempid").val());
         }
     }
 </script>
