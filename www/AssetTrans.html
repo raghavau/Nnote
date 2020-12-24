@@ -12,38 +12,6 @@
     <script type="text/javascript" src="jquery-ui/jquery-ui.min.js"></script>
     <script type="text/javascript" src="semantic/semantic.min.js"></script>
     <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
-    <style type="text/css">
-        body {
-            background-color: #e5e5e5;
-        }
-
-        body>.grid {
-            height: 100%;
-        }
-
-        .column {
-            max-width: 450px;
-        }
-
-        .thumbnail {
-            width: 200px;
-            height: 250px;
-            position: fixed;
-            z-index: 999999;
-            border-radius: 10px;
-            top: 50%;
-            left: 50%;
-            /*margin-right: -50%;*/
-            transform: translate(-50%, -50%);
-            /*-webkit-transition: all 500ms ease-in;
-        -webkit-transform: scale(1);
-        -ms-transition: all 500ms ease-in;
-        -ms-transform: scale(1);
-        -moz-transition: all 500ms ease-in;
-        -moz-transform: scale(1);
-        transition: all 500ms ease-in;*/
-        }
-    </style>
 </head>
 
 <body>
@@ -63,6 +31,8 @@
             </div>
             <div id="divAssetDtls">
                 <div class="ui middle aligned relaxed divided list" id="listdetails"></div>
+                <table class="ui unstackable very basic large celled table"><tbody><tr><td style="text-align: -webkit-right;"> Store </td><td><label class="class="top aligned left aligned""  id="lblitemname">NARAYANA DENTAL COLLEGE</label></td></tr><tr><td style="text-align: -webkit-right;"> Department</td><td> <label class="class="top aligned left aligned""  id="lblitemname">ORAL MAXILLOFACIAL SURGERY</label></td></tr><tr><td style="text-align: -webkit-right;"> Item</td> <td><label class="top aligned left aligned"  id="lblitemname">SCREWS - S.S 2MMX8MM</label></td></tr><tr><td style="text-align: -webkit-right;"> Asset Tag </td><td><label class="top aligned left aligned" id="lblassetno">201910239075</label></td></tr><tr><td colspan="2"> <div class="ui two buttons large"><button class="ui icon button red label" id="btnCancel">Cancel</button></div></td></tr></tbody></table><input type="hidden" id="hdnAItemCode" value="CL28S00197" ><input type="hidden" id="hdnADeptCode" value="OMFS" ><input type="hidden" id="hdnAStorecd" value="DENST" >
+
             </div>
         </div>
         <!-- <div class="ui padded stacked left aligned segment">
@@ -73,10 +43,9 @@
         <div class="ui active inverted page dimmer">
             <div class="ui large text loader">Loading Please Wait.....</div>
         </div>
-
     </div>
     <input type="hidden" id="hempid" />
-    <input type="hidden" id="hano"/>  <!-- value="201910239075"  -->
+    <input type="hidden" id="hano" /> <!-- value="201910239075"  -->
     <input type="hidden" id="hdnAItemCode" />
     <input type="hidden" id="hdnADeptCode" />
     <input type="hidden" id="hdnAStorecd" />
@@ -87,7 +56,7 @@
 
 <script type="text/javascript">
     document.addEventListener("deviceready", onDeviceReady, false);
-    
+
     function onDeviceReady() {
         document.addEventListener("backbutton", onBackKeyDown, false);
     }
@@ -102,6 +71,7 @@
     var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
 
     var qsParm = new Array();
+
     function qs() {
         var query = window.location.search.substring(1);
         var parms = query.split('&');
@@ -130,7 +100,7 @@
         });
         $('.ui.dropdown').dropdown();
         $('.dimmer').hide();
-        
+
         $('.error.message').hide();
 
         $('.message .close').on('click', function () {
@@ -140,11 +110,11 @@
 
         GetAssetCode();
     });
-    
+
     function AssetCancel() {
         return false;
     }
-    
+
     function isNumberKey(evt) {
         var keycode = (evt.which) ? evt.which : evt.keyCode;
         if (keycode != 46 && keycode > 31 && (keycode < 48 || keycode > 57))
@@ -191,12 +161,11 @@
                     // // $("#lbldeptname").text(response.data[0].deptname);
                     // $("#hdnAStorecd").val(response.data[0].storecd);
                     // // $("#lblstorecdname").text(response.data[0].storecdname);
-                    
+
                     $('.dimmer').hide();
                 }
             });
-        }
-        else {
+        } else {
             $('.dimmer').hide();
             alert("Please enter asset code");
         }
@@ -210,7 +179,7 @@
             itemcode: $("#hdnAItemCode").val(),
             deptcode: $("#hdnADeptCode").val(),
             storecd: $("#hdnAStorecd").val(),
-            userid:   $("#hempid").val(),
+            userid: $("#hempid").val(),
         };
         if (objdata != "") {
             if (Tagval == '1') {
@@ -226,11 +195,9 @@
                             var Result = response.data;
                             if (Result == "1") {
                                 alert("Asset no " + $("#lblassetno").text() + " Tagged Successfully");
-                            }
-                            else if (Result == "2") {
+                            } else if (Result == "2") {
                                 alert("Asset no " + $("#lblassetno").text() + " Already Tagged");
-                            }
-                            else if (Result == '-1') {
+                            } else if (Result == '-1') {
                                 //alert("Asset saved failed");
                             }
 
@@ -254,11 +221,9 @@
                             var Result = response.data;
                             if (Result == "1") {
                                 alert("Asset no " + $("#lblassetno").text() + " Verified Successfully");
-                            }
-                            else if (Result == "2") {
+                            } else if (Result == "2") {
                                 alert("Asset no " + $("#lblassetno").text() + " Already Verified");
-                            }
-                            else if (Result == '-1') {
+                            } else if (Result == '-1') {
                                 //alert("Asset saved failed");
                             }
                         }
@@ -270,5 +235,4 @@
             }
         }
     }
-    
 </script>
