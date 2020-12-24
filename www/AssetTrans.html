@@ -15,37 +15,15 @@
 </head>
 
 <body>
-    <div class="ui sticky" style="background-color: white; padding: 5px;box-shadow: 0px 4px #e5e5e5">
-        <div class="ui form">
-            <div class="four fields">
-                <div class="field">
-                    <label> Asset No</label>
-                    <div class="ui input">
-                        <input type="text" placeholder="Search..." id="txtAssetCode" maxlength="12">
-                    </div>
-                </div>
-
-                <div class="two fields" style="margin-top: 2%;">
-                    <button class="ui primary button" onclick="GetAssetCode();" style="margin-left: 2%;">Search</button>
-                </div>
-            </div>
-            <div id="divAssetDtls"></div>
-        </div>
-        <!-- <div class="ui padded stacked left aligned segment">
-        <div class="ui error message">
-            <p>No Data Available. Please check for another date</p>
-        </div> -->
-        <div class="ui middle aligned relaxed divided list"></div>
-        <div class="ui active inverted page dimmer">
-            <div class="ui large text loader">Loading Please Wait.....</div>
-        </div>
+    <div class="field">
+        <button class="ui primary button" onclick="GetAssetCode();">Refresh</button>
+    </div>
+    <div id="divAssetDtls"></div>
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading Please Wait.....</div>
     </div>
     <input type="hidden" id="hempid" />
     <input type="hidden" id="hano" /> <!-- value="201910239075"  -->
-    <input type="hidden" id="hdnAItemCode" />
-    <input type="hidden" id="hdnADeptCode" />
-    <input type="hidden" id="hdnAStorecd" />
-    <input type="hidden" id="hdnVerifyTagUser" />
 </body>
 
 </html>
@@ -118,17 +96,6 @@
         else
             return true;
     }
-
-    $("#txtAssetCode").keypress(function (e) {
-        //debugger;
-        var current_val = $(this).val();
-        //alert(e.keyCode);
-        var keycode = (e.which) ? e.which : e.keyCode;
-        if (keycode != 46 && keycode > 31 && (keycode < 48 || keycode > 57))
-            return false;
-        else
-            return true;
-    });
 
     function GetAssetCode() {
         $('.dimmer').show();
