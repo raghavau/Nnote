@@ -38,6 +38,10 @@
             <div class="ui fluid input">
                 <input type="text" id="txttagno">
             </div>
+            <button id="btnCancel" class="ui negative fluid labeled icon button" type="button">
+                <i class="times icon"></i>
+                Cancel
+            </button>
         </div>
     </div>
     <div class="ui active inverted page dimmer">
@@ -97,6 +101,10 @@
         $("#scan").click(function () {
             scan();
         });
+
+        $("#btnCancel").click(function () {
+            Cancel();
+        });
     });
 
     function init() {
@@ -123,5 +131,9 @@
             }
         );
         $(".dimmer").hide();
+    }
+
+    function Cancel() {
+        document.location.href = "index.html";
     }
 </script>
