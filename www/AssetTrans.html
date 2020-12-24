@@ -192,10 +192,12 @@
                     // $("#hdnAStorecd").val(response.data[0].storecd);
                     // // $("#lblstorecdname").text(response.data[0].storecdname);
                     $("#divAssetDtls").show();
+                    $('.dimmer').hide();
                 }
             });
         }
         else {
+            $('.dimmer').hide();
             alert("Please enter asset code");
         }
         // $("#txtAssetCode").val("");
