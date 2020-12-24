@@ -76,7 +76,7 @@
 
     </div>
     <input type="hidden" id="hempid" />
-    <input type="hidden" id="hano" />
+    <input type="hidden" id="hano"/>  <!-- value="201910239075"  -->
     <input type="hidden" id="hdnAItemCode" />
     <input type="hidden" id="hdnADeptCode" />
     <input type="hidden" id="hdnAStorecd" />
@@ -130,7 +130,7 @@
         });
         $('.ui.dropdown').dropdown();
         $('.dimmer').hide();
-        $("#divAssetDtls").hide();
+        
         $('.error.message').hide();
 
         $('.message .close').on('click', function () {
@@ -191,7 +191,7 @@
                     // // $("#lbldeptname").text(response.data[0].deptname);
                     // $("#hdnAStorecd").val(response.data[0].storecd);
                     // // $("#lblstorecdname").text(response.data[0].storecdname);
-                    $("#divAssetDtls").show();
+                    
                     $('.dimmer').hide();
                 }
             });
