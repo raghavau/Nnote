@@ -31,8 +31,6 @@
             </div>
             <div id="divAssetDtls">
                 <div class="ui middle aligned relaxed divided list" id="listdetails"></div>
-                <table class="ui unstackable very basic large celled table"><tbody><tr><td style="text-align: -webkit-right;"> Store </td><td><label class="class="top aligned left aligned""  id="lblitemname">NARAYANA DENTAL COLLEGE</label></td></tr><tr><td style="text-align: -webkit-right;"> Department</td><td> <label class="class="top aligned left aligned""  id="lblitemname">ORAL MAXILLOFACIAL SURGERY</label></td></tr><tr><td style="text-align: -webkit-right;"> Item</td> <td><label class="top aligned left aligned"  id="lblitemname">SCREWS - S.S 2MMX8MM</label></td></tr><tr><td style="text-align: -webkit-right;"> Asset Tag </td><td><label class="top aligned left aligned" id="lblassetno">201910239075</label></td></tr><tr><td colspan="2"> <div class="ui two buttons large"><button class="ui icon button red label" id="btnCancel">Cancel</button></div></td></tr></tbody></table><input type="hidden" id="hdnAItemCode" value="CL28S00197" ><input type="hidden" id="hdnADeptCode" value="OMFS" ><input type="hidden" id="hdnAStorecd" value="DENST" >
-
             </div>
         </div>
         <!-- <div class="ui padded stacked left aligned segment">
@@ -153,7 +151,7 @@
 
                     var content = '';
                     content = response.data[0].Contentdata;
-                    $('#listdetails').append(content);
+                    $('#divAssetDtls').append(content);
                     // // $("#lblassetno").text(response.data[0].assetno);
                     // $("#hdnAItemCode").val(response.data[0].itemcode);
                     // // $("#lblitemname").text(response.data[0].itemname);
