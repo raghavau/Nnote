@@ -29,9 +29,7 @@
                     <button class="ui primary button" onclick="GetAssetCode();" style="margin-left: 2%;">Search</button>
                 </div>
             </div>
-            <div id="divAssetDtls">
-                <div class="ui middle aligned relaxed divided list" id="listdetails"></div>
-            </div>
+            <div id="divAssetDtls"></div>
         </div>
         <!-- <div class="ui padded stacked left aligned segment">
         <div class="ui error message">
@@ -134,7 +132,7 @@
 
     function GetAssetCode() {
         $('.dimmer').show();
-        $('#listdetails').empty();
+        $('#divAssetDtls').empty();
         var AssetCode = $("#hano").val();
         if (AssetCode != "") {
             var objdata = {
@@ -148,18 +146,9 @@
                 contentType: "application/json",
                 data: JSON.stringify(objdata),
                 success: function (response) {
-
                     var content = '';
                     content = response.data[0].Contentdata;
                     $('#divAssetDtls').append(content);
-                    // // $("#lblassetno").text(response.data[0].assetno);
-                    // $("#hdnAItemCode").val(response.data[0].itemcode);
-                    // // $("#lblitemname").text(response.data[0].itemname);
-                    // $("#hdnADeptCode").val(response.data[0].deptcode);
-                    // // $("#lbldeptname").text(response.data[0].deptname);
-                    // $("#hdnAStorecd").val(response.data[0].storecd);
-                    // // $("#lblstorecdname").text(response.data[0].storecdname);
-
                     $('.dimmer').hide();
                 }
             });
@@ -167,7 +156,6 @@
             $('.dimmer').hide();
             alert("Please enter asset code");
         }
-        // $("#txtAssetCode").val("");
     }
 
     function SaveAssetDetails(Tagval) {
