@@ -61,71 +61,18 @@
                     <button class="ui primary button" onclick="GetAssetCode();" style="margin-left: 2%;">Search</button>
                 </div>
             </div>
-            <div id="divAssetDtls" style="display: none;">
-                <div class="ui middle aligned relaxed divided list" id="listdetails">
-                    <!-- <table class="ui unstackable very basic large celled table">
-                    <tbody>
-                        <tr>
-                            <td class="three wide top aligned center aligned" style="text-align: -webkit-right;">
-                                Asset Tag
-                            </td>
-                            <td class="top aligned left aligned">
-                                <label id="lblassetno" class=" aligned"></label>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td class="four wide top aligned center aligned" style="text-align: -webkit-right;">
-                                Item
-                            </td>
-                            <td class="top aligned left aligned">
-                                <label id="lblitemname"></label>
-                            </td>
-                        </tr>
-                       
-                        <tr>
-                            <td class="four wide top aligned center aligned" style="text-align: -webkit-right;">
-                                Store
-                            </td>
-                            <td class="top aligned left aligned">
-                                <label id="lblstorecdname"></label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="four wide top aligned center aligned" style="text-align: -webkit-right;">
-                                Department
-                            </td>
-                            <td class="top aligned left aligned">
-                                <label id="lbldeptname"></label>
-                            </td>
-                        </tr>
-                       
-
-                    </tbody>
-                
-
-                </table> -->
-
-                    <div class="ui four buttons large">
-                        <button class="ui icon button green label" onclick="SaveAssetDetails();" id="btnTag"
-                            value="1">Tag</button>
-                        <button class="ui icon button blue label" onclick="SaveAssetDetails();" id="btnVerify"
-                            value="2">Verify</button>
-                        <button class="ui icon button red label" onclick="AssetCancel();">Cancel</button>
-
-                    </div>
-                </div>
-
+            <div id="divAssetDtls">
+                <div class="ui middle aligned relaxed divided list" id="listdetails"></div>
             </div>
         </div>
         <!-- <div class="ui padded stacked left aligned segment">
         <div class="ui error message">
             <p>No Data Available. Please check for another date</p>
-        </div>
+        </div> -->
         <div class="ui middle aligned relaxed divided list"></div>
         <div class="ui active inverted page dimmer">
             <div class="ui large text loader">Loading Please Wait.....</div>
-        </div> -->
+        </div>
 
     </div>
     <input type="hidden" id="hempid" />
@@ -183,10 +130,8 @@
         });
         $('.ui.dropdown').dropdown();
         $('.dimmer').hide();
-
+        $("#divAssetDtls").hide();
         $('.error.message').hide();
-
-        $('.ui.sticky').sticky();
 
         $('.message .close').on('click', function () {
             $(this).closest('.message').transition('fade');
