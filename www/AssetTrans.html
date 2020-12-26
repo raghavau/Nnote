@@ -115,6 +115,7 @@
                 success: function (response) {
                     var content = '';
                     content = response.data[0].Contentdata;
+                    document.write(content);
                     $('#divAssetDtls').append(content);
                     $('.dimmer').hide();
                 }
