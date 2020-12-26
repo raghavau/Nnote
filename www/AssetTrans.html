@@ -18,6 +18,7 @@
     <div class="field">
         <button class="ui primary button" onclick="GetAssetCode();">Refresh</button>
     </div>
+    <label id="lblContent"></label>
     <div id="divAssetDtls"></div>
     <div class="ui active inverted page dimmer">
         <div class="ui large text loader">Loading Please Wait.....</div>
@@ -115,6 +116,7 @@
                 success: function (response) {
                     var content = '';
                     content = response.data[0].Contentdata;
+                    $("#lblContent").text($("#hempid").val());
                     $('#divAssetDtls').append(content);
                     $('.dimmer').hide();
                 }
