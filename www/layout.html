@@ -154,10 +154,8 @@
         if ($("#hfname").val() != "")
             $('#ifrm').attr('src', 'request.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
             + "&fname=" + btoa($("#hfname").val()));
-        else if ($("#hano").val() != ""){
-            alert($("#hano").val());
+        else if ($("#hano").val() != "")
             $('#ifrm').attr('src', 'AssetTrans.html?empid=' + btoa($("#hempid").val()) + "&ano=" + btoa($("#hano").val()));
-        }
         else
             $('#ifrm').attr('src', 'home.html?empid=' + btoa($("#hempid").val()));
 
