@@ -106,6 +106,12 @@
             <button class="ui fluid labeled icon green disabled button" id="btnVehAprLst">
                 <i class="right arrow icon"></i> Vehicle Approved List
             </button>
+
+            <h4 class="ui dividing header"><i class="angle right icon"></i>Asset</h4>
+            <button class="ui fluid labeled icon teal button" id="btnAsset">
+                <i class="right arrow icon"></i> Asset Tag & Verify
+            </button>
+            <br>
         </div>
     </div>
     <input type="hidden" id="hempid" />
@@ -393,6 +399,14 @@
 
         $("#btnVehAprLst").click(function () {
             document.location.href = "VehicleReqApprovedList.html?uid=" + btoa($("#hempid").val());
+        });
+
+        $("#btnAsset").click(function () {
+            if(isPhoneGap()){
+                window.open("assetscan.html?empid=" + btoa($("#hempid").val()));
+            }else{
+                document.location.href = "assettrans.html?empid=" + btoa($("#hempid").val());
+            }            
         });
         CheckStatus();
     });

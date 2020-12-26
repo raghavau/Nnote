@@ -15,7 +15,18 @@
 </head>
 
 <body>
-    <div class="field">
+    <div class="field"><br></div>
+    <div class="ui form" id="nomobile">
+        <div class="inline field">
+            <label> Asset No</label>
+            <div class="ui input">
+                <input type="text" placeholder="Search..." id="txtAssetCode" maxlength="12">
+            </div>
+            <button class="ui primary button" onclick="GetAssetCode();">Search</button>
+        </div>
+    </div>
+
+    <div class="field" id="mobile">
         <button class="ui primary button" onclick="GetAssetCode();">Refresh</button>
     </div>
     <div id="divAssetDtls"></div>
@@ -27,7 +38,8 @@
 </body>
 
 </html>
-
+<script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
+<script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -44,7 +56,14 @@
     //var apiURL = '../../NnoteApi/Api/Nnote/';
     var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
 
-    var qsParm = new Array();
+    var qsParm = new Array(),
+        phonegap = false;
+
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+    }
 
     function qs() {
         var query = window.location.search.substring(1);
@@ -59,7 +78,12 @@
         }
         if (parms.length > 0) {
             $("#hempid").val(atob(qsParm["empid"]));
-            $("#hano").val(atob(qsParm["ano"]));
+            if (phonegap) {
+                $("#hano").val(atob(qsParm["ano"]));
+                $("#mobile").show();
+            } else {
+                $("#nomobile").show();
+            }
             return true;
         } else {
             window.location.href = 'index.html';
@@ -68,6 +92,9 @@
     }
 
     $(document).ready(function () {
+        $("#nomobile").hide();
+        $("#mobile").hide();
+        phonegap = isPhoneGap();
         qs();
         $.ajaxSetup({
             cache: false
@@ -81,8 +108,8 @@
             $(this).closest('.message').transition('fade');
         });
         // GetAssetUser();
-
-        GetAssetCode();
+        if (phonegap)
+            GetAssetCode();
     });
 
     function AssetCancel() {
@@ -100,10 +127,10 @@
     function GetAssetCode() {
         $('.dimmer').show();
         $('#divAssetDtls').empty();
-        var AssetCode = $("#hano").val();
+        var AssetCode = phonegap == true ? $("#hano").val() : $("#txtAssetCode").val();
         if (AssetCode != "") {
             var objdata = {
-                assetno: $("#hano").val(),
+                assetno: AssetCode,
                 userid: $("#hempid").val(),
             };
             $.ajax({
@@ -138,8 +165,7 @@
             if (Tagval == '1') {
                 $.ajax({
                     type: 'POST',
-                    // url: apiURL + 'summaryrpt/',
-                    url: 'http://localhost:6491/Api/Nnote/assettaging',
+                    url: apiURL + 'assettaging',
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify(objdata),
@@ -153,10 +179,7 @@
                             } else if (Result == '-1') {
                                 //alert("Asset saved failed");
                             }
-
-
                         }
-                        ClearAll();
                         $("#divAssetDtls").hide();
                     }
                 });
@@ -164,8 +187,7 @@
             if (Tagval == '2') {
                 $.ajax({
                     type: 'POST',
-                    // url: apiURL + 'summaryrpt/',
-                    url: 'http://localhost:6491/Api/Nnote/assetverify',
+                    url: apiURL + 'assetverify',
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify(objdata),
@@ -180,12 +202,17 @@
                                 //alert("Asset saved failed");
                             }
                         }
-                        ClearAll();
                         $("#divAssetDtls").hide();
                     }
-
                 });
             }
         }
+    }
+
+    function Cancel() {
+        if (phonegap) {
+
+        } else
+            document.location.href = "AssetTrans.html?empid=" + btoa($("#hempid").val());
     }
 </script>
