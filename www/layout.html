@@ -76,6 +76,7 @@
     <input type="hidden" id="hsname" />
     <input type="hidden" id="hfname" />
     <input type="hidden" id="hvno" />
+    <input type="hidden" id="hano" />
     <div class="ui active inverted page dimmer">
         <div class="ui large text loader">Loading</div>
     </div>
@@ -115,6 +116,8 @@
                 $("#hsid").val(atob(qsParm["sid"]));
                 $("#hsname").val(atob(qsParm["sname"]));
                 $("#hfname").val(atob(qsParm["fname"]));
+            } else if (qsParm["ano"] != null || qsParm["ano"] != undefined) {
+                $("#hano").val(atob(qsParm["ano"]));
             }
             return true;
         } else {
@@ -151,6 +154,8 @@
         if ($("#hfname").val() != "")
             $('#ifrm').attr('src', 'request.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
             + "&fname=" + btoa($("#hfname").val()));
+        else if ($("#hano").val() != "")
+            $('#ifrm').attr('src', 'assettrans.html?empid=' + btoa($("#hempid").val()) + "&ano=" + btoa($("#hano").val()));
         else
             $('#ifrm').attr('src', 'home.html?empid=' + btoa($("#hempid").val()));
 

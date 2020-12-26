@@ -123,7 +123,7 @@
             function (result) {
                 if (!result.cancelled) {
                     $("#txttagno").val(result.text);
-                    document.location.href="AssetTrans.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($("#txttagno").val());
+                    document.location.href="layout.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($("#txttagno").val());
                 }
             },
             function (error) {
