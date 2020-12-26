@@ -211,7 +211,7 @@
 
     function Cancel() {
         if (phonegap) {
-
+            document.location.href = "assetscan.html?empid=" + btoa($("#hempid").val());
         } else
             document.location.href = "AssetTrans.html?empid=" + btoa($("#hempid").val());
     }
