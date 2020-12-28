@@ -115,7 +115,7 @@
 
         $("#btnSearch").click(function () {
             if ($("#txtano").val() != '' && parseInt($("#txtano").val().length) == 12)
-                document.location.hrefs = "layout.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($("#txtano").val());
+                document.location.href = "layout.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($("#txtano").val());
             else
                 alert('Enter Asset No');
         });
