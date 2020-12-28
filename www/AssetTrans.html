@@ -15,23 +15,23 @@
 </head>
 
 <body>
-    <div class="ui container">
-        <div class="field"><br></div>
-        <div class="ui form" id="nomobile">
-            <div class="inline field">
-                <label> Asset No</label>
-                <div class="ui input">
-                    <input type="text" placeholder="Search..." id="txtAssetCode" maxlength="12">
-                </div>
-                <button class="ui primary button" onclick="GetAssetCode();">Search</button>
-            </div>
-        </div>
 
-        <div class="field" id="mobile">
-            <button class="ui primary button" onclick="GetAssetCode();">Refresh</button>
+    <div class="field"><br></div>
+    <div class="ui form" id="nomobile">
+        <div class="inline field">
+            <label> Asset No</label>
+            <div class="ui input">
+                <input type="text" placeholder="Search..." id="txtAssetCode" maxlength="12">
+            </div>
+            <button class="ui primary button" onclick="GetAssetCode();">Search</button>
         </div>
-        <div id="divAssetDtls"></div>
     </div>
+
+    <div class="field" id="mobile">
+        <button class="ui primary button" onclick="GetAssetCode();">Refresh</button>
+    </div>
+    <div id="divAssetDtls"></div>
+
     <div class="ui active inverted page dimmer">
         <div class="ui large text loader">Loading Please Wait.....</div>
     </div>
