@@ -145,8 +145,7 @@
             function (result) {
                 if (!result.cancelled) {
                     $("#txtano").val(result.text);
-                    document.location.href = "layout.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($(
-                        "#txtano").val());
+                    document.location.href = "layout.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($("#txtano").val());
                 }
             },
             function (error) {
