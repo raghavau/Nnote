@@ -28,7 +28,11 @@
     </div>
 
     <div class="field" id="mobile">
-        <button class="ui primary button" onclick="GetAssetCode();">Refresh</button>
+        <div class="ui buttons">
+            <button class="ui primary button" onclick="GetAssetCode();">Refresh</button>
+            <div class="or"></div>
+            <button class="ui negative button" onclick="ReScan();">Re Scan</button>
+        </div>
     </div>
     <div id="divAssetDtls"></div>
 
@@ -211,9 +215,15 @@
         }
     }
 
+    function ReScan() {
+        if (phonegap) 
+            window.open("assetscan.html?empid=" + btoa($("#hempid").val()));
+    }
+
     function Cancel() {
         if (phonegap) {
-            window.open("assetscan.html?empid=" + btoa($("#hempid").val()));
+            //window.open("assetscan.html?empid=" + btoa($("#hempid").val()));
+            document.location.href = "layout.html?empid=" + btoa($("#hempid").val());
         } else
             document.location.href = "AssetTrans.html?empid=" + btoa($("#hempid").val());
     }
