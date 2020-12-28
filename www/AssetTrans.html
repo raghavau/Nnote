@@ -148,6 +148,12 @@
                 success: function (response) {
                     var content = '';
                     content = response.data[0].Contentdata;
+                    var VCycle = response.data[0].VerifyCycle;
+                    if (VCycle == '0') {
+                        alert("Verfication cycle has not been initiated.");
+                    }
+                    else {
+                    }
                     $('#divAssetDtls').append(content);
                     $('.dimmer').hide();
                 }
@@ -165,6 +171,7 @@
             itemcode: $("#hdnAItemCode").val(),
             deptcode: $("#hdnADeptCode").val(),
             storecd: $("#hdnAStorecd").val(),
+            VerifyCycle: $("#hdnVerCycle").val(),
             userid: $("#hempid").val(),
         };
         if (objdata != "") {
