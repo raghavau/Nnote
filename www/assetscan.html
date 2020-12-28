@@ -28,6 +28,17 @@
 
 <body onload="onLoad()">
     <div class="container verticalcenter">
+        <div class="ui fluid left icon action input">
+            <i class="search icon"></i>
+            <input type="text" id="txtano" placeholder="Asset No" maxlength="12">
+            <div class="ui blue submit button" id="btnSearch">Search</div>
+        </div>
+        <div class="ui horizontal divider">
+            Or
+        </div>
+        <h3 class="ui center aligned grey header">
+            Scan
+        </h3>
         <div class="ui centered card" id="scan">
             <div class="image">
                 <img src="img/barcodescanner.png" />
@@ -35,10 +46,7 @@
         </div>
 
         <div class="field">
-            <div class="ui fluid input">
-                <input type="text" id="txttagno">
-            </div>
-            <button id="btnCancel" class="ui negative fluid labeled icon button" type="button">
+            <button class="ui negative fluid labeled icon button" type="button" id="btnCancel">
                 <i class="times icon"></i>
                 Cancel
             </button>
@@ -98,6 +106,20 @@
     $(document).ready(function () {
         $(".dimmer").hide();
         qs();
+
+        $("#txtano").keyup(function (e) {
+            if (/\D/g.test(this.value)) {
+                this.value = this.value.replace(/\D/g, '');
+            }
+        });
+
+        $("#btnSearch").click(function () {
+            if ($("#txtano").val() != '' && parseInt($("#txtano").val().length) == 12)
+                document.location.hrefs = "layout.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($("#txtano").val());
+            else
+                alert('Enter Asset No');
+        });
+
         $("#scan").click(function () {
             scan();
         });
@@ -122,8 +144,9 @@
         cordova.plugins.barcodeScanner.scan(
             function (result) {
                 if (!result.cancelled) {
-                    $("#txttagno").val(result.text);
-                    document.location.href="layout.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($("#txttagno").val());
+                    $("#txtano").val(result.text);
+                    document.location.href = "layout.html?empid=" + btoa($("#hempid").val()) + "&ano=" + btoa($(
+                        "#txtano").val());
                 }
             },
             function (error) {
@@ -134,6 +157,6 @@
     }
 
     function Cancel() {
-        document.location.href="layout.html?empid=" + btoa($("#hempid").val());
+        document.location.href = "layout.html?empid=" + btoa($("#hempid").val());
     }
 </script>
