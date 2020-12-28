@@ -62,7 +62,7 @@
 </html>
 <script type="text/javascript">
     //var apiURL = '../../NtraktApi/api/';
-    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    var apiURL = 'http://115.241.194.19/NtraktApi/api/';
     var qsParm = new Array();
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -108,7 +108,7 @@
                     $("#firstname").text(response.data[0].Name);
                     $("#desig").text(response.data[0].Designation);
                     //$("#empimg").attr('src', 'data:image/png;base64,' + response.data[0].EmpPhoto);
-                    $("#empimg").attr('src', 'http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + $("#hempid").val());
+                    $("#empimg").attr('src', 'http://115.241.194.19/NtraktApi/ImageHandler.ashx?id=' + $("#hempid").val());
                 }
             }).done(function() {
                 //debugger;
