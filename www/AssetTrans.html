@@ -61,7 +61,7 @@
 
     //var apiURL = '../../NnoteApi/Api/Nnote/';
     var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-
+  
     var qsParm = new Array(),
         phonegap = false;
 
@@ -131,6 +131,7 @@
     }
 
     function GetAssetCode() {
+        //alert($("#hempid").val());
         $('.dimmer').show();
         $('#divAssetDtls').empty();
         var AssetCode = phonegap == true ? $("#hano").val() : $("#txtAssetCode").val();
@@ -149,7 +150,9 @@
                     var content = '';
                     content = response.data[0].Contentdata;
                     var VCycle = response.data[0].VerifyCycle;
-                    if (VCycle == '0') {
+                    var Hasverify = response.data[0].Hasverify;
+                    var IsTag = response.data[0].IsTag;
+                    if (VCycle == "0" && Hasverify == "AVERIFY" && IsTag == "Y") {
                         alert("Verification cycle has not been initiated.");
                     }
                     else {
@@ -223,7 +226,7 @@
     }
 
     function ReScan() {
-        if (phonegap) 
+        if (phonegap)
             window.open("assetscan.html?empid=" + btoa($("#hempid").val()));
     }
 

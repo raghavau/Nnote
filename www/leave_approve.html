@@ -97,6 +97,10 @@
 
     //var apiURL = '../../NtraktApi/api/';
     var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+
+    //var imgURL = '../../NtraktApi/';
+    var imgURL = 'http://narayanagroup.co.in/NtraktApi/';
+
     var qsParm = new Array(),
         empid = null;
 
@@ -229,7 +233,7 @@
                     htmlStr += '<button class="ui tiny basic red icon button" onclick="Reject(' + response.data[i].EmpNo + ',\'' + response.data[i].EventDate + '\')">';
                     htmlStr += '<i class="trash icon"></i></button></div>';
                     //htmlStr += '<img class="ui mini circular image" src="data:image/png;base64,' + response.data[i].EmpPhoto + '" onclick="zoomImage(this)">';
-                    htmlStr += '<img class="ui mini circular image" src="http://narayanagroup.co.in/NtraktApi/ImageHandler.ashx?id=' + response.data[i].EmpNo + '" onclick="zoomImage(this)">';
+                    htmlStr += '<img class="ui mini circular image" src="' + imgURL + '/ImageHandler.ashx?id=' + response.data[i].EmpNo + '" onclick="zoomImage(this)">';
                     htmlStr += '<div class="ui content"><label class="header" style="word-wrap: break-word;">' + response.data[i].EmpName + '  <div class="ui left tiny label">' + response.data[i].LeaveType + '</div></label>';
                     htmlStr += '<div class="description">' + response.data[i].EmpNo + '<br>' + response.data[i].EventDate + '</div></div></div>';
                     htmlStr += '</div>';
