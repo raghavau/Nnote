@@ -107,7 +107,7 @@
     var qsParm = new Array();
     var imageUrl = '';
     //var apiURL = '../../NnoteApi/api/Nnote/';
-    var apiURL = 'http://narayanagroup.co.in/NnoteApi/api/Nnote/';
+    var apiURL = 'http://115.241.194.19/NnoteApi/api/Nnote/';
 
     function onLoad() {
         document.addEventListener("deviceready", onDeviceReady, false);
@@ -216,7 +216,7 @@
             return;
         }
         // document.getElementById('camera_image').style.display = "none";
-        var server = apiURL + 'FileUpload/UploadFile/';
+        var server = apiURL + 'FileUpload/UploadFile/mobile/';
         if (server) {
             var options = new FileUploadOptions();
             options.fileKey = "file";
