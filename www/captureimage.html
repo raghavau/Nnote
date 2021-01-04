@@ -107,14 +107,14 @@
     var qsParm = new Array();
     var imageUrl = '';
     //var apiURL = '../../NnoteApi/api/Nnote/';
-    var apiURL = 'http://115.241.194.19/NnoteApi/api/Nnote/';
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/api/Nnote/';
 
     function onLoad() {
         document.addEventListener("deviceready", onDeviceReady, false);
     }
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", onBackKeyDown, false);
+        document.addEventListener("backbutton", onBackKeyDown, true);
     }
 
     function onBackKeyDown() {}
@@ -154,8 +154,7 @@
         sessionStorage.removeItem('imagepath');
 
         $("#btnCancel").click(function () {
-            document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($(
-                    "#hsid").val()) +
+            document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
                 "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa('nofile');
         });
     });
@@ -241,8 +240,23 @@
                     "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa(n);
             }, function (error) {
                 $(".dimmer").hide();
-                document.getElementById('camera_status').innerHTML = "Upload failed: Error Code = " + error
-                .code;
+                var code = error.code,
+                    message = '';
+
+                switch (code) {
+                    case 1: message = 'File Not Found';
+                    break;
+                    case 2: message = 'Invalid URL';
+                    break;
+                    case 3: message = 'Connection Error';
+                    break;
+                    case 4: message = 'File Transfer Aborted';
+                    break;
+                    case 5: message = 'File Not Modified';
+                    break;
+                }
+
+                document.getElementById('camera_status').innerHTML = "Upload failed: " + message;
                 //+ "<br> upload error source " + error.source + "<br> upload error target " + error.target;
             }, options);
         }
