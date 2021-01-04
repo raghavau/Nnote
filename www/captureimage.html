@@ -106,6 +106,8 @@
     var deviceReady = false;
     var qsParm = new Array();
     var imageUrl = '';
+    //var apiURL = '../../NnoteApi/api/Nnote/';
+    var apiURL = 'http://115.241.194.19/NnoteApi/api/Nnote/';
 
     function onLoad() {
         document.addEventListener("deviceready", onDeviceReady, false);
@@ -151,9 +153,10 @@
         $(".dimmer").hide();
         sessionStorage.removeItem('imagepath');
 
-        $("#btnCancel").click(function(){
-            document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
-                    "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa('nofile');
+        $("#btnCancel").click(function () {
+            document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($(
+                    "#hsid").val()) +
+                "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa('nofile');
         });
     });
 
@@ -214,7 +217,7 @@
             return;
         }
         // document.getElementById('camera_image').style.display = "none";
-        var server = 'http://narayanagroup.co.in/NnoteApi/api/Nnote/FileUpload/UploadFile';
+        var server = apiUrl + 'FileUpload/UploadFile';
         if (server) {
             var options = new FileUploadOptions();
             options.fileKey = "file";
@@ -233,12 +236,14 @@
                 sessionStorage.setItem('imagepath', imageUrl);
                 var fileName = imageUrl.split("/");
                 fileName = fileName[fileName.length - 1];
-                document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
+                document.location.href = 'layout.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($(
+                        "#hsid").val()) +
                     "&sname=" + btoa($("#hsname").val()) + "&fname=" + btoa(n);
             }, function (error) {
                 $(".dimmer").hide();
-                document.getElementById('camera_status').innerHTML = "Upload failed: Error Code = " + error.code;
-                    //+ "<br> upload error source " + error.source + "<br> upload error target " + error.target;
+                document.getElementById('camera_status').innerHTML = "Upload failed: Error Code = " + error
+                .code;
+                //+ "<br> upload error source " + error.source + "<br> upload error target " + error.target;
             }, options);
         }
     }
