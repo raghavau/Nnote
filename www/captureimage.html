@@ -114,7 +114,7 @@
     }
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", onBackKeyDown, true);
+        document.addEventListener("backbutton", onBackKeyDown, false);
     }
 
     function onBackKeyDown() {}
@@ -216,7 +216,7 @@
             return;
         }
         // document.getElementById('camera_image').style.display = "none";
-        var server = apiURL + 'FileUpload/UploadFile';
+        var server = apiURL + 'FileUpload/UploadFile/';
         if (server) {
             var options = new FileUploadOptions();
             options.fileKey = "file";
@@ -226,7 +226,8 @@
             // options.headers = {
             //     Connection: "close"
             // }
-            server = server + '/' + options.fileName + '/0';
+            server = server + options.fileName + '/0';
+            alert(server);
             //document.getElementById('camera_status').innerHTML = options.fileName;
 
             var ft = new FileTransfer();
