@@ -60,8 +60,9 @@
     }
 
     //var apiURL = '../../NnoteApi/Api/Nnote/';
-    var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
-  
+    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://192.168.1.195/nnoteapi/Api/Nnote/';
+    //var apiURL = 'http://localhost:6491/api/Nnote/';
     var qsParm = new Array(),
         phonegap = false;
 
@@ -152,6 +153,7 @@
                     var VCycle = response.data[0].VerifyCycle;
                     var Hasverify = response.data[0].Hasverify;
                     var IsTag = response.data[0].IsTag;
+                    //alert("VCycle-" + VCycle + ",Hasverify-" + Hasverify + ",IsTag" + IsTag)
                     if (VCycle == "0" && Hasverify == "AVERIFY" && IsTag == "Y") {
                         alert("Verification cycle has not been initiated.");
                     }
@@ -169,6 +171,16 @@
 
     function SaveAssetDetails(Tagval) {
         //alert(val);
+        var AssetEntryType = '';
+        if (Tagval == '2') {
+            if ($("#hano").val() != "") {
+                AssetEntryType = "A";
+            }
+            else {
+                AssetEntryType = "E";
+            }
+        }
+
         var objdata = {
             assetno: $("#lblassetno").text(),
             itemcode: $("#hdnAItemCode").val(),
@@ -176,6 +188,7 @@
             storecd: $("#hdnAStorecd").val(),
             VerifyCycle: $("#hdnVerCycle").val(),
             userid: $("#hempid").val(),
+            VerifyType: AssetEntryType
         };
         if (objdata != "") {
             if (Tagval == '1') {
