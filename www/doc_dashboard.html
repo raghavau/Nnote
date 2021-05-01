@@ -137,11 +137,11 @@
 </html>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    //var apiURL = '../../NtraktApi/api/';
-    var apiURL = 'http://narayanagroup.co.in/NtraktApi/api/';
+    var apiURL = '../../NtraktApi/api/';
+    //var apiURL = 'http://115.241.194.19/NtraktApi/api/';
 
     //var imgURL = '../../NtraktApi/';
-    var imgURL = 'http://narayanagroup.co.in/NtraktApi/';
+    var imgURL = 'http://115.241.194.19/NtraktApi/';
 
     var qsParm = new Array(),
         empid = null;
@@ -320,7 +320,7 @@
                 for (var i = 0; i <= selectedArray.length - 1; i++) {
                     //debugger;
                     htmlStr += '<tr class="top aligned"><td class="center aligned one wide">' + (i + 1) + '</td><td class="center aligned one wide"><img alt="" ';
-                    htmlStr += 'src="http://narayanagroup.co.in/NtraktApi/Content/images/' + selectedArray[i].DoctorId + '.png"';
+                    htmlStr += 'src="http://115.241.194.19/NtraktApi/Content/images/' + selectedArray[i].DoctorId + '.png"';
                     htmlStr += 'width="40px" height="50px" onclick="ZoomImage(this)" style="border: 1px solid #e3e3e3" /></td>' +
                         '<td>' + selectedArray[i].FirstName + '<input type="hidden" value="' + selectedArray[i].DoctorId + '" /></td>' +
                         '<td>' + selectedArray[i].Department + '</td><td class="one wide center aligned">';

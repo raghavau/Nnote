@@ -62,10 +62,8 @@
     <input type="hidden" id="hinfromdate" />
     <input type="hidden" id="hintodate" />
     <input type="hidden" id="hinStatustext" />
+    <input type="hidden" id="hinContentTypetext" />
     <input type="hidden" id="hinval" />
-    <input type="hidden" id="hinServiceCode" />
-    <input type="hidden" id="hinclickvalue" />
-    <input type="hidden" id="hinIsPatientVal" />
 
 </body>
 
@@ -74,8 +72,8 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
     var apiURL = '../../NnoteApi/Api/Nnote/';
-    ////var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
-    ////var apiURL = 'http://localhost:6491/api/Nnote/'
+    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://localhost:6491/api/Nnote/'
     var qsParm = new Array();
 
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -103,9 +101,8 @@
             $("#hinfromdate").val(atob(qsParm["fromdate"]));
             $("#hintodate").val(atob(qsParm["todate"]));
             $("#hinStatustext").val(atob(qsParm["Statustext"]));
+            $("#hinContentTypetext").val(atob(qsParm["PContentType"]));
             $("#hinval").val(atob(qsParm["ComplateType"]));
-            $("#hinServiceCode").val(atob(qsParm["ServiceId"]));
-            $("#hinIsPatientVal").val(atob(qsParm["IsPatient"]));
             return true;
         } else {
             window.location.href = 'index.html';
@@ -115,22 +112,22 @@
 
     $(document).ready(function () {
         qs();
+        //alert("hinval-" + $("#hinval").val());
         //debugger;
         $(".dimmer").show();
-        // alert($("#hinStatustext").val());
+        //alert("hinContentTypetext-" + $("#hinContentTypetext").val());
         var objdata = {
-            compainttype: $("#hinval").val(),
+            selecttype: $("#hinval").val(),
             fromdate: $("#hinfromdate").val(),
             todate: $("#hintodate").val(),
             userid: $("#hempid").val(),
-            complnttest: $("#hinStatustext").val(),
-            serviceid: $("#hinServiceCode").val(),
-            ispatient: $("#hinIsPatientVal").val(),
+            PContentType: $("#hinContentTypetext").val(),
+            ptype: $("#hinStatustext").val()
         }
+
         $.ajax({
             type: 'POST',
-            url: apiURL + 'complaintdtlsrpt/',
-            //url: 'http://localhost:6491/Api/Nnote/complaintdtlsrpt',
+            url: apiURL + 'censussummarydetailreports/',
             dataType: "json",
             contentType: "application/json",
             data: JSON.stringify(objdata),
@@ -141,28 +138,11 @@
                 if (response.data.length > 0) {
                     $('.error.message').hide();
                     htmlStr += '<div class="ui  left aligned segment">';
-                    if ($("#hinStatustext").val() == "Pending") {
-                        htmlStr += '<div class="ui orange ribbon label">' + $("#hinStatustext")
-                            .val() + '</div>';
+                    if ($("#hinContentTypetext").val() != "") {
+                        htmlStr += '<div class="ui blue ribbon label">' + $("#hinStatustext").val() + '-' + $("#hinContentTypetext").val() + '</div>';
                     }
-                    if ($("#hinStatustext").val() == "Resolved") {
-                        htmlStr += '<div class="ui green ribbon label">' + $("#hinStatustext")
-                            .val() + '</div>';
-                    }
-                    if ($("#hinStatustext").val() == "Repost") {
-                        htmlStr += '<div class="ui blue ribbon label">' + $("#hinStatustext")
-                            .val() + '</div>';
-                    }
-                    if ($("#hinStatustext").val() == "NotFeasible") {
-                        htmlStr += '<div class="ui gray ribbon label">' + $("#hinStatustext")
-                            .val() + '</div>';
-                    }
-                    if ($("#hinStatustext").val() == "Overdue") {
-                        htmlStr += '<div class="ui red ribbon label">' + $("#hinStatustext").val() +
-                            '</div>';
-                    }
-                    if ($("#hinStatustext").val() == "Reopen") {
-                        htmlStr += '<div class="ui violet ribbon label">' + 'Re Open' + '</div>';
+                    else {
+                        htmlStr += '<div class="ui blue ribbon label">' + $("#hinStatustext").val() + '-' + $("#hinContentTypetext").val() + ' </div>';
                     }
                     // alert(response.data.length);
                     for (var i = 0; i <= response.data.length - 1; i++) {
@@ -170,9 +150,8 @@
                         htmlStr += '<div class="item">';
                         htmlStr +=
                             '<div class="description"><table><tr><td><label style="font-weight: bold;">' +
-                            V + ') ' +
-                            response.data[i].servicename + '</label><br>' + response.data[i]
-                                .complaint + '</td></tr></table></div>';
+                            V + ') </label>' + response.data[i]
+                                .patientdetails + '</td></tr></table></div>';
                         htmlStr += '</div><hr>';
                     }
                     htmlStr += '</div>';
@@ -189,8 +168,10 @@
     });
 
     $('#btnCancel').click(function () {
-        document.location.href = "complaintsList.html?empid=" + btoa($("#hempid").val()) +
+        document.location.href = "censussummaryrpt.html?empid=" + btoa($("#hempid").val()) +
             "&fdate=" + btoa($("#hinfromdate").val()) + "&tdate=" + btoa($("#hintodate").val()) +
-            "&ComplateType=" + btoa($("#hinval").val()) +"&IsPatient=" + btoa($("#hinIsPatientVal").val());
+            "&ComplateType=" + btoa($("#hinval").val()) + "&ContentTypetext=" + $("#hinContentTypetext").val()
+        "&Statustext=" + $("#hinStatustext").val();
+
     });
 </script>

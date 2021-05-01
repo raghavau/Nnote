@@ -71,6 +71,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="field" style="margin-top: 3%;">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="example" id="chkPatient">
+                        <label>Is Patient</label>
+                    </div>
+                </div>
+
+
             </div>
         </div>
 
@@ -104,6 +112,7 @@
     <input type="hidden" id="hempid" />
     <input type="hidden" id="hinId" />
     <input type="hidden" id="hsid" />
+    <input type="hidden" id="hinIsPatientVal" />
 </body>
 
 </html>
@@ -120,8 +129,9 @@
             navigator.app.exitApp(); // exit the app
     }
 
-    //var apiURL = '../../NnoteApi/Api/Nnote/';
-    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    var apiURL = '../../NnoteApi/Api/Nnote/';
+    ////var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
+    ////var apiURL = 'http://localhost:6491/api/Nnote/'
     var qsParm = new Array();
 
     function qs() {
@@ -141,6 +151,13 @@
                 $("#fromdate").val(atob(qsParm["fdate"]));
                 $("#todate").val(atob(qsParm["tdate"]));
                 $("#hinId").val(atob(qsParm["ComplateType"]));
+                $("#hinIsPatientVal").val(atob(qsParm["IsPatient"]));
+                if ($("#hinIsPatientVal").val() == 'P') {
+                    chkPatient.checked = true;
+                }
+                else {
+                    chkPatient.checked = false;
+                }
                 getComplaintsList($("#hinId").val());
             }
             return true;
@@ -183,11 +200,11 @@
 
     $(document).ready(function () {
         qs();
-        var minDate = new Date(2020, 9 - 1, 1);
-        //$("#fromdate").datepicker().datepicker("setDate", "-6d");
-        $("#fromdate").datepicker().datepicker("setDate", minDate);
-        $("#todate").datepicker().datepicker("setDate", new Date());
-
+        if ($("#fromdate").val() == '' && $("#todate").val() == '') {
+            var minDate = new Date(2020, 9 - 1, 1);
+            $("#fromdate").datepicker().datepicker("setDate", minDate);
+            $("#todate").datepicker().datepicker("setDate", new Date());
+        }
         $.ajaxSetup({
             cache: false
         });
@@ -201,8 +218,6 @@
         $('.message .close').on('click', function () {
             $(this).closest('.message').transition('fade');
         });
-
-        //Getdates();
 
         $("#fromdate").on('change', function () {
             var hinval = $("#hinId").val();
@@ -228,6 +243,9 @@
         if ($("#hinId").val() == "") {
             getComplaintsList(0);
         }
+        $('#chkPatient').change(function () {
+            getComplaintsList(0);
+        })
     });
 
 
@@ -256,10 +274,18 @@
 
     function getComplaintsList(val) {
         $('.dimmer').show();
+        var IsPatient;
+        if (chkPatient.checked == true) {
+            IsPatient = 'P';
+        }
+        else {
+            IsPatient = '-1';
+        }
         var objdata = {
             compainttype: val,
             fromdate: $("#fromdate").val(),
             todate: $("#todate").val(),
+            ispatient: IsPatient,
         };
         $.ajax({
             type: 'POST',
@@ -283,7 +309,7 @@
                                 '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
                                 V + ') ' +
                                 response.data[i].IMP + '  <div class="ui left tiny teal label">' + response
-                                .data[i].total + '</div></label>';
+                                    .data[i].total + '</div></label>';
                         }
                         if (val == '1') {
                             // htmlStr +='<div class="ui stacked left aligned segment"><div class="ui red ribbon label">' + 'Service-'+ response.data[i].IMP+ '</div><div class="ui left tiny teal label">' + response
@@ -317,28 +343,28 @@
                             "'" + ')">' +
                             response.data[i].pending +
                             ' </a></td><td style="text-align:right;"><a class="ui orange label">' + response
-                            .data[i].pending_per + '</a> </td></tr>';
+                                .data[i].pending_per + '</a> </td></tr>';
                         htmlStr +=
                             '<td style="text-align:left;"> <label style="color: #21BA45;" id="lblresolved"> Resolved </label></td><td style="text-align:right;"><a class="ui green circular label" onclick="PendingwiseReport(2,' +
                             response.data[i].resolved + ',' + val + ',' + "'" + response.data[i].srvcode +
                             "'" + ')">' +
                             response.data[i].resolved +
                             '</a></td><td style="text-align:right;"><a class="ui green label">' + response
-                            .data[i].resolved_per + '</a> </td></tr>'
+                                .data[i].resolved_per + '</a> </td></tr>'
                         htmlStr +=
                             '<tr><td style="text-align:left;"> <label style="color: blue;" id="lbltepost"> Repost</label></td><td style="text-align:right;"><a class="ui blue circular label" onclick="PendingwiseReport(3,' +
                             response.data[i].repost + ',' + val + ',' + "'" + response.data[i].srvcode +
                             "'" + ')">' +
                             response.data[i].repost +
                             '</a></td><td style="text-align:right;"><a class="ui blue label">' + response
-                            .data[i].repost_per + '<a></td></tr>';
+                                .data[i].repost_per + '<a></td></tr>';
                         htmlStr +=
                             '<tr><td style="text-align:left;"> <label style="color: gray;" id="lblNotfeasible"> Not Feasible </label></td><td style="text-align:right;"><a class="ui gray circular label" onclick="PendingwiseReport(4,' +
                             response.data[i].notfeasible + ',' + val + ',' + "'" + response.data[i]
-                            .srvcode + "'" + ')">' +
+                                .srvcode + "'" + ')">' +
                             response.data[i].notfeasible +
                             '</a></td><td style="text-align:right;"><a class="ui grey label">' + response
-                            .data[i].notfeasible_per + '</a></td></tr>';
+                                .data[i].notfeasible_per + '</a></td></tr>';
                         htmlStr +=
                             '<tr><td style="text-align:left;" > <label style="color: red;" id="lbloverdue">Overdue<label></td><td style="text-align:right;"><a class="ui red circular label" onclick="PendingwiseReport(5,' +
                             response.data[i].overdue + ',' + val + ',' + "'" + response.data[i].srvcode +
@@ -363,7 +389,7 @@
     }
 
     function PendingwiseReport(clickvalue, Count, ComplateType, ServiceID) {
-        var labletext = "";
+        var labletext = ""; var IsPatient;
         if (clickvalue == "1") {
             labletext = "Pending";
         }
@@ -382,11 +408,16 @@
         if (clickvalue == "6") {
             labletext = "Reopen";
         }
+        if (chkPatient.checked == true) {
+            IsPatient = 'P';
+        }
+        else {
+            IsPatient = '-1';
+        }
         if (Count != '0') { //$("#hempid").val()
             document.location.href = "complaintsWiseReport.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" +
-                btoa($("#fromdate").val()) +
-                "&todate=" + btoa($("#todate").val()) + "&Statustext=" + btoa(labletext) +
-                "&ComplateType=" + btoa(ComplateType) + "&ServiceId=" + btoa(ServiceID);
+                btoa($("#fromdate").val()) + "&todate=" + btoa($("#todate").val()) + "&Statustext=" + btoa(labletext) +
+                "&ComplateType=" + btoa(ComplateType) + "&ServiceId=" + btoa(ServiceID) + "&IsPatient=" + btoa(IsPatient);
         }
     }
 </script>

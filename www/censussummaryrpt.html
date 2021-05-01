@@ -70,7 +70,7 @@
                         </div>
                     </div>
                 </div>
-                   
+
                 <!-- <div class="field">
                     <label></label>
                     <div class="ui radio checkbox">
@@ -83,30 +83,30 @@
                         <label>IP</label>
                       </div>
                     </div> -->
-                
-            </div>
+
             </div>
         </div>
+    </div>
 
-        <div class="ui four buttons large">
-            <!-- <button class="ui green basic button" teal id="btnDates">Date Wise</button> -->
-            <button class="ui icon button green label " id="btnAll" value="0">
-                <i class="list ul icon"></i> All
-            </button>
-            <button class="ui icon button red label" id="btnService" value="1">
-                <i class="bed icon"></i> Ward
-            </button>
-            <button class="ui icon button yellow label" id="btndept" value="3" >
-                <i class="building icon"></i> Department
-            </button>
-            <button class="ui icon button blue label" id="btnPersonwise" value="2">
-                <i class="money bill alternate icon"></i> Paytype
-            </button>
-            <!-- <button class="ui icon button orange  label" id="btnDates" value="3">
+    <div class="ui four buttons large">
+        <!-- <button class="ui green basic button" teal id="btnDates">Date Wise</button> -->
+        <button class="ui icon button green label " id="btnAll" value="0">
+            <i class="list ul icon"></i> All
+        </button>
+        <button class="ui icon button red label" id="btnService" value="1">
+            <i class="bed icon"></i> Ward
+        </button>
+        <button class="ui icon button yellow label" id="btndept" value="3">
+            <i class="building icon"></i> Department
+        </button>
+        <button class="ui icon button blue label" id="btnPersonwise" value="2">
+            <i class="money bill alternate icon"></i> Paytype
+        </button>
+        <!-- <button class="ui icon button orange  label" id="btnDates" value="3">
                 <i class="calendar alternate icon"></i> Date
             </button> -->
 
-        </div>
+    </div>
     </div>
     <div class="ui padded stacked left aligned segment">
         <div class="ui error message">
@@ -121,6 +121,8 @@
     <input type="hidden" id="hempid" />
     <input type="hidden" id="hinId" />
     <input type="hidden" id="hsid" />
+    <input type="hidden" id="hinStatustext" />
+    <input type="hidden" id="hinContentTypetext" />
 </body>
 
 </html>
@@ -137,9 +139,9 @@
             navigator.app.exitApp(); // exit the app
     }
 
-    //var apiURL = '../../NnoteApi/Api/Nnote/';
-    var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
-    
+    var apiURL = '../../NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://localhost:6491/api/Nnote/';
     var qsParm = new Array();
 
     function qs() {
@@ -156,8 +158,11 @@
         }
         if (parms.length > 0) {
             $("#hempid").val(atob(qsParm["empid"]));
-            // $("#fromdate").val(atob(qsParm["fdate"]));
-            // $("#todate").val(atob(qsParm["tdate"]));
+            $("#fromdate").val(atob(qsParm["fdate"]));
+            $("#todate").val(atob(qsParm["tdate"]));
+            $("#hinId").val(atob(qsParm["ComplateType"]));
+            $("#hinStatustext").val(atob(qsParm["Statustext"]));
+            $("#hinContentTypetext").val(atob(qsParm["ContentTypetext"]));
             return true;
         } else {
             window.location.href = 'index.html';
@@ -200,9 +205,10 @@
     });
 
     $(document).ready(function () {
-        $("#fromdate").datepicker().datepicker("setDate", new Date());
-        $("#todate").datepicker().datepicker("setDate", new Date());
-
+        if ($("#fromdate").val() == '' && $("#todate").val() == '') {
+            $("#fromdate").datepicker().datepicker("setDate", new Date());
+            $("#todate").datepicker().datepicker("setDate", new Date());
+        }
         $.ajaxSetup({
             cache: false
         });
@@ -230,7 +236,7 @@
             $("#hinId").val(val);
             getComplaintsList(val);
         });
-        
+
         // $('input[type=radio][name=chktype]').change(function() {
         //     if (this.value == 'op') {
         //         alert("Allot Thai Gayo Bhai");
@@ -246,7 +252,7 @@
     });
 
     function getComplaintsList(val) {
-        
+
         $('.dimmer').show();
         var objdata = {
             censustype: val,
@@ -267,72 +273,67 @@
                 if (response.data.length > 0) {
                     $('.error.message').hide();
                     if (val == '0') {
-                    for (var i = 0; i <= response.data.length - 1; i++) {
+                        for (var i = 0; i <= response.data.length - 1; i++) {
 
-                        if (response.data[i].typename == 'Admissions')
-                        {
-                            htmlStr +=
-                            '<div class="item"><div class="left floated content" style="width: 100%;">';
-                        htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                ' </label></td><td style="text-align:right;"><a class="ui steel blue circular label">' +
-                            response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
-                        htmlStr += '</table></div></div></div></div>';
+                            if (response.data[i].typename == 'Admissions') {
+                                htmlStr +=
+                                    '<div class="item"><div class="left floated content" style="width: 100%;">';
+                                htmlStr +=
+                                    '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                    ' </label></td><td style="text-align:right;"><a class="ui steel blue circular label"  onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censuscnt + ',1)" > ' +
+                                    response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
+                                htmlStr += '</table></div></div></div></div>';
+                            }
+                            else if (response.data[i].typename == 'Discharge') {
+                                htmlStr +=
+                                    '<div class="item"><div class="left floated content" style="width: 100%;">';
+                                htmlStr +=
+                                    '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                    ' </label></td><td style="text-align:right;"><a class="ui gray circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censuscnt + ',2)">' +
+                                    response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
+                                htmlStr += '</table></div></div></div></div>';
+                            }
+                            else if (response.data[i].typename == 'Op') {
+                                htmlStr +=
+                                    '<div class="item"><div class="left floated content" style="width: 100%;">';
+                                htmlStr +=
+                                    '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                    ' </label></td><td style="text-align:right;"><a class="ui yellow circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censuscnt + ',4)">' +
+                                    response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
+                                htmlStr += '</table></div></div></div></div>';
+                            }
+                            else {
+                                htmlStr +=
+                                    '<div class="item"><div class="left floated content" style="width: 100%;">';
+                                htmlStr +=
+                                    '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                    ' </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censuscnt + ',3)">' +
+                                    response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
+                                htmlStr += '</table></div></div></div></div>';
+                            }
                         }
-                        else if (response.data[i].typename == 'Discharge')
-                        {
-                            htmlStr +=
-                            '<div class="item"><div class="left floated content" style="width: 100%;">';
-                        htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                ' </label></td><td style="text-align:right;"><a class="ui gray circular label">' +
-                            response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
-                        htmlStr += '</table></div></div></div></div>';
-                        }
-                        else if (response.data[i].typename == 'Op')
-                        {
-                            htmlStr +=
-                            '<div class="item"><div class="left floated content" style="width: 100%;">';
-                        htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                ' </label></td><td style="text-align:right;"><a class="ui yellow circular label">' +
-                            response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
-                        htmlStr += '</table></div></div></div></div>';
-                        }
-                        else
-                        {
-                            htmlStr +=
-                            '<div class="item"><div class="left floated content" style="width: 100%;">';
-                        htmlStr +=
-                            '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                ' </label></td><td style="text-align:right;"><a class="ui orange circular label">' +
-                            response.data[i].censuscnt + ' </a></td><td style="text-align:right;"></td></tr>';
-                        htmlStr += '</table></div></div></div></div>';
-                        }
-                    }
                     }
                     if (val == '1') {
                         var htmlStr1 = "";
                         var sumonbed = 0;
                         var sumadm = 0;
                         var sumdis = 0;
-                        
+
                         for (var i = 0; i <= response.data.length - 1; i++) {
-                        htmlStr1 +=
-                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                             '</label></td><td style="text-align:right;width: 15%;"><a class="ui orange circular label">' +
-                             response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui steel blue circular label">' +
-                             response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui gray circular label">' +
-                             response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' + response
-                                  .data[i].censuscntperc + '</a></td></tr>';
-                             sumonbed += parseFloat(response.data[i].censuscnt);
-                             sumadm += parseFloat(response.data[i].censusadmcnt);
-                             sumdis += parseFloat(response.data[i].censusdisgcnt);
-                        htmlStr1 += '</table></div></div></div></div>';
-                     }
-                     //htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Op</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Admissions</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">On-Bed</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Discharge</td></tr></table>';                     
-                     htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Op</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Admissions ('+sumadm+')</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">On-Bed ('+sumonbed+')</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Discharge ('+sumdis+')</td></tr></table>'; 
-                     htmlStr += htmlStr1;
+                            htmlStr1 +=
+                                '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                '</label></td><td style="text-align:right;width: 15%;"><a class="ui orange circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censuscnt + ',3)">' +
+                                response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui steel blue circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censusadmcnt + ',1)">' +
+                                response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui gray circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censusdisgcnt + ',2)">' +
+                                response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' + response.data[i].censuscntperc + '</a></td></tr>';
+                            sumonbed += parseFloat(response.data[i].censuscnt);
+                            sumadm += parseFloat(response.data[i].censusadmcnt);
+                            sumdis += parseFloat(response.data[i].censusdisgcnt);
+                            htmlStr1 += '</table></div></div></div></div>';
+                        }
+                        //htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Op</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Admissions</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">On-Bed</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Discharge</td></tr></table>';                     
+                        htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Op</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Admissions (' + sumadm + ')</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">On-Bed (' + sumonbed + ')</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Discharge (' + sumdis + ')</td></tr></table>';
+                        htmlStr += htmlStr1;
                     }
                     if (val == '2') {
                         var htmlStr1 = "";
@@ -340,26 +341,26 @@
                         var sumonbed = 0;
                         var sumadm = 0;
                         var sumdis = 0;
-                        
+
                         for (var i = 0; i <= response.data.length - 1; i++) {
-                         htmlStr1 +=
-                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                 ' </label></td><td style="text-align:right;width: 10%;"><a class="ui yellow circular label">' +
-                             response.data[i].censusopcnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui orange circular label">' +
-                             response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui steel blue circular label">' +
-                             response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui gray circular label">' +
-                             response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' + 
-                             response.data[i].censuscntperc + '</a></td><td style="text-align:right;width: 15%;"><a class="ui yellow label">' + 
-                             response.data[i].censusopcntperc + '</a></td></tr>';
-                             sumop += parseFloat(response.data[i].censusopcnt);
-                             sumonbed += parseFloat(response.data[i].censuscnt);
-                             sumadm += parseFloat(response.data[i].censusadmcnt);
-                             sumdis += parseFloat(response.data[i].censusdisgcnt);
-                        htmlStr1 += '</table></div></div></div></div>';
-                     } 
-                     //htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Op</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Admissions</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">On-Bed</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Discharge</td></tr></table>';
-                     htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Op ('+sumop+')</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Admissions ('+sumadm+')</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">On-Bed ('+sumonbed+')</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Discharge ('+sumdis+')</td></tr></table>'; 
-                     htmlStr += htmlStr1;
+                            htmlStr1 +=
+                                '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                ' </label></td><td style="text-align:right;width: 10%;"><a class="ui yellow circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censusopcnt + ',4)">' +
+                                response.data[i].censusopcnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui orange circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censuscnt + ',3)">' +
+                                response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui steel blue circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censusadmcnt + ',1)">' +
+                                response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui gray circular label"  onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censusdisgcnt + ',2)">' +
+                                response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' +
+                                response.data[i].censuscntperc + '</a></td><td style="text-align:right;width: 15%;"><a class="ui yellow label">' +
+                                response.data[i].censusopcntperc + '</a></td></tr>';
+                            sumop += parseFloat(response.data[i].censusopcnt);
+                            sumonbed += parseFloat(response.data[i].censuscnt);
+                            sumadm += parseFloat(response.data[i].censusadmcnt);
+                            sumdis += parseFloat(response.data[i].censusdisgcnt);
+                            htmlStr1 += '</table></div></div></div></div>';
+                        }
+                        //htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Op</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Admissions</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">On-Bed</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:xx-small;font-weight:bold;">Discharge</td></tr></table>';
+                        htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Op (' + sumop + ')</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Admissions (' + sumadm + ')</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">On-Bed (' + sumonbed + ')</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Discharge (' + sumdis + ')</td></tr></table>';
+                        htmlStr += htmlStr1;
                     }
                     if (val == '3') {
                         var htmlStr1 = "";
@@ -368,24 +369,24 @@
                         var sumadm = 0;
                         var sumdis = 0;
                         for (var i = 0; i <= response.data.length - 1; i++) {
-                         htmlStr1 +=
-                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
-                                 ' </label></td><td style="text-align:right;width: 10%;"><a class="ui yellow circular label">' +
-                             response.data[i].censusopcnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui orange circular label">' +
-                             response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui steel blue circular label">' +
-                             response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui gray circular label">' +
-                             response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' + 
-                             response.data[i].censuscntperc + '</a></td><td style="text-align:right;width: 15%;"><a class="ui yellow label">' + 
-                             response.data[i].censusopcntperc + '</a></td></tr>';
-                             sumop += parseFloat(response.data[i].censusopcnt);
-                             sumonbed += parseFloat(response.data[i].censuscnt);
-                             sumadm += parseFloat(response.data[i].censusadmcnt);
-                             sumdis += parseFloat(response.data[i].censusdisgcnt);
+                            htmlStr1 +=
+                                '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 40%;"><label style="color: steelblue;font-weight: bold;" id="lblpending" > ' + response.data[i].typename +
+                                ' </label></td><td style="text-align:right;width: 10%;"><a class="ui yellow circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censusopcnt + ',4)">' +
+                                response.data[i].censusopcnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui orange circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censuscnt + ',3)">' +
+                                response.data[i].censuscnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui steel blue circular label onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censusadmcnt + ',2)">' +
+                                response.data[i].censusadmcnt + ' </a></td><td style="text-align:right;width: 10%;"><a class="ui gray circular label" onclick = "PatientDetailsReport(' + val + ',' + "'" + response.data[i].typename + "'" + ',' + response.data[i].censusdisgcnt + ',1)">' +
+                                response.data[i].censusdisgcnt + ' </a></td><td style="text-align:right;width: 15%;"><a class="ui green label">' +
+                                response.data[i].censuscntperc + '</a></td><td style="text-align:right;width: 15%;"><a class="ui yellow label">' +
+                                response.data[i].censusopcntperc + '</a></td></tr>';
+                            sumop += parseFloat(response.data[i].censusopcnt);
+                            sumonbed += parseFloat(response.data[i].censuscnt);
+                            sumadm += parseFloat(response.data[i].censusadmcnt);
+                            sumdis += parseFloat(response.data[i].censusdisgcnt);
 
-                        htmlStr1 += '</table></div></div></div></div>';
-                     }
-                     htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Op ('+sumop+')</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Admissions ('+sumadm+')</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">On-Bed ('+sumonbed+')</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Discharge ('+sumdis+')</td></tr></table>'; 
-                     htmlStr += htmlStr1;
+                            htmlStr1 += '</table></div></div></div></div>';
+                        }
+                        htmlStr += '<table><tr><td><a class="ui yellow small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Op (' + sumop + ')</td><td><a class="ui steel blue small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Admissions (' + sumadm + ')</td><td><a class="ui orange small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">On-Bed (' + sumonbed + ')</td><td><a class="ui gray small square label"></a></td><td style="text-align:left;font-size:small;font-weight:bold;">Discharge (' + sumdis + ')</td></tr></table>';
+                        htmlStr += htmlStr1;
                     }
 
                     $(".divided.list").append(htmlStr);
@@ -396,6 +397,28 @@
                 $('.dimmer').hide();
             }
         });
+    }
+
+    function PatientDetailsReport(clickvalue, PContentType, Count, Ptype) {
+        //alert("clickvalue" + clickvalue + ",Ptype" + Ptype + ",Count-" + Count); return false;
+        var labletext = "";
+        if (Ptype == "1") {
+            labletext = "Admissions";
+        }
+        if (Ptype == "2") {
+            labletext = "Discharge";
+        }
+        if (Ptype == "3") {
+            labletext = "On-Bed";
+        }
+        if (Ptype == "4") {
+            labletext = "Op";
+        }
+        if (Count != '0') { //$("#hempid").val()
+            document.location.href = "censussummaryrptdetails.html?empid=" + btoa($("#hempid").val()) + "&fromdate=" +
+                btoa($("#fromdate").val()) + "&todate=" + btoa($("#todate").val()) + "&Statustext=" + btoa(labletext) +
+                "&ComplateType=" + btoa(clickvalue) + "&PContentType=" + btoa(PContentType);
+        }
     }
 
 </script>
