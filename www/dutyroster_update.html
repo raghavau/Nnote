@@ -101,43 +101,49 @@
     <br>
     <div class="ui container">
         <div class="page-header">
-            <h3><i class="tags small grey icon"></i> Duty Roster</h3>
+            <h3><i class="tags small grey icon"></i> Duty Roster Update</h3>
             <div class="ui divider"></div>
         </div>
 
-        <div class="ui small form">
+        <div class="ui form">
             <div class="fields">
                 <div class="four wide field">
-                    <label>Date</label>
-                    <input name="dutydate" id="dutydate">
+                    <label>Duty Dates</label>
+                    <select name="dutydate" id="dutydate" class="ui fluid dropdown">
+                        <option value="">Select Duty Date</option>
+                    </select>
                 </div>
                 <div class="eight wide field">
-                    <label>Service Area</label>
-                    <div class="ui action input">
-                        <select name="depts" id="depts" multiple="" class="ui fluid dropdown">
-                            <option value="">Select Department</option>
-                        </select>
-                        <button class="ui icon button" id="btnclear">
-                            <i class="ui close icon"></i>
-                        </button>
-                    </div>
+                    <label>Employees</label>
+                    <select name="emps" id="emps" class="ui fluid dropdown">
+                        <option value="">Select Employee</option>
+                    </select>
                 </div>
                 <div class="four wide field">
-                    <label>Shift</label>
-                    <select name="status" id="status" class="ui dropdown">
-                        <option value="null" selected>Both</option>
-                        <option value="D">Day Duty</option>
-                        <option value="N">Night Duty</option>
+                    <label>Shift Type</label>
+                    <select name="shifttype" id="shifttype" class="ui fluid dropdown">
+                        <option value="D">Day Shift</option>
+                        <option value="N">Night Shift</option>
                     </select>
                 </div>
             </div>
             <div class="field">
+                <label>Remarks</label>
+                <textarea name="remarks" id="remarks" rows="5"></textarea>
+            </div>
+            <div class="field" style="text-align: center;">
+                <button class="ui positive labeled icon button" id="btnSave">
+                    <i class="check small icon"></i> Submit
+                </button>
+                <button class="ui negative labeled icon button" id="btnCancel">
+                    <i class="times small icon"></i> Cancel
+                </button>
+            </div>
+
+            <div class="field">
                 <div class="ui error small message">
                     <p id="message"></p>
                 </div>
-            </div>
-            <div class="field">
-                <div id="grid"></div>
             </div>
         </div>
         <br>
@@ -158,8 +164,43 @@
     var qsParm = new Array(),
         empid = null;
 
-    var deptsArray = [], izoom = 0;
-    
+    var deptsArray = [],
+        izoom = 0;
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", function (e) {
+            e.preventDefault();
+        }, false);
+    }
+
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+    }
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
     $(document).ajaxStop($.unblockUI);
 
     $(document).ready(function () {
@@ -177,130 +218,69 @@
             defaultDate: today,
             //maxDate: "0d+",
             minDate: new Date(2021, 4, 1),
-            onSelect: function() {
+            onSelect: function () {
                 Grid();
             }
         });
 
-        Departments();
-        $("#depts").change(function () {
-            Grid();
-        });
-
-        $("#status").change(function () {
-            Grid();
-        });
-
-        $('#btnclear').click(function () {
-            $('.ui.dropdown.fluid').dropdown('clear');
-            Grid();
-        });
+        qs();
+        $("#hempid").val('45603955');
+        ShiftDates();
     });
 
-    function Grid() {
-        //debugger;
-        $(".dimmer").hide();
-        var filterData = {};
-        filterData.FromDate = $("#dutydate").val();
-        filterData.ShiftType = $("#status").val();
-
-        $.post(apiURL + 'Schedule', filterData, function (response) {}).done(function (response) {
-            $("#grid").empty();
+    function ShiftDates() {
+        $.get(apiURL + 'DutyDates/' + $("#hempid").val(), function (response) {
+            //debugger;
+        }).done(function (response) {
+            selectedArray = response.data;
+            //debugger;
+            $('#dutydate').dropdown('clear');
             var htmlStr = '';
-            var len = $("select[name='depts']").find("option:selected").length;
-            deptsArray = [];
-            for (var i = 0; i <= len - 1; i++) {
-                deptsArray.push($("select[name='depts']").find("option:selected")[i].value);
-            }
-
-            if (deptsArray.length > 0) {
-                selectedArray = jQuery.grep(response.data, function (data, i) {
-                    //debugger;
-                    return deptsArray.indexOf(data.DepartmentCode) > -1;
-                });
-            } else
-                selectedArray = response.data;
-
+            $("#dutydate").empty();
             if (selectedArray.length > 0) {
-                $('.error.message').hide();
-                htmlStr += selectedArray[0].Header;
-                for (var i = 0; i <= selectedArray.length - 1; i++) {
-                    htmlStr += selectedArray[i].Content;
-                }
-                htmlStr += selectedArray[0].Footer;
-                $("#grid").append(htmlStr);
+                htmlStr += '<option>Select Duty Date</option>';
+                for (var i = 0; i <= selectedArray.length - 1; i++)
+                    htmlStr += '<option value="' + selectedArray[i].ShiftDate + '">' + selectedArray[i].ShiftDate + '</option>';
+
+                $("#dutydate").append(htmlStr);
+                AlternateEmployee();
             } else {
+                $("#dutydate").empty();
                 $('.error.message').show();
                 $('#message').text('No Data found.');
             }
         }).fail(function () {
-            $('.dimmer').hide();
+            $("#dutydate").empty();
+            $('.error.message').show();
+            $('#message').text('No Data found.');
         });
     }
 
-    function Departments(spl) {
-        $.get(apiURL + 'Departments', function (response) {
+    function AlternateEmployee() {
+        $.get(apiURL + 'Alternate/Employees/' + $("#hempid").val(), function (response) {
             //debugger;
         }).done(function (response) {
-            if (spl != undefined && spl != 'A') {
-                selectedArray = jQuery.grep(response.data, function (data, i) {
-                    //debugger;
-                    return data.Speciality == spl;
-                });
-            } else
-                selectedArray = response.data;
+            selectedArray = response.data;
             //debugger;
-            $('#depts').dropdown('clear');
+            $('#emps').dropdown('clear');
             var htmlStr = '';
-            $("#depts").empty();
+            $("#emps").empty();
             if (selectedArray.length > 0) {
+                htmlStr += '<option>Select Employee</option>';
                 for (var i = 0; i <= selectedArray.length - 1; i++)
-                    htmlStr += '<option value="' + selectedArray[i].Code + '">' + selectedArray[i].Name +
-                    '</option>';
+                    htmlStr += '<option value="' + selectedArray[i].EmpId + '">' + selectedArray[i].EmpId + ' - ' + selectedArray[i].Name 
+                        + ' - ' + selectedArray[i].WorkLocation + '</option>';
 
-                $("#depts").append(htmlStr);
+                $("#emps").append(htmlStr);
             } else {
+                $("#emps").empty();
                 $('.error.message').show();
-                $("#depts").empty();
+                $('#message').text('No Data found.');
             }
-            Grid();
         }).fail(function () {
+            $("#emps").empty();
             $('.error.message').show();
-            $("#depts").empty();
+            $('#message').text('No Data found.');
         });
-    }
-
-    function ZoomImage(obj) {
-        //debugger;
-        if (izoom == 0) {
-            obj.style.width = "250px";
-            obj.style.height = "270px";
-            /*obj.style.position = "absolute";
-            obj.style.zIndex = "9999";*/
-            //$("#dimmer").show();
-            $.blockUI({
-                message: $(obj),
-                css: {
-                    border: 'none',
-                    //top: ($(window).height() - 400) / 2 + 'px',
-                    //left: ($(window).width() - 400) / 2 + 'px',
-                    width: '250px',
-                    cursor: 'default'
-                },
-                centerX: true,
-                centerY: true,
-                fadeIn: 300,
-                fadeOut: 300
-            });
-            izoom = 1;
-        } else {
-            obj.style.width = "40px";
-            obj.style.height = "50px";
-            obj.style.position = "relative";
-            obj.style.zIndex = "99";
-            //$("#dimmer").hide();
-            $.unblockUI();
-            izoom = 0;
-        }
     }
 </script>

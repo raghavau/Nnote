@@ -84,13 +84,21 @@
                 </div>
             </div>
 
-            <h4 class="ui dividing header"><i class="angle right icon"></i>Report</h4>
+            <h4 class="ui dividing header"><i class="angle right icon"></i>Duty Roster</h4>
+            <button class="ui fluid labeled icon teal button" id="btnRoster">
+                <i class="right arrow icon"></i> Duty Roster Update
+            </button><br>
+
+            <h4 class="ui dividing header"><i class="angle right icon"></i>Reports</h4>
             <button class="ui fluid labeled icon orange button" id="btnCensus">
                 <i class="right arrow icon"></i> Census Report
             </button><br>
             <button class="ui fluid labeled icon blue button" id="btnDocDash">
                 <i class="right arrow icon"></i> Doctor Availability
-            </button>
+            </button><br>
+            <button class="ui fluid labeled icon green button" id="btnIncDash">
+                <i class="right arrow icon"></i> Incharge Dashboard
+            </button><br>
 
             <h4 class="ui dividing header"><i class="angle right icon"></i>Leave Approvals</h4>
             <button class="ui fluid labeled icon orange disabled button" id="btnLeaveApprove">
@@ -381,6 +389,11 @@
         //debugger;
         qs();
         //
+
+        $("#btnRoster").click(function () {
+            document.location.href = "dutyroster_update.html?empid=" + btoa($("#hempid").val());
+        });
+
         $("#btnCensus").click(function () {
             document.location.href = "censussummaryrpt.html?empid=" + btoa($("#hempid").val());
         });
@@ -390,6 +403,10 @@
                 document.location.href = "doc_dashboard.html?empid=" + btoa($("#hempid").val());
             } else
                 document.location.href = "doc_dashboard.mobile.html?empid=" + btoa($("#hempid").val());
+        });
+
+        $("#btnIncDash").click(function () {
+            document.location.href = "inchargedashboard.html?empid=" + btoa($("#hempid").val());
         });
 
         $("#btnLeaveApprove").click(function () {

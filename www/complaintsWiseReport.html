@@ -74,8 +74,8 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
     var apiURL = '../../NnoteApi/Api/Nnote/';
-    ////var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
-    ////var apiURL = 'http://localhost:6491/api/Nnote/'
+    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://localhost:6491/api/Nnote/'
     var qsParm = new Array();
 
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -191,6 +191,6 @@
     $('#btnCancel').click(function () {
         document.location.href = "complaintsList.html?empid=" + btoa($("#hempid").val()) +
             "&fdate=" + btoa($("#hinfromdate").val()) + "&tdate=" + btoa($("#hintodate").val()) +
-            "&ComplateType=" + btoa($("#hinval").val()) +"&IsPatient=" + btoa($("#hinIsPatientVal").val());
+            "&ComplateType=" + btoa($("#hinval").val()) + "&IsPatient=" + btoa($("#hinIsPatientVal").val());
     });
 </script>

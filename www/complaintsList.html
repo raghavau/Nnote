@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div class="field" style="margin-top: 3%;">
-                    <div class="ui checkbox">
+                    <div class="ui toggle checkbox">
                         <input type="checkbox" name="example" id="chkPatient">
                         <label>Is Patient</label>
                     </div>
@@ -82,7 +82,7 @@
             </div>
         </div>
 
-        <div class="ui four buttons large">
+        <div class="ui five buttons large">
             <!-- <button class="ui green basic button" teal id="btnDates">Date Wise</button> -->
             <button class="ui icon button green label " id="btnAll" value="0">
                 <i class="calendar check icon"></i> All
@@ -96,7 +96,9 @@
             <button class="ui icon button orange  label" id="btnDates" value="3">
                 <i class="calendar alternate icon"></i> Date
             </button>
-
+            <button class="ui brown button blue label" id="btn" value="4">
+                <i class="money bill alternate icon"></i> Entry User
+            </button>
         </div>
     </div>
     <div class="ui padded stacked left aligned segment">
@@ -130,8 +132,8 @@
     }
 
     var apiURL = '../../NnoteApi/Api/Nnote/';
-    ////var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
-    ////var apiURL = 'http://localhost:6491/api/Nnote/'
+    //var apiURL = 'http://narayanagroup.co.in/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://localhost:6491/api/Nnote/'
     var qsParm = new Array();
 
     function qs() {
@@ -158,7 +160,7 @@
                 else {
                     chkPatient.checked = false;
                 }
-                getComplaintsList($("#hinId").val());
+                getComplaintsList($("#hinId").val(),0);
             }
             return true;
         } else {
@@ -174,7 +176,7 @@
             changeMonth: true,
             gotoCurrent: true,
             //minDate: '-6d',
-            minDate: new Date(2020, 9 - 1, 1),
+            minDate: new Date(202, 5 - 1, 1),
             maxDate: '+0d',
             defaultDate: -7,
             onClose: function (minDate) {
@@ -189,7 +191,7 @@
             changeMonth: true,
             numberOfMonths: 1,
             gotoCurrent: true,
-            minDate: new Date(2020, 9 - 1, 1), //minDate: new Date(1, 09, 2020),
+            minDate: new Date(2021, 5 - 1, 1), //minDate: new Date(1, 09, 2020),
             maxDate: '+0d',
             maxDate: new Date(),
             onClose: function (selectedDate) {
@@ -201,7 +203,7 @@
     $(document).ready(function () {
         qs();
         if ($("#fromdate").val() == '' && $("#todate").val() == '') {
-            var minDate = new Date(2020, 9 - 1, 1);
+            var minDate = new Date(2021, 4 - 1, 1);
             $("#fromdate").datepicker().datepicker("setDate", minDate);
             $("#todate").datepicker().datepicker("setDate", new Date());
         }
@@ -209,7 +211,7 @@
             cache: false
         });
         $('.ui.dropdown').dropdown();
-        $('.dimmer').hide();
+        //$('.dimmer').hide();
 
         $('.error.message').hide();
 
@@ -222,9 +224,9 @@
         $("#fromdate").on('change', function () {
             var hinval = $("#hinId").val();
             if (hinval != "") {
-                getComplaintsList(hinval);
+                getComplaintsList(hinval,0);
             } else {
-                getComplaintsList(0);
+                getComplaintsList(0,0);
             }
         });
         $("#todate").on('change', function () {
@@ -232,19 +234,19 @@
             if (hinval != "") {
                 getComplaintsList(hinval);
             } else {
-                getComplaintsList(0);
+                getComplaintsList(0,0);
             }
         });
         $("button").click(function () {
             var val = $(this).val();
             $("#hinId").val(val);
-            getComplaintsList(val);
+            getComplaintsList(val,0);
         });
         if ($("#hinId").val() == "") {
-            getComplaintsList(0);
+            getComplaintsList(0,0);
         }
         $('#chkPatient').change(function () {
-            getComplaintsList(0);
+            getComplaintsList(0,0);
         })
     });
 
@@ -262,7 +264,7 @@
                     $('.error.message').hide();
                     $("#fromdate").val(response.data[0].fromdateval);
                     $("#todate").val(response.data[0].todateval);
-                    getComplaintsList(0);
+                    getComplaintsList(0,0);
                 } else {
                     $('.error.message').show();
                 }
@@ -272,7 +274,7 @@
 
 
 
-    function getComplaintsList(val) {
+    function getComplaintsList(val, EntryUserId) {
         $('.dimmer').show();
         var IsPatient;
         if (chkPatient.checked == true) {
@@ -286,6 +288,7 @@
             fromdate: $("#fromdate").val(),
             todate: $("#todate").val(),
             ispatient: IsPatient,
+            userid: EntryUserId,
         };
         $.ajax({
             type: 'POST',
@@ -300,6 +303,7 @@
                 //alert(response.data.length);
                 if (response.data.length > 0) {
                     $('.error.message').hide();
+
                     for (var i = 0; i <= response.data.length - 1; i++) {
                         var V = i + 1;
                         htmlStr +=
@@ -336,6 +340,13 @@
                                 V + ') ' +
                                 'Date-' + response.data[i].IMP + '  <div class="ui left tiny teal label">' +
                                 response.data[i].total + '</div></label>';
+                        }
+                        if (val == '4') {
+                            htmlStr +=
+                                '<div class="ui content"><label class="header" style="word-wrap: break-word;">' +
+                                V + ') ' +
+                                'Entry User-' + response.data[i].IMP + '  <div class="ui left tiny teal label"><a onclick=getComplaintsList(1,"' + response.data[i].srvcode + '")>' +
+                                response.data[i].total + '</a></div></label>';
                         }
                         htmlStr +=
                             '<div class="description"><table style="width: 100%;"><tr><td style="text-align:left; width: 80%;"><label style="color: orange;" id="lblpending" > Pending </label></td><td style="text-align:right;"><a class="ui orange circular label" onclick="PendingwiseReport(1,' +
