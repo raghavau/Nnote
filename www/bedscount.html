@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Incharge Dashboard</title>
+    <title>Bed Category Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
@@ -14,6 +14,9 @@
     <script type="text/javascript" src="semantic/semantic.min.js"></script>
 
     <style type="text/css">
+        body {
+            overflow: auto;
+        }
         body>.grid {
             height: 100%;
         }
@@ -54,11 +57,21 @@
         ::-webkit-scrollbar-thumb {
             background: #aaa;
             border-radius: 99vmax;
-            border: 4px solid rgb(241, 241, 241);
+            border: 4px solid #ffffff;
         }
 
         ::-webkit-scrollbar-track {
             background: rgb(255, 255, 255);
+        }
+
+        .header>th {
+            background-color: #3db5ad !important;
+            color: #ffffff !important;
+        }
+        .footer>td {
+            background-color: #f1f1f1 !important;
+            color: red !important;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -67,16 +80,18 @@
     <br>
     <div class="ui fluid container">
         <div class="page-header">
-            <h4>Incharge Dashboard</h4>
+            <h3>Beds Position</h3>
             <div class="ui divider"></div>
         </div>
         
         <div id="tblGrid"></div>
         <br>
-        <div class="ui active inverted page dimmer" id="dimmer">
-            <div class="ui large text loader">Loading</div>
-        </div>
-        <input type="hidden" id="hempid" />
+    </div>
+    <br>
+    <div class="ui active inverted page dimmer" id="dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <input type="hidden" id="hempid" />
 </body>
 
 </html>
@@ -119,8 +134,9 @@
     });
 
     function ReportGrid() {
+        $('.dimmer').show();
         $("#tblGrid").empty();
-        $.get(apiURL + 'Incharge/Dashboard', function (response) {
+        $.get(apiURL + 'Beds', function (response) {
             //debugger;
         }).done(function (response) {
             selectedArray = response.data;
@@ -128,40 +144,18 @@
             var htmlStr = '';
             $("#tblGrid").empty();
             if (selectedArray.length > 0) {
-                htmlStr = '<table class="ui unstackable compact large table">';
-                //htmlStr = '<table border="1">';
                 for (var i = 0; i <= selectedArray.length - 1; i++)
                     htmlStr += selectedArray[i].Content;
-                htmlStr += '</table>';
-
+                
                 $("#tblGrid").append(htmlStr);
-
-                $('.h5, .h4, .h3, .h2').hide();
-                // $('.h1').click(function () {
-                //     $(this).find('i').toggleClass('caret right icon caret down icon');                        
-                //     $(this).nextUntil('tr.h1').toggle(300);
-                // });
             } else {
                 $('.error.message').show();
                 $("#tblGrid").empty();
             }
+            $('.dimmer').hide();
         }).fail(function () {
             $('.error.message').show();
             $("#tblGrid").empty();
         });
-    }
-
-    function Click_Header(id) {
-        var hval = $('#' + id).find('.h3') || $('#' + id).find('.h4') || $('#' + id).find('.h5') || $('#' + id).find(
-            '.h6');
-        $('#' + id).find('i').toggleClass('caret right icon caret down icon');
-        $('.rg' + id).toggle(300);
-        /*$('.rg' + id).nextUntil('tr.h3').toggle(300, function () {
-            if ($('.rg' + id).is(":visible")) {
-                console.log("Visible");
-            } else {
-                console.log("Hidden");
-            }
-        });*/
     }
 </script>

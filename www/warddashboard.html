@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Incharge Dashboard</title>
+    <title>Bed Category Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
@@ -67,16 +67,18 @@
     <br>
     <div class="ui fluid container">
         <div class="page-header">
-            <h4>Incharge Dashboard</h4>
+            <h4>Ward Dashboard</h4>
             <div class="ui divider"></div>
         </div>
         
         <div id="tblGrid"></div>
         <br>
-        <div class="ui active inverted page dimmer" id="dimmer">
-            <div class="ui large text loader">Loading</div>
-        </div>
-        <input type="hidden" id="hempid" />
+    </div>
+    <br>
+    <div class="ui active inverted page dimmer" id="dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <input type="hidden" id="hempid" />
 </body>
 
 </html>
@@ -120,7 +122,7 @@
 
     function ReportGrid() {
         $("#tblGrid").empty();
-        $.get(apiURL + 'Incharge/Dashboard', function (response) {
+        $.get(apiURL + 'BedCatg/Dashboard', function (response) {
             //debugger;
         }).done(function (response) {
             selectedArray = response.data;
@@ -152,8 +154,7 @@
     }
 
     function Click_Header(id) {
-        var hval = $('#' + id).find('.h3') || $('#' + id).find('.h4') || $('#' + id).find('.h5') || $('#' + id).find(
-            '.h6');
+        //var hval = $('#' + id).find('.h3') || $('#' + id).find('.h4') || $('#' + id).find('.h5') || $('#' + id).find('.h6');
         $('#' + id).find('i').toggleClass('caret right icon caret down icon');
         $('.rg' + id).toggle(300);
         /*$('.rg' + id).nextUntil('tr.h3').toggle(300, function () {

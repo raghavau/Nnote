@@ -96,8 +96,8 @@
             <button class="ui fluid labeled icon blue button" id="btnDocDash">
                 <i class="right arrow icon"></i> Doctor Availability
             </button><br>
-            <button class="ui fluid labeled icon green button" id="btnIncDash">
-                <i class="right arrow icon"></i> Incharge Dashboard
+            <button class="ui fluid labeled icon green button" id="btnbedoccp">
+                <i class="right arrow icon"></i> Bed Occupancy Dashboard
             </button><br>
 
             <h4 class="ui dividing header"><i class="angle right icon"></i>Leave Approvals</h4>
@@ -195,7 +195,7 @@
                 window.location.href = "availability.html?empid=" + btoa($("#hempid").val());
                 break;
             case 4:
-                window.location.href = "dutyroster.html";
+                window.location.href = "empdutyroster.html";
                 break;
         }
     }
@@ -405,8 +405,8 @@
                 document.location.href = "doc_dashboard.mobile.html?empid=" + btoa($("#hempid").val());
         });
 
-        $("#btnIncDash").click(function () {
-            document.location.href = "inchargedashboard.html?empid=" + btoa($("#hempid").val());
+        $("#btnbedoccp").click(function () {
+            document.location.href = "bedoccupancy.html?empid=" + btoa($("#hempid").val());
         });
 
         $("#btnLeaveApprove").click(function () {

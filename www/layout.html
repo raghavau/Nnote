@@ -22,6 +22,10 @@
         .column {
             max-width: 450px;
         }
+        .active {
+            background-color: #e6e6e6 !important;
+            border-top: 2px solid;
+        }
     </style>
 </head>
 
@@ -149,7 +153,7 @@
 
         var ifrmheight = $('body').height() - $('.bottom').height();
         $('#ifrm').css('top', $('.top').height());
-        $('#ifrm').height(ifrmheight - 45);
+        $('#ifrm').height(ifrmheight - 55);
 
         if ($("#hfname").val() != "")
             $('#ifrm').attr('src', 'request.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
@@ -174,26 +178,38 @@
         });
 
         $('#profile').click(function () {
+            menuActive('profile');
             $('#ifrm').attr('src', 'profile.html?empid=' + btoa($("#hempid").val()));
         });
         $('#services').click(function () {
+            menuActive('services');
             $('#ifrm').attr('src', 'services.html?empid=' + btoa($("#hempid").val()));
         });
         $('#status').click(function () {
+            menuActive('status');
             $('#ifrm').attr('src', 'editrequest.html?empid=' + btoa($("#hempid").val()));
         });
         $('#reopen').click(function () {
+            menuActive('reopen');
             $('#ifrm').attr('src', 'reopen.html?empid=' + btoa($("#hempid").val()));
         });
         $('#reports').click(function () {
+            menuActive('reports');
             $('#ifrm').attr('src', 'complaintsList.html?empid=' + btoa($("#hempid").val()));
         });
         $('#more').click(function () {
+            menuActive('more');
             $('#ifrm').attr('src', 'more.html?empid=' + btoa($("#hempid").val()));
         });
 
         //ShowNotifications();        
     });
+
+    function menuActive(obj)
+    {
+        $('.bottom>.item').removeClass('active red');
+        $('#' + obj).addClass('active red');
+    }
 
     function ShowNotifications() {
         $.get(apiURL + 'Notifications/' + $("#hempid").val(), function (response) {

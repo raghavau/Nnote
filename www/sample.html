@@ -2,97 +2,103 @@
 <html>
 
 <head>
-    <title>Photo Capture and Upload</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Index Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
     <style type="text/css">
-        table {
-            width: 100%;
+        body {
+            /*overflow: hidden;*/
         }
 
-        td {
-            padding: 2px;
-            width: 50%;
+        body>.grid {
+            height: 100%;
         }
 
-        div>label {
-            color: white;
-            font-size: 13px;
-            font-weight: bold;
-            font-family: Ubuntu;
-            padding: 10px;
-            text-shadow: 2px 2px 2px #838383;
+        .column {
+            max-width: 450px;
+        }
+        
+        .ui.menu {
+            margin: 0 !important;
         }
 
-        .divimg {
-            cursor: pointer;
-            border-radius: 10px;
-            padding: 20px;
-            height: 140px;
+        .secondary {
+            background-color: #f1f1f1 !important;
+        }
+
+        .secondary>.item {
+            border-right: 1px solid #ababab !important;
+            text-align: center !important;
+        }
+
+        .secondary>.active {
+            background-color: #3db5ad !important;
+            border-top: 2px solid;
+            color: #ffffff !important;
+        }
+        .syringe {
+            animation: blink 1s linear infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
         }
     </style>
 </head>
 
-<body onload="onLoad()">
-    <table style="border: 0px solid;">
-        <tr>
-            <td colspan="2" style="text-align: center;">
-                <img alt="image" style="width:100px; " id="camera_image" src="" /></td>
-            <!-- visibility:hidden; display:none; -->
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: center;">
-                <img alt="image" style="width:100px; " id="camera_image2" src="" /></td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: center;"><span id="camera_status"></span></td>
-        </tr>
-        <tr>
-            <td style="text-align: center;">
-                <div class="divimg" style="background-color: #00AEAD;" onclick="takePicture();">
-                    <i class="ui large camera"></i><br>
-                    <label>Take Picture</label>
-                </div>
-            </td>
-            <td style="text-align: center;">
-                <div class="divimg" style="background-color: #5B6275;" onclick="selectPicture();">
-                    <i class="ui large images"></i><br>
-                    <label>Select Picture</label>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: center;">
-                <div class="divimg" style="background-color: #E74C3C;">
-                    <img alt="Select Picture from Gallery" src="img/upload.PNG" height="70" width="80" id="btnUpload"
-                        onclick="uploadPicture();"><br>
-                    <label>Upload Picture</label>
-                </div>
-            </td>
-        </tr>
-    </table>
+<body>
+    <br>
+    <div class="ui container">
+        <div class="page-header">
+            <h3><i class="tags icon"></i> Bed Occupancy Dashboard</h3>
+            <div class="ui divider"></div>
+        </div>
+        <div class="ui secondary pointing menu">
+            <a class="active item" id="incharge">
+              Incharge
+            </a>
+            <a class="item" id="bedtype">
+              Bed Type
+            </a>
+            <a class="item" id="ward">
+              Ward
+            </a>
+          </div>
+          <div class="ui basic segment">
+            <div id="tblGrid1"></div>
+            <div id="tblGrid2"></div>
+            <div id="tblGrid3"></div>
+        <br>
+          </div>
+    </div>
     <input type="hidden" id="hempid" />
-    <input type="hidden" id="hsid" />
-    <input type="hidden" id="hsname" />
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
 </body>
 
 </html>
-<script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
 <script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript">
-    var deviceReady = false;
-    var qsParm = new Array();
+    var apiURL = '../../NnoteApi/api/';
+    //var apiURL = 'http://115.241.194.19/NtraktApi/api/';
 
-    function onLoad() {
-        document.addEventListener("deviceready", onDeviceReady, false);
-    }
+    document.addEventListener("deviceready", onDeviceReady, false);
 
     function onDeviceReady() {
-        document.addEventListener("backbutton", onBackKeyDown, false);
+        document.addEventListener("backbutton", function (e) {
+            e.preventDefault();
+        }, false);
     }
-
-    function onBackKeyDown() {}
+    var qsParm = new Array();
 
     function qs() {
         //debugger;
@@ -108,8 +114,6 @@
         }
         if (parms.length > 0) {
             $("#hempid").val(atob(qsParm["empid"]));
-            $("#hsid").val(atob(qsParm["sid"]));
-            $("#hsname").val(atob(qsParm["sname"]));
             return true;
         } else {
             window.location.href = 'index.html';
@@ -124,177 +128,139 @@
     }
 
     $(document).ready(function () {
-        //qs();
-        $("#loading").hide();
+        qs();
+        $(".dimmer").hide();
+        $('.ui.segment').height($(this).height() - 180);
+        $("#tblGrid2").hide(); $("#tblGrid3").hide();
+
+        ReportGrid1('Incharge');
+        $('#incharge').click(function () {
+            menuActive('incharge');
+            $("#tblGrid1").show(); $("#tblGrid2").hide(); $("#tblGrid3").hide();
+            //ReportGrid('Incharge');
+        });
+        $('#bedtype').click(function () {
+            menuActive('bedtype');
+            $("#tblGrid1").hide(); $("#tblGrid2").show(); $("#tblGrid3").hide();
+            //ReportGrid('Ward');
+        });
+        $('#ward').click(function () {
+            menuActive('ward');
+            $("#tblGrid1").hide(); $("#tblGrid2").hide(); $("#tblGrid3").show();
+            //ReportGrid('BedCatg');
+        });
     });
 
-    function takePicture() {
-        navigator.camera.getPicture(
-            function (uri) {
-                var img = document.getElementById('camera_image');
-                img.style.visibility = "visible";
-                img.style.display = "block";
-                img.src = uri;
-                document.getElementById('camera_status').innerHTML = "Success";
-            },
-            function (e) {
-                console.log("Error getting picture: " + e);
-                document.getElementById('camera_status').innerHTML = "Error getting picture.";
-            }, {
-                quality: 50,
-                destinationType: navigator.camera.DestinationType.FILE_URI,
-                correctOrientation: true
+    function ReportGrid1(rptType) {
+        $("#tblGrid1").empty();
+        $.get(apiURL + rptType + '/Dashboard', function (response) {
+            //debugger;
+        }).done(function (response) {
+            selectedArray = response.data;
+            //debugger;
+            var htmlStr = '';
+            $("#tblGrid1").empty();
+            if (selectedArray.length > 0) {
+                htmlStr = '<table class="ui unstackable compact large table">';
+                //htmlStr = '<table border="1">';
+                for (var i = 0; i <= selectedArray.length - 1; i++)
+                    htmlStr += selectedArray[i].Content;
+                htmlStr += '</table>';
+
+                $("#tblGrid1").append(htmlStr);
+
+                $('.h5, .h4, .h3, .h2').hide();
+                // $('.h1').click(function () {
+                //     $(this).find('i').toggleClass('caret right icon caret down icon');                        
+                //     $(this).nextUntil('tr.h1').toggle(300);
+                // });
+            } else {
+                $('.error.message').show();
+                $("#tblGrid1").empty();
             }
-        );
-    };
-
-    function selectPicture() {
-        capturePhoto();
-        // navigator.camera.getPicture(
-        //     function (uri) {
-        //         var img = document.getElementById('camera_image');
-        //         img.style.visibility = "visible";
-        //         img.style.display = "block";
-        //         img.src = uri;
-        //         document.getElementById('camera_status').innerHTML = "Success";
-        //     },
-        //     function (e) {
-        //         console.log("Error getting picture: " + e);
-        //         document.getElementById('camera_status').innerHTML = "Error getting picture.";
-        //     }, {
-        //         quality: 50,
-        //         destinationType: navigator.camera.DestinationType.FILE_URI,
-        //         sourceType: navigator.camera.PictureSourceType.PHOTOLIBRARY
-        //     }
-        // );
-    };
-
-    function uploadPicture() {
-        // $("#loading").show();
-        // var img = document.getElementById('camera_image');
-        // var imageURI = img.src;
-        // if (!imageURI || (img.style.display == "none")) {
-        //     alert('Take Picture or Select Picture from library.');
-        //     document.getElementById('camera_status').innerHTML = "Take picture or Select picture from library.";
-        //     $("#loading").hide();
-        //     return;
-        // }
-        // document.getElementById('camera_image').style.display = "none";
-        // var server = 'http://localhost/NtraktApi/api/FileUpload/UploadFile';
-        // if (server) {
-        //     var options = new FileUploadOptions();
-        //     options.fileKey = "file";
-        //     options.fileName = $("#hidRequestId").val();
-        //     options.mimeType = "image/jpeg";
-        //     options.chunkedMode = false;
-        //     options.headers = {
-        //         Connection: "close"
-        //     }
-        //     server = server + '/' + options.fileName;
-        //     //document.getElementById('camera_status').innerHTML = options.fileName;
-
-        //     var ft = new FileTransfer();
-        //     ft.upload(imageURI, encodeURI(server), function (r) {
-        //         document.getElementById('camera_status').innerHTML = "Picture Uploaded successfully.";
-        //         // + (parseFloat(parseFloat(r.bytesSent) / 1024) / 1024) + " MB uploaded.";
-        //         window.location.href = 'VisitDetails.html?reqid=' + btoa($("#hidRequestId").val()) + '&mail=' +
-        //             btoa($("#hidEmail").val());
-        //     }, function (error) {
-        //         $("#loading").hide();
-        //         document.getElementById('camera_status').innerHTML = "Upload failed: Code = " + error.code +
-        //             "\n upload error source " + error.source + "\n upload error target " + error.target;
-        //     }, options);
-        // }
-
-        // var imgProfile = document.getElementById('camera_image2');
-        // imgProfile.src = document.getElementById('camera_status').innerHTML;
-
-        var fileName = document.getElementById('camera_status').innerHTML.split("/");
-        fileName = fileName[fileName.length - 1];
-        window.open('layout.html?empid=' + btoa($("#empid").val()) + "&sid=" + btoa($("#hsid").val()) + "&sname=" + btoa($("#hsname").val())
-            + "&fname=" + btoa(fileName));
-    }
-
-    function init() {
-        document.addEventListener("deviceready", function () {
-            deviceReady = true;
-        }, false);
-        window.setTimeout(function () {
-            if (!deviceReady) {
-                alert("Error: Camera not initialised.");
-            }
-        }, 2000);
-    }
-
-    function capturePhoto() {
-        sessionStorage.removeItem('imagepath');
-        // Take picture using device camera and retrieve image as base64-encoded string
-        navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
-            quality: 50,
-            destinationType: Camera.DestinationType.FILE_URI
+            ReportGrid2('Ward');
+        }).fail(function () {
+            $('.error.message').show();
+            $("#tblGrid1").empty();
         });
     }
 
-    function onPhotoDataSuccess(imageURI) {
-        // Uncomment to view the base64 encoded image data
-        // console.log(imageData);
+    function ReportGrid2(rptType) {
+        $("#tblGrid2").empty();
+        $.get(apiURL + rptType + '/Dashboard', function (response) {
+            //debugger;
+        }).done(function (response) {
+            selectedArray = response.data;
+            //debugger;
+            var htmlStr = '';
+            $("#tblGrid2").empty();
+            if (selectedArray.length > 0) {
+                htmlStr = '<table class="ui unstackable compact large table">';
+                //htmlStr = '<table border="1">';
+                for (var i = 0; i <= selectedArray.length - 1; i++)
+                    htmlStr += selectedArray[i].Content;
+                htmlStr += '</table>';
 
-        // Get image handle
-        //
-        var imgProfile = document.getElementById('camera_image');
+                $("#tblGrid2").append(htmlStr);
 
-        // Show the captured photo
-        // The inline CSS rules are used to resize the image
-        //
-        imgProfile.src = imageURI;
-        if (sessionStorage.isprofileimage == 1) {
-            getLocation();
-        }
-        document.getElementById('camera_status').innerHTML = imageURI;
-        movePic(imageURI);
+                $('.h5, .h4, .h3, .h2').hide();
+                // $('.h1').click(function () {
+                //     $(this).find('i').toggleClass('caret right icon caret down icon');                        
+                //     $(this).nextUntil('tr.h1').toggle(300);
+                // });
+            } else {
+                $('.error.message').show();
+                $("#tblGrid2").empty();
+            }
+            ReportGrid3('BedCatg');
+        }).fail(function () {
+            $('.error.message').show();
+            $("#tblGrid2").empty();
+        });
     }
 
-    // Called if something bad happens.
-    // 
-    function onFail(message) {
-        alert('Failed because: ' + message);
+    function ReportGrid3(rptType) {
+        $("#tblGrid3").empty();
+        $.get(apiURL + rptType + '/Dashboard', function (response) {
+            //debugger;
+        }).done(function (response) {
+            selectedArray = response.data;
+            //debugger;
+            var htmlStr = '';
+            $("#tblGrid3").empty();
+            if (selectedArray.length > 0) {
+                htmlStr = '<table class="ui unstackable compact large table">';
+                //htmlStr = '<table border="1">';
+                for (var i = 0; i <= selectedArray.length - 1; i++)
+                    htmlStr += selectedArray[i].Content;
+                htmlStr += '</table>';
+
+                $("#tblGrid3").append(htmlStr);
+
+                $('.h5, .h4, .h3, .h2').hide();
+                // $('.h1').click(function () {
+                //     $(this).find('i').toggleClass('caret right icon caret down icon');                        
+                //     $(this).nextUntil('tr.h1').toggle(300);
+                // });
+            } else {
+                $('.error.message').show();
+                $("#tblGrid3").empty();
+            }
+        }).fail(function () {
+            $('.error.message').show();
+            $("#tblGrid3").empty();
+        });
     }
 
-    function movePic(file) {
-        window.resolveLocalFileSystemURI(file, resolveOnSuccess, resOnError);
+    function menuActive(obj)
+    {
+        $('.pointing>.item').removeClass('active');
+        $('#' + obj).addClass('active');
     }
 
-    //Callback function when the file system uri has been resolved
-    function resolveOnSuccess(entry) {
-        var d = new Date();
-        var n = d.getTime();
-        //new file name
-        var newFileName = n + ".jpg";
-        var myFolderApp = "MyAppFolder";
-
-        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
-                //The folder is created if doesn't exist
-                fileSystem.root.getDirectory(myFolderApp, {
-                        create: true,
-                        exclusive: false
-                    },
-                    function (directory) {
-                        entry.moveTo(directory, newFileName, successMove, resOnError);
-                    },
-                    resOnError);
-            },
-            resOnError);
-        // document.getElementById('camera_status').innerHTML = newFileName;
+    function Click_Header(id) {
+        $('#' + id).find('i').toggleClass('caret right icon caret down icon');
+        $('.rg' + id).toggle(300);
     }
 
-    //Callback function when the file has been moved successfully - inserting the complete path
-    function successMove(entry) {
-        //Store imagepath in session for future use
-        // like to store it in database
-        sessionStorage.setItem('imagepath', entry.fullPath);
-    }
-
-    function resOnError(error) {
-        alert(error.code);
-    }
 </script>

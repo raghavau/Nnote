@@ -30,6 +30,14 @@
             /*max-width: 450px;*/
             margin: 20px;
         }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -38,9 +46,31 @@
     <div class="ui column grid">
         <div class="column">
             <div class="ui stacked left aligned segment">
-                <div class="ui red ribbon label" id="lblHeading"></div><br>
+                <div class="ui red ribbon label" id="lblHeading"></div><br><br>
                 <div class="ui form">
                     <!-- <h4 class="ui dividing header">Service Request</h4> -->
+                    <div class="field">
+                        <label>Regno</label>
+                        <div class="ui action input">
+                            <input id="regno" name="regno" placeholder="Enter Registration No" type="number"
+                                maxlength="11" value="">
+                            <button class="ui icon button" id="btnSearch">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="field" id="pnlPatient">
+                        <div class="fields">
+                            <div class="field">
+                                <h5 id="name"></h5>
+                                <span id="age"></span> / <span id="gender"></span> / <span id="patmobile"></span><br>
+                                <span id="ipid"></span><input type="hidden" id="hipid"><br>
+                                <span id="doctname"></span> / <span id="deptname"></span><br>
+                                <span id="ward"></span> / <span id="bedno"></span><br>
+                                <span id="attendent"></span> / <span id="attdmobile"></span><br>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="field">
                         <label>Remarks</label>
                         <div class="field">
@@ -59,11 +89,17 @@
                         </button>
                     </div>
 
-                    <div class="two fields">
+                    <div class="three fields">
                         <div class="field">
                             <button id="btnSave" class="ui positive fluid labeled icon button">
                                 <i class="check icon"></i>
                                 Save
+                            </button>
+                        </div>
+                        <div class="field">
+                            <button id="btnReset" class="ui primary fluid labeled icon button">
+                                <i class="redo icon"></i>
+                                Reset
                             </button>
                         </div>
                         <div class="field">
@@ -98,7 +134,7 @@
 <script type="text/javascript">
     var deviceReady = false;
     var qsParm = new Array();
-    var phoneGap = false;
+    var phoneGap = false, isinpatient = 'N';
     var apiURL = '../../NnoteApi/Api/Nnote/';
     //var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
 
@@ -166,9 +202,19 @@
         qs();
         $("#nonmobile").hide();
         $("#mobile").hide();
+        $('#pnlPatient').hide();
         $("#lblHeading").text($("#hsname").val() + ' Service Request');
-        
-        phoneGap = isPhoneGap();        
+
+        $("#regno").keypress(function (e) {
+            //debugger;
+            var current_val = $(this).val();
+            var typing_char = String.fromCharCode(e.which);
+            if (parseFloat(current_val + "" + typing_char) > 99999999999) {
+                return false;
+            }
+        });
+
+        phoneGap = isPhoneGap();
         if (phoneGap) {
             $("#nonmobile").hide();
             $("#mobile").show();
@@ -176,12 +222,22 @@
             $("#nonmobile").show();
             $("#mobile").hide();
         }
+
+        $('#btnSearch').click(function () {
+            SearchPatient();
+        });
+
         $('#btnSelectImage').click(function () {
             onSelectClick();
         });
 
         $('#btnSave').click(function () {
             SaveRequest();
+        });
+
+        $('#btnReset').click(function () {
+            document.location.href = "request.html?empid=" + btoa($("#hempid").val()) + "&sid=" + btoa(
+                $("#hsid").val()) + "&sname=" + btoa($("#hsname").val());
         });
 
         $('#btnCancel').click(function () {
@@ -210,10 +266,22 @@
         }
 
         $(".dimmer").show();
+        var patDtls = '';
+        if ($('#regno').val() != '') {
+            if(isinpatient == 'Y')
+            {
+                patDtls = $('#regno').val() + ' -' + $("#name").text() + ' -' ;
+                patDtls += ' -' + $("#patmobile").text() + ' -' + $("#doctname").text() + ' -' + $("#deptname").text();
+                patDtls += ' -' + $("#ward").text() + ' -' + $("#bedno").text();
+                patDtls += ' -' + $("#attendent").text() + ' -' + $("#attdmobil").text();
+            }
+        }
         var objdata = {
             worktype: $("#hsid").val(),
             userid: $("#hempid").val(),
-            complaint: $("#txtRemarks").val()
+            complaint: patDtls + ' ' + $("#txtRemarks").val(),
+            Regno: $('#regno').val() == '' ? '0' : $('#regno').val(),
+            IPatientId: $('#hipid').val() == '' ? '0' : $('#hipid').val()
         };
         $.ajax({
             type: 'POST',
@@ -231,10 +299,59 @@
                 }
             },
             error: function (xhr, status, error) {
-                alert('Error occurred while submitting data.\n\r' + xhr.responseText);
+                alert('Error occurred.\n\r' + xhr.responseText);
                 $(".dimmer").hide();
             }
         });
+    }
+
+    function SearchPatient() {
+        //debugger;
+        $('#pnlPatient').hide();
+        //$('#regno').attr('readonly', 'true');
+        if ($('#regno').val() == '') {
+            alert('Enter Patient Registration No.');
+            $('#regno').focus();
+        } else {
+            $(".dimmer").show();
+            $.get(apiURL.replace('Nnote/', 'Patient/IsInPatient/') + $("#regno").val(), function (response) {
+                //debugger;
+                if (response.data == 'Success') {
+                    isinpatient = 'Y';
+                    $.get(apiURL.replace('Nnote/', 'Patient/AdmissionDetails/') + $("#regno").val(), function (response) {
+                        //debugger;
+                        var arrdata = response.data;
+                        var content = '<br><br>';
+                        if (arrdata.length > 0) {
+                            $('#pnlPatient').show();
+                            $("#name").text(arrdata[0].Name);
+                            $("#age").text(arrdata[0].Age + ' ' + arrdata[0].AgeType);
+                            $("#gender").text(arrdata[0].Gender);
+                            $("#patmobile").text(arrdata[0].MobileNo);
+                            $("#ipid").text(arrdata[0].IPatientId);
+                            $("#hipid").val(arrdata[0].IPatientId);
+                            $("#doctname").text(arrdata[0].DoctorName);
+                            $("#deptname").text(arrdata[0].Department);
+                            $("#ward").text(arrdata[0].WardName);
+                            $("#bedno").text(arrdata[0].BedId);
+                            $("#attendent").text(arrdata[0].Attendant);
+                            $("#attdmobile").text(arrdata[0].AttendantMobile);
+
+                            $(".dimmer").hide();
+                        }
+                    }).fail(function (xhr, status, error) {
+                        alert('Error occurred.\n\r' + xhr.responseText);
+                        $(".dimmer").hide();
+                    });
+                } else {
+                    $(".dimmer").hide();
+                    alert("Not an Inpatient or Patient was Discharged.");
+                }
+            }).fail(function (xhr, status, error) {
+                alert('Error occurred.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            });
+        }
     }
 
     function uploadPicture(cslno) {
