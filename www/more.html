@@ -34,7 +34,7 @@
     <div class="ui column grid">
         <div class="column">
             <h4 class="ui dividing header"><i class="angle right icon"></i>Attendance</h4>
-            <div class="ui two cards" name="wtcards" id="wtcards">
+            <div class="ui three cards" name="wtcards" id="wtcards">
                 <div class="ui card">
                     <div class="content">
                         <div class="center aligned description">
@@ -80,6 +80,21 @@
                     </div>
                     <div id="btndutyroster" class="ui bottom attached button" onclick="Click(4);">
                         Duty Roster
+                    </div>
+                </div>
+                <div class="ui card">
+                    <div class="content">
+                        <div class="center aligned description">
+                            <span class="ico-width">
+                                <span class="fa-stack fa-2x" style="vertical-align: middle;color:#4442ba">
+                                    <i class="fas fa-clock fa-stack-1x" style="top: 6px;"></i>
+                                    <i class="far fa-calendar fa-stack-2x"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="btnroster" class="ui bottom attached button" onclick="Click(5);">
+                        Roster
                     </div>
                 </div>
             </div>
@@ -196,6 +211,9 @@
                 break;
             case 4:
                 window.location.href = "empdutyroster.html";
+                break;
+            case 5:
+                window.location.href = "http://narayanagroup.co.in/BioAttendanceApi/www/rosterview.html";
                 break;
         }
     }

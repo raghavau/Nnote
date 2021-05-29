@@ -21,6 +21,14 @@
             height: 100%;
         }
 
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
         .ui-widget-header {
             border: 1px solid #3db5ad;
             background: #3db5ad;
@@ -104,45 +112,90 @@
             <h3><i class="tags small grey icon"></i> Duty Roster Update</h3>
             <div class="ui divider"></div>
         </div>
+        <div class="ui stacked segment">
+            <div class="ui form">
+                <div class="three fields">
+                    <div class="six wide field">
+                        <label for="">EmpNo</label>
+                        <div class="ui fluid action input">
+                            <input type="number" name="empno" id="empno" maxlength="9">
+                            <button id="search" class="ui teal button">Search</button>
+                        </div>
+                    </div>
+                    <div class="five wide field"></div>
+                    <div class="five wide field"></div>
+                </div>
 
-        <div class="ui form">
-            <div class="fields">
-                <div class="four wide field">
-                    <label>Duty Dates</label>
-                    <select name="dutydate" id="dutydate" class="ui fluid dropdown">
-                        <option value="">Select Duty Date</option>
-                    </select>
+                <div class="field">
+                    <div class="ui error small message">
+                        <p id="message"></p>
+                    </div>
                 </div>
-                <div class="eight wide field">
-                    <label>Employees</label>
-                    <select name="emps" id="emps" class="ui fluid dropdown">
-                        <option value="">Select Employee</option>
-                    </select>
-                </div>
-                <div class="four wide field">
-                    <label>Shift Type</label>
-                    <select name="shifttype" id="shifttype" class="ui fluid dropdown">
-                        <option value="D">Day Shift</option>
-                        <option value="N">Night Shift</option>
-                    </select>
-                </div>
-            </div>
-            <div class="field">
-                <label>Remarks</label>
-                <textarea name="remarks" id="remarks" rows="5"></textarea>
-            </div>
-            <div class="field" style="text-align: center;">
-                <button class="ui positive labeled icon button" id="btnSave">
-                    <i class="check small icon"></i> Submit
-                </button>
-                <button class="ui negative labeled icon button" id="btnCancel">
-                    <i class="times small icon"></i> Cancel
-                </button>
-            </div>
 
-            <div class="field">
-                <div class="ui error small message">
-                    <p id="message"></p>
+                <div class="field">
+                    <div class="four equal width fields">
+                        <div class="field">
+                            <label for="">Name</label>
+                            <div class="ui right icon input">
+                                <input type="text" name="empname" id="empname">
+                                <i class="inverted circular"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="">Mobile</label>
+                            <div class="ui input">
+                                <input type="text" name="mobile" id="mobile">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="">Department</label>
+                            <div class="ui input">
+                                <input type="text" name="dept" id="dept">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="">Designation</label>
+                            <div class="ui input">
+                                <input type="text" name="desig" id="desig">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="four equal width fields">
+                        <div class="field">
+                            <label for="">Shift Date</label>
+                            <select id="shiftdates" class="ui fluid dropdown"></select>
+                        </div>
+                        <div class="field">
+                            <label for="">Shift Time</label>
+                            <div class="ui left icon input">
+                                <i class="clock icon"></i>
+                                <input type="text" name="shifttime" id="shifttime">
+                                <input type="hidden" name="shiftslno" id="shiftslno">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="">Work Location</label>
+                            <div class="ui input">
+                                <input type="text" name="workloc" id="workloc">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="">New Shift Time</label>
+                            <select id="shifttimes" class="ui fluid dropdown"></select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="">Remarks</label>
+                        <div class="ui input">
+                            <textarea name="remarks" id="remarks" cols="30" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="fields">
+                    <div class="fourteen wide field"></div>
+                    <div class="two wide field">
+                        <button class="ui right floated primary button" id="update">Update</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -164,7 +217,8 @@
     var qsParm = new Array(),
         empid = null;
 
-    var deptsArray = [],
+    var selectedArray = [],
+        shifttime = [],
         izoom = 0;
     document.addEventListener("deviceready", onDeviceReady, false);
 
@@ -207,79 +261,143 @@
         $('.dimmer').hide();
         $('.error.message').hide();
         $('.ui.dropdown').dropdown();
-        $('#dutydate').attr('readonly', 'true');
+        $('#empname, #mobile, #dept, #desig, #shifttime').attr('readonly', 'true');
 
-        var today = moment().format("DD-MMM-YYYY");
-        $("#dutydate").val(today);
+        qs();
 
-        $("#dutydate").datepicker({
-            changeMonth: true,
-            dateFormat: "dd-MM-yy",
-            defaultDate: today,
-            //maxDate: "0d+",
-            minDate: new Date(2021, 4, 1),
-            onSelect: function () {
-                Grid();
+        $("#empno").keypress(function (e) {
+            //debugger;
+            var current_val = $(this).val();
+            var typing_char = String.fromCharCode(e.which);
+            if (parseFloat(current_val + "" + typing_char) > 999999999) {
+                return false;
             }
         });
 
-        qs();
-        ShiftDates();
+        $('#search').click(function () {
+            $('.error.message').hide();
+            ShiftDetails();
+        });
+
+        $('#shiftdates').change(function () {
+            if ($(this).val() != null) {
+                shifttime = jQuery.grep(selectedArray, function (data, i) {
+                    return data.ShiftType == $('#shiftdates').val();
+                });
+                $('#shifttime').val(shifttime[0].ShiftTime);
+                $('#shiftslno').val(shifttime[0].ShiftSlno);
+                $('#workloc').val(shifttime[0].ServiceName);
+                ShiftTimes();
+            }
+        });
+
+        $('#update').click(function () {
+            Update();
+        });
     });
 
-    function ShiftDates() {
-        $.get(apiURL + 'DutyDates/' + $("#hempid").val(), function (response) {
+    function ShiftDetails() {
+        $('.dimmer').show();
+        $('#empname').val('');
+        $('i.circular').removeClass('male');
+        $('i.circular').removeClass('female');
+        $('#mobile').val('');
+        $('#dept').val('');
+        $('#desig').val('');
+        $('#workloc').val('');
+        $('#shifttime').val('');
+        $('#remarks').val('');
+        $('#shifttimes').dropdown('clear');
+        $.get(apiURL + 'Employee/Shift/' + $("#empno").val(), function (response) {
             //debugger;
         }).done(function (response) {
             selectedArray = response.data;
             //debugger;
-            $('#dutydate').dropdown('clear');
+            $('#shiftdates').dropdown('clear');
             var htmlStr = '';
-            $("#dutydate").empty();
+            $("#shiftdates").empty();
             if (selectedArray.length > 0) {
-                htmlStr += '<option>Select Duty Date</option>';
+                $('#empname').val(selectedArray[0].Name);
+                $('i.circular').addClass(selectedArray[0].Content);
+                $('#mobile').val(selectedArray[0].Mobile);
+                $('#dept').val(selectedArray[0].Department);
+                $('#desig').val(selectedArray[0].Designation);
+                
+                htmlStr += '<option>Select Date</option>';
                 for (var i = 0; i <= selectedArray.length - 1; i++)
-                    htmlStr += '<option value="' + selectedArray[i].ShiftDate + '">' + selectedArray[i].ShiftDate + '</option>';
+                    htmlStr += '<option value="' + selectedArray[i].ShiftType + '">' + selectedArray[i].ShiftDate + '</option>';
 
-                $("#dutydate").append(htmlStr);
-                AlternateEmployee();
+                $("#shiftdates").append(htmlStr);
             } else {
-                $("#dutydate").empty();
+                $("#shiftdates").empty();
                 $('.error.message').show();
                 $('#message').text('No Data found.');
             }
+            $('.dimmer').hide();
         }).fail(function () {
-            $("#dutydate").empty();
+            $('.dimmer').hide();
+            $("#shiftdates").empty();
             $('.error.message').show();
             $('#message').text('No Data found.');
         });
     }
 
-    function AlternateEmployee() {
-        $.get(apiURL + 'Alternate/Employees/' + $("#hempid").val(), function (response) {
+    function ShiftTimes() {
+        $('.dimmer').show();
+        $.get(apiURL + 'DutyTimes/' + $("#empno").val() + '/' + $('#shiftdates option:selected').text(), function (response) {
             //debugger;
         }).done(function (response) {
-            selectedArray = response.data;
+            var dataArray = [];
+            dataArray = response.data;
             //debugger;
-            $('#emps').dropdown('clear');
+            $('#shifttimes').dropdown('clear');
             var htmlStr = '';
-            $("#emps").empty();
-            if (selectedArray.length > 0) {
-                htmlStr += '<option>Select Employee</option>';
-                for (var i = 0; i <= selectedArray.length - 1; i++)
-                    htmlStr += '<option value="' + selectedArray[i].EmpId + '">' + selectedArray[i].EmpId + ' - ' + selectedArray[i].Name 
-                        + ' - ' + selectedArray[i].WorkLocation + '</option>';
+            $("#shifttimes").empty();
+            if (dataArray.length > 0) {
+                htmlStr += '<option>Select Duty Time</option>';
+                for (var i = 0; i <= dataArray.length - 1; i++)
+                    htmlStr += '<option value="' + dataArray[i].ShiftSlno + '">' + dataArray[i].ShiftTime + '</option>';
 
-                $("#emps").append(htmlStr);
+                $("#shifttimes").append(htmlStr);
             } else {
-                $("#emps").empty();
+                $("#shifttimes").empty();
                 $('.error.message').show();
                 $('#message').text('No Data found.');
             }
+            $('.dimmer').hide();
         }).fail(function () {
-            $("#emps").empty();
+            $('.dimmer').hide();
+            $("#shifttimes").empty();
             $('.error.message').show();
             $('#message').text('No Data found.');
+        });
+    }
+
+    function Update() {
+        $('.dimmer').show();
+        var data = {
+            EmpId: $('#empno').val(),
+            ShiftDate: $('#shiftdates option:selected').text(),
+            ShiftType: $('#shifttimes').val(),
+            ShiftSlno: $('#shiftslno').val(),
+            Remarks: $('#remarks').val(),
+            UserId: $('#hempid').val()
+        };
+
+        $.post(apiURL + 'DutyDates/Change', data, function (response) {
+            //debugger
+        }).done(function (response) {
+            var result = response.data;
+            if(result == 'Success') {
+                alert('Shift Updated Successfully.');
+                document.location.href='dutyroster_update.html?empid=' + btoa($("#hempid").val());
+            }
+            else {
+                $('.dimmer').hide();
+                alert('Shift Updated Failed.');
+            }
+        }).fail(function () {
+            $('.dimmer').hide();
         });
     }
 </script>

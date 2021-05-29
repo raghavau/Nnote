@@ -11,10 +11,6 @@
     <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
     <script type="text/javascript" src="semantic/semantic.min.js"></script>
     <style type="text/css">
-        body {
-            /*overflow: hidden;*/
-        }
-
         body>.grid {
             height: 100%;
         }
@@ -23,6 +19,9 @@
             max-width: 450px;
         }
         
+        .ui.fluid.container {
+            width: 95% !important;
+        }
         
         .ui.menu {
             margin: 0 !important;
@@ -42,18 +41,34 @@
             border-top: 2px solid;
             color: #ffffff !important;
         }
+
+        .secondary::-webkit-scrollbar {
+            width: 1px;
+            height: 1px;
+        }
+
+        .secondary::-webkit-scrollbar-thumb {
+            background: rgb(228, 228, 228);
+            border-radius: 99vmax;
+            border: 1px solid rgb(241, 241, 241);
+        }
+
+        .secondary::-webkit-scrollbar-track {
+            background: rgb(255, 255, 255);
+        }
     </style>
 </head>
 
 <body>
     <br>
-    <div class="ui container">
+    <div class="ui fluid container">
         <div class="page-header">
             <h3><i class="tags icon"></i> Bed Occupancy Dashboard</h3>
             <div class="ui divider"></div>
         </div>
-        <div class="ui secondary pointing menu">
-            <a class="active item" id="ip">IP Census</a>
+        <div class="ui secondary pointing menu" style="overflow: auto;">
+            <a class="active item" id="service">Service Monitor</a>
+            <a class="item" id="ip">IP Census</a>
             <a class="item" id="beds">Beds Position</a>
             <a class="item" id="incharge">Incharge</a>
             <a class="item" id="bedtype">Bed Type</a>
@@ -117,7 +132,7 @@
         $(".dimmer").hide();
         $('.ui.segment').height($(this).height() - 180);
 
-        $('#ifrm').attr('src', 'ipcensus.html?empid=' + btoa($("#hempid").val()));
+        $('#ifrm').attr('src', 'servicemonitoring.html?empid=' + btoa($("#hempid").val()));
 
         $('#incharge').click(function () {
             menuActive('incharge');
@@ -138,6 +153,10 @@
         $('#ip').click(function () {
             menuActive('ip');
             $('#ifrm').attr('src', 'ipcensus.html?empid=' + btoa($("#hempid").val())); 
+        });
+        $('#service').click(function () {
+            menuActive('service');
+            $('#ifrm').attr('src', 'servicemonitoring.html?empid=' + btoa($("#hempid").val())); 
         });
     });
 
