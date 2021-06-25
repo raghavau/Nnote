@@ -34,7 +34,7 @@
     <div class="ui column grid">
         <div class="column">
             <h4 class="ui dividing header"><i class="angle right icon"></i>Attendance</h4>
-            <div class="ui three cards" name="wtcards" id="wtcards">
+            <div class="ui stackable four cards" name="wtcards" id="wtcards">
                 <div class="ui card">
                     <div class="content">
                         <div class="center aligned description">
@@ -94,7 +94,35 @@
                         </div>
                     </div>
                     <div id="btnroster" class="ui bottom attached button" onclick="Click(5);">
-                        Roster
+                        Roster View
+                    </div>
+                </div>
+                <div class="ui card">
+                    <div class="content">
+                        <div class="center aligned description">
+                            <span class="ico-width">
+                                <i class="big icons">
+                                    <i class="fas fa-user-injured fa-2x" style="color: #00bcd4"></i>
+                                    <i class=" corner search icon"
+                                        style="font-size: 25px; left: 25px; top: 35px; color: #676767;"></i>
+                                </i>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="btnroster" class="ui bottom attached button" onclick="Click(6);">
+                        Patient Enquiry
+                    </div>
+                </div>
+                <div class="ui card">
+                    <div class="content">
+                        <div class="center aligned description">
+                            <span class="ico-width">
+                                <i class="fas fa-h-square fa-4x" style="color: #009688"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="btnwrdplan" class="ui bottom attached button" onclick="Click(7);">
+                        Wards Plan
                     </div>
                 </div>
             </div>
@@ -105,9 +133,9 @@
             </button><br>
 
             <h4 class="ui dividing header"><i class="angle right icon"></i>Reports</h4>
-            <button class="ui fluid labeled icon orange button" id="btnCensus">
+            <!-- <button class="ui fluid labeled icon orange button" id="btnCensus">
                 <i class="right arrow icon"></i> Census Report
-            </button><br>
+            </button><br> -->
             <button class="ui fluid labeled icon blue button" id="btnDocDash">
                 <i class="right arrow icon"></i> Doctor Availability
             </button><br>
@@ -149,6 +177,16 @@
             <h4 class="ui dividing header"><i class="angle right icon"></i>Asset</h4>
             <button class="ui fluid labeled icon teal button" id="btnAsset">
                 <i class="right arrow icon"></i> Asset Tag & Verify
+            </button>
+            <br>
+
+            <h4 class="ui dividing header"><i class="angle right icon"></i>Feedback</h4>
+            <button class="ui fluid labeled icon blue button" id="btnfeedbackentry">
+                <i class="right arrow icon"></i> Feedback Entry
+            </button>
+            <br>
+            <button class="ui fluid labeled icon red button" id="btnfeedbackreport">
+                <i class="right arrow icon"></i> Feedback Report
             </button>
             <br>
         </div>
@@ -214,6 +252,12 @@
                 break;
             case 5:
                 window.location.href = "http://narayanagroup.co.in/BioAttendanceApi/www/rosterview.html";
+                break;
+            case 6:
+                window.location.href = "patientenquiry.html?empid=" + btoa($("#hempid").val());
+                break;
+            case 7:
+                window.location.href = "http://narayanagroup.co.in/BioAttendanceApi/www/wardsPlan.html";
                 break;
         }
     }
@@ -461,6 +505,14 @@
             } else {
                 document.location.href = "assettrans.html?empid=" + btoa($("#hempid").val());
             }
+        });
+
+        $("#btnfeedbackentry").click(function () {
+            document.location.href = "patientfeedback.html?empid=" + btoa($("#hempid").val());
+        });
+
+        $("#btnfeedbackreport").click(function () {
+            document.location.href = "feedbackreport.html?empid=" + btoa($("#hempid").val());
         });
         CheckStatus();
     });

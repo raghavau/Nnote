@@ -71,6 +71,32 @@
             <div class="ui divider"></div>
         </div>
         
+        <div class="ui small form">
+            <div class="field">
+                <label>Category</label>
+                <div class="inline fields">
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input type="radio" name="catg" value="B" checked>
+                            <label>Both</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input type="radio" name="catg" value="G">
+                            <label>General</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input type="radio" name="catg" value="A">
+                            <label>Covid</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="tblGrid"></div>
         <br>
     </div>
@@ -116,13 +142,19 @@
     $(document).ready(function () {
         $('.dimmer').hide();
         $('.ui.accordion').accordion();
+        $('.ui.checkbox').checkbox();
 
         ReportGrid();
     });
 
+    $(document).on('click', '.ui.checkbox', function() { 
+        ReportGrid();
+    });
+
     function ReportGrid() {
+        $('.dimmer').show();
         $("#tblGrid").empty();
-        $.get(apiURL + 'Ward/Dashboard', function (response) {
+        $.get(apiURL + 'Ward/Dashboard/' + $("input[name='catg']:checked").val(), function (response) {
             //debugger;
         }).done(function (response) {
             selectedArray = response.data;
@@ -143,13 +175,16 @@
                 //     $(this).find('i').toggleClass('caret right icon caret down icon');                        
                 //     $(this).nextUntil('tr.h1').toggle(300);
                 // });
+                $('.dimmer').hide();
             } else {
                 $('.error.message').show();
                 $("#tblGrid").empty();
+                $('.dimmer').hide();
             }
         }).fail(function () {
             $('.error.message').show();
             $("#tblGrid").empty();
+            $('.dimmer').hide();
         });
     }
 

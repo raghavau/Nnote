@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Patient Feedback Entry</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+    <style type="text/css">
+        .ui.fluid.container {
+            width: 98% !important;
+        }
+
+        .ico-width {
+            font-size: 48px !important;
+        }
+
+        .extra-background {
+            background-color: #f1f1f1 !important;
+        }
+
+        .extra-color-black {
+            color: black !important;
+        }
+
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+
+        .custom-handle {
+            width: 25px !important;
+            height: 25px !important;
+            top: -10px !important;
+            text-align: center !important;
+            padding: 3px !important;
+            background: #03A9F4 !important;
+            color: #ffffff !important;
+            font-weight: bold !important;
+            border: 1px solid #03A9F4 !important;
+        }
+
+        .ui-widget-header {
+            background: #03A9F4 !important;
+        }
+
+        .ui-corner-all {
+            border-radius: 18px !important;
+        }
+
+        .ui-slider {
+            height: .4em !important;
+        }
+
+        .active.title {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+
+        .accordion {
+            border-radius: 0px 0px 4px 4px !important;
+        }
+
+        .ui.accordion>.title {
+            background-color: #f1f1f1 !important;
+            font-weight: bold !important;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        .stick_to_top {
+            position: fixed;
+            z-index: 999;
+            top: 0px !important;
+            width: 100% !important;
+            left: 0px !important;
+        }
+
+        .scroll_To_Top {
+            border-radius: 100%;
+            background-color: #ff6666;
+            height: 30px;
+            width: 30px;
+            position: fixed;
+            z-index: 9999;
+            right: 10px;
+            bottom: 10px;
+            cursor: pointer;
+            display: none;
+            padding: 2px;
+        }
+
+        .card {
+            cursor: default !important;
+        }
+
+        .ui.toggle.checkbox .box,
+        .ui.toggle.checkbox label {
+            padding-left: 3.9rem;
+            margin-right: 2rem;
+        }
+
+        @media only screen and (max-width: 999px) {
+            .ui.form .fields {
+                flex-wrap: wrap !important;
+            }
+
+            .ui.form .fields .wide.field {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <br>
+    <div class="scroll_To_Top">
+        <center><i class="angle up large icon" style="color: white;"></i></center>
+    </div>
+    <div class="ui fluid container">
+        <div class="ui left aligned segment">
+            <div class="ui red ribbon label">Patient Feedback Entry</div>
+            <!-- <button class="ui primary button" id="btnBack" style="margin-left: 80%;">Back</button> -->
+            <button class="ui icon button blue label" id="btnBack" value="1" style="margin-left: 80%;">
+                <i class="icon arrow left"></i> Back
+            </button>
+            <br><br>
+            <div class="ui form">
+                <div class="ui small form">
+                    <div class="ui ribbon label">Patient Details</div>
+                    <div class="field" id="pnlPatient">
+                        <div class="fields">
+                            <div class="field">
+
+                                <h5 id="name"></h5>
+                                <i class="male green icon"></i><span id="age"></span> / <span id="gender"> </span>
+                                / <i class="mobile alternate teal icon"></i><span id="patmobile"></span><br>
+                                <i class="id card red icon"></i><span id="regno"></span>/<span id="ipid"></span> <input
+                                    type="hidden" id="hipid"><br>
+                                <i class="user md green icon"></i><span id="doctname"></span> / <span
+                                    id="deptname"></span><br>
+                                <i class="bed icon"></i><span id="wardcode"></span> /<span id="ward"></span> <br>
+                                <i class="bed icon"></i><span id="bedno"></span> / <span id="pstatus"></span><br>
+                                <i class="user orange icon"></i><span id="attendent"></span> / <i
+                                    class="mobile alternate orange icon"></i><span id="attdmobile"></span><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fields">
+                        <div class="five wide field">
+                            <label>Feedback Group</label>
+                            <select name="depttype" id="ddlFeedBackType" class="ui dropdown">
+                                <option value="">Select Feedback Group</option>
+                                <!-- <option value="1" selected> Admin Team</option>
+                                <option value="2">Feedback Team</option>
+                                <option value="3">Nursing Team</option> -->
+                            </select>
+                        </div>
+                        <div class="five wide field">
+                            <label>FeedBack Team</label>
+                            <select name="feedbackTeamIds" id="ddlfeedbackTeamIds" class="ui dropdown">
+                                <option value="">Select FeedBack Team</option>
+                            </select>
+                        </div>
+                        <div class="five wide field">
+                            <label>Call Pattern</label>
+                            <!-- multiple="" -->
+                            <select name="depts" id="ddlCallerId" class="ui dropdown">
+                                <option value="">Select</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="fields">
+                        <div class="six wide field">
+                            <div class="grouped fields">
+                                <label>Received Feedback</label>
+                                <div class="inline fields">
+                                    <div class="ui toggle checkbox">
+                                        <label>Positive</label>
+                                        <input type="checkbox" name="throughput" checked="checked" id="chkPositive">
+
+
+                                    </div>
+
+                                    <div class="ui toggle checkbox">
+                                        <label>Negative</label>
+                                        <input type="checkbox" name="throughput" id="chkNegative">
+
+                                    </div>
+
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="throughput" id="chkNeutral">
+                                        <label>Neutral</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="five wide field">
+                            <div class="grouped fields">
+                                <label>Call Attempted To</label>
+                                <div class="inline fields">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="throughput" checked="checked" id="chkPatient">
+                                        <label>Patient</label>
+                                    </div>
+
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="throughput" id="chkAttendant">
+                                        <label>Attendant</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="five wide field">
+                            <div class="grouped fields">
+                                <label>Call Status</label>
+                                <div class="inline fields">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="throughput" checked="checked" id="chkSuccess">
+                                        <label>Success</label>
+                                    </div>
+
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="throughput" id="chkFaillure">
+                                        <label>Failure</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fields">
+                        <div class="ten wide field"></div>
+                        <div class="five wide field" id="divRemarks">
+                            <label>Call Failure Remarks</label>
+                            <input type="text" id="txtRemarks">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <span class="left floated ui red tiny label" onclick="RaiseServiceRequest();"><i
+                                class="comment alternate icon"></i>
+                            Service Request</span>
+                        <label>N-note Req No</label>
+                        <!-- multiple="" -->
+                        <select name="depts" id="ddlReqNo" class="ui fluid dropdown">
+                            <option value="">Select</option>
+                        </select>
+                    </div>
+
+                    <div class="fields">
+                        <div class="four wide field">
+                            <label for="">Service</label>
+                            <select name="ddlservice" id="ddlservice" class="ui dropdown">
+                                <option value="">Select</option>
+                            </select>
+
+                        </div>
+                        <!-- <div class="extra content"></div> -->
+                        <div class="six wide field">
+                            <label for="">Remarks</label>
+                            <input type="text" id="txtsrvRemarks">
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="ui ribbon label">Upload Details</div>
+                    <div class="fields">
+                        <div class="four wide field">
+                            <label> Supported files</label>
+                            <input type="file" name="fileUpload" id="fileUpload">
+                        </div>
+
+                        <button class="ui orange button" id="btnClear"
+                            style="height: 10%;margin-top: 2%;">Clear</button>
+                    </div>
+                    <div class="field">
+                        <label>&nbsp;</label>
+                        <button class="ui primary button" id="btnSubmit">Submit</button>
+                    </div>
+
+                    <div class="ui section divider"></div>
+                    <div class="ui red message">
+                        <p>No Data Available with this search criteria</p>
+                    </div>
+                    <div class="field">
+                        <div class="ui link four stackable cards" id="enqdata"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="ui active inverted page dimmer">
+            <div class="ui large text loader">Loading</div>
+        </div>
+        <input type="hidden" id="hempid" />
+        <input type="hidden" id="hRegNo" />
+        <input type="hidden" id="hIpId" />
+</body>
+
+</html>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript">
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    var apiURL = '../../NnoteApi/api/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://localhost:6491/api/';
+    function onBackKeyDown() {
+        var state = confirm('Are You Sure you want to Exit.');
+        if (state)
+            navigator.app.exitApp(); // exit the app
+    }
+
+    var qsParm = new Array();
+    var actionId = 0,
+        chkValue = null,
+        expDays = 1;
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            if (parms.length > 1) {
+                $("#hRegNo").val(atob(qsParm["regno"]));
+                $("#hIpId").val(atob(qsParm["ipno"]));
+            }
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+        $(".dimmer,.message").hide();
+        $('.ui.dropdown').dropdown();
+        $('.ui.checkbox').checkbox();
+        $('.ui.accordion').accordion();
+        $('#search').prop('type', 'number');
+        $('#search').prop('maxlength', '11');
+        $('#search').focus();
+        $("#divRemarks").hide();
+        $('#pnlPatient').hide();
+        $('#chkPositive').change(function () {
+            chkPositive.checked = true;
+            chkNegative.checked = false;
+            chkNeutral.checked = false;
+        });
+        $('#chkNegative').change(function () {
+            chkPositive.checked = false;
+            chkNegative.checked = true;
+            chkNeutral.checked = false;
+        });
+        $('#chkNeutral').change(function () {
+            chkPositive.checked = false;
+            chkNegative.checked = false;
+            chkNeutral.checked = true;
+        });
+        $('#chkPatient').change(function () {
+            chkPatient.checked = true;
+            chkAttendant.checked = false;
+
+        });
+        $('#chkAttendant').change(function () {
+            chkPatient.checked = false;
+            chkAttendant.checked = true;
+        });
+        $('#chkSuccess').change(function () {
+            chkSuccess.checked = true;
+            chkFaillure.checked = false;
+            $("#divRemarks").hide();
+        });
+        $('#chkFaillure').change(function () {
+            chkSuccess.checked = false;
+            chkFaillure.checked = true;
+            $("#divRemarks").show();
+        });
+        qs();
+        //FeedBackTeam(1);
+        if ($('#hRegNo').val() != '') {
+            //$(".dimmer").show();
+
+            $.get(apiURL + 'Patient/GetAdmissionDetails/' + $("#hRegNo").val(), function (response) {
+                // debugger;
+                var arrdata = response.data;
+                var content = '<br><br>';
+                if (arrdata.length > 0) {
+                    $('#pnlPatient').show();
+                    $("#name").text(arrdata[0].Name);
+                    $("#age").text(arrdata[0].Age + ' ' + arrdata[0].AgeType);
+                    $("#gender").text(arrdata[0].Gender);
+                    $("#patmobile").text(arrdata[0].MobileNo);
+                    $("#ipid").text(arrdata[0].IPatientId);
+                    $("#regno").text(arrdata[0].Regno);
+                    $("#hipid").val(arrdata[0].IPatientId);
+                    $("#doctname").text(arrdata[0].DoctorName);
+                    $("#deptname").text(arrdata[0].Department);
+                    $("#ward").text(arrdata[0].WardName);
+                    $("#bedno").text(arrdata[0].BedId);
+                    $("#attendent").text(arrdata[0].Attendant);
+                    $("#attdmobile").text(arrdata[0].AttendantMobile);
+                    $("#wardcode").text(arrdata[0].WardCode);
+                    $("#pstatus").text(arrdata[0].PatientStatus);
+                    $(".dimmer").hide();
+                    GetFeedbackGroup();
+                }
+            }).fail(function (xhr, status, error) {
+                alert('Error occurred.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            });
+        }
+
+        $("#ddlFeedBackType").change(function () {
+            var selectedType = $("#ddlFeedBackType").val();//this.value;
+            FeedBackTeam(selectedType);
+        });
+        $("#ddlReqNo").change(function () {
+            var selectedType = $("#ddlReqNo").val();//this.value;
+            GetServices(selectedType);
+        });
+        $('#btnSubmit').click(function () {
+            SavePatientFeedback();
+        });
+        $('#btnBack').click(function () {
+            document.location.href = "patientfeedback.html?empid=" + btoa($("#hempid").val());
+        });
+
+        $('#btnClear').click(function () {
+            if ($('#fileUpload').val() != '') {
+                $('#fileUpload').val('');
+            }
+        });
+    });
+
+    // function readURL(event) {
+    //     var img = document.getElementById('camera_image');
+    //     img.style.visibility = "visible";
+    //     img.style.display = "block";
+    //     img.src = URL.createObjectURL(event.target.files[0]);
+    // }
+    function GetFeedbackGroup() {
+        $("#ddlFeedBackType").empty();
+        $.get(apiURL + 'Patient/FeedbackTeam/5', function (response) {
+            var htmlStr = '';
+            //alert(response.data.length);
+            if (response.data.length > 0) {
+                var dataArray = [];
+                dataArray = response.data;
+                //htmlStr += '<option value="0">--Select Feedback Group--</option>';
+                for (var i = 0; i <= dataArray.length - 1; i++) {
+                    htmlStr += '<option value="' + dataArray[i].feedbackcode + '">' + dataArray[i].feedbackname + '</option>';
+                }
+                $("#ddlFeedBackType").append(htmlStr);
+                FeedBackTeam(1);
+            } else {
+                $('.error.message').show();
+                $("#ddlFeedBackType").empty();
+            }
+
+        });
+    }
+
+    function FeedBackTeam(selectedType) {
+        //alert(selectedType);
+        $("#ddlfeedbackTeamIds").empty();
+        if (selectedType != "0") {
+            $.get(apiURL + 'Patient/FeedbackTeam/' + selectedType, function (response) {
+                var htmlStr = '';
+                //alert(response.data.length);
+                if (response.data.length > 0) {
+                    var dataArray = [];
+                    dataArray = response.data;
+                    //htmlStr += '<option value="0">--Select FeedBack Team--</option>';
+                    for (var i = 0; i <= dataArray.length - 1; i++) {
+                        htmlStr += '<option value="' + dataArray[i].feedbackcode + '">' + dataArray[i].feedbackname + '</option>';
+                    }
+                    //alert(htmlStr);
+                    $("#ddlfeedbackTeamIds").append(htmlStr);
+                } else {
+                    $('.error.message').show();
+                    $("#ddlfeedbackTeamIds").empty();
+                }
+                GetCallPattern();
+            });
+        }
+    }
+    function GetCallPattern() {
+        $("#ddlCallerId").empty();
+        $.get(apiURL + 'Patient/GetCallPattern/4/' + '-1', function (response) {
+            // $('#feedbackTeamIds').dropdown('clear');
+
+            var htmlStr = '';
+            //alert(response.data.length);
+            if (response.data.length > 0) {
+                var dataArray = [];
+                dataArray = response.data;
+                //htmlStr += '<option value="0">--Select Call Pattern--</option>';
+                for (var i = 0; i <= dataArray.length - 1; i++) {
+                    htmlStr += '<option value="' + dataArray[i].feedbackcode + '">' + dataArray[i].feedbackname + '</option>';
+                }
+                // alert(htmlStr);
+                $("#ddlCallerId").append(htmlStr);
+                GetComplaintReqNo();
+            } else {
+                $('.error.message').show();
+                $("#ddlCallerId").empty();
+            }
+        });
+    }
+
+    function GetComplaintReqNo() {
+        $("#ddlReqNo").empty();
+        $.get(apiURL + 'Patient/FeedbackTeam/' + $("#hRegNo").val(), function (response) {
+            // $('#feedbackTeamIds').dropdown('clear');
+            var htmlStr = '';
+            //alert(response.data.length);
+            if (response.data.length > 0) {
+                var dataArray = [];
+                dataArray = response.data;
+                htmlStr += '<option value="-1">--Select Nnote ReqNo--</option>';
+                for (var i = 0; i <= dataArray.length - 1; i++) {
+                    htmlStr += '<option value="' + dataArray[i].feedbackcode + '">' + dataArray[i].feedbackname + '</option>';
+                }
+                $("#ddlReqNo").append(htmlStr);
+            } else {
+                $('.error.message').show();
+                $("#ddlReqNo").empty();
+            }
+            GetServices('-1');
+        });
+    }
+
+    function GetServices(val) {
+        $("#ddlservice").empty();
+        $.get(apiURL + 'Patient/GetCallPattern/6/' + val, function (response) {
+            // $('#feedbackTeamIds').dropdown('clear');
+            var htmlStr = '';
+            //alert(response.data.length);
+            if (response.data.length > 0) {
+                var dataArray = [];
+                dataArray = response.data;
+                if (val == '-1') { htmlStr += '<option value="0">--Select Service--</option>'; }
+                for (var i = 0; i <= dataArray.length - 1; i++) {
+                    htmlStr += '<option value="' + dataArray[i].feedbackcode + '">' + dataArray[i].feedbackname + '</option>';
+                }
+                // alert(htmlStr);
+                $("#ddlservice").append(htmlStr);
+            } else {
+                $('.error.message').show();
+                $("#ddlservice").empty();
+            }
+
+        });
+    }
+
+
+    function SavePatientFeedback() {
+        $(".dimmer").show(); var requNo = "";
+        var AttemptedTo = ""; var CallStatusType = ""; var ReceivedFeedbackType = "";
+        if (chkPatient.checked == true) { AttemptedTo = "Patient"; }
+        if (chkAttendant.checked == true) { AttemptedTo = "Attendant"; }
+        if (chkSuccess.checked == true) { CallStatusType = "Success"; }
+        if (chkFaillure.checked == true) {
+            CallStatusType = "Failure";
+            if ($('#txtRemarks').val() == "") {
+                alert('Please enter remarks');
+                $(".dimmer").hide();
+                return false;
+            }
+        }
+        if ($("#ddlservice").val() == "0") {
+            alert('Please select service');
+            $(".dimmer").hide();
+            return false;
+        }
+        if (chkPositive.checked == true) { ReceivedFeedbackType = "Positive"; }
+        if (chkNegative.checked == true) { ReceivedFeedbackType = "Negative"; }
+        if (chkNeutral.checked == true) { ReceivedFeedbackType = "Neutral"; }
+        //alert($("#ward").text());
+        if ($("#ddlReqNo").val() == "" || $("#ddlReqNo").val() == null) {
+            requNo = "0";
+        }
+        else {
+            requNo = $("#ddlReqNo").val();
+        }
+        var objdata = {
+            PRegno: $('#hRegNo').val() == '' ? '0' : $('#hRegNo').val(),
+            PId: $('#hIpId').val() == '' ? '0' : $('#hIpId').val(),
+            CallAttemptedTo: AttemptedTo == '' ? '' : AttemptedTo,
+            WardName: $("#ward").text() == '' ? '' : $("#ward").text(),
+            CallStatus: CallStatusType == '' ? '' : CallStatusType,
+            Remarks: $('#txtRemarks').val() == '' ? '' : $('#txtRemarks').val(),
+            FeedbackGroupId: $('#ddlFeedBackType').val() == '' ? '0' : $('#ddlFeedBackType').val(),
+            EntryUser: $("#hempid").val() == '' ? '0' : $("#hempid").val(),
+            FeedbackteamCode: $('#ddlfeedbackTeamIds').val() == '' ? '0' : $('#ddlfeedbackTeamIds').val(),
+            CallPatternCode: $('#ddlCallerId').val() == '' ? '0' : $('#ddlCallerId').val(),
+            ReceivedFeedback: ReceivedFeedbackType == '' ? '' : ReceivedFeedbackType,
+            PatientStatus: $("#pstatus").text() == '' ? '' : $("#pstatus").text(),
+            WardCode: $("#wardcode").text() == '' ? '' : $("#wardcode").text(),
+            LinkFb: requNo,
+            WorkTypeId: $("#ddlservice").val() == '' ? '0' : $("#ddlservice").val(),
+            ServiceRemarks: $('#txtsrvRemarks').val() == '' ? '' : $('#txtsrvRemarks').val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: apiURL + 'Patient/savepatientfeedback',
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(objdata),
+            success: function (result) {
+                //debugger;
+                if (result.data != '') {
+                    //alert($('#fileUpload').val());
+                    if ($('#fileUpload').val() != '') {
+                        uploadPicture(result.data);
+                    }
+                    else {
+                        alert('Your Feedback Submitted Successfully');
+                        $(".dimmer").hide();
+                    }
+                } else {
+                    $(".dimmer").hide();
+                    alert('Your Feedback Failed to Submit.');
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('Error occurred.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            }
+        });
+    }
+    function uploadPicture(fbslno) {
+        //$(".dimmer").show();
+        //alert(fbslno);
+        var d = new Date();
+        var n = d.getTime();
+        var RegNo = $('#hRegNo').val();
+        if ($('#fileUpload').val() != '') {
+            var formdata = new FormData();
+            var file = $('#fileUpload')[0];
+            formdata.append('file', file.files[0]);
+            $.ajax({
+                url: apiURL + 'Nnote/FileUpload/FeedBackUploadFile/' + RegNo + '/' + fbslno,
+                type: 'POST',
+                data: formdata,
+                contentType: false,
+                processData: false,
+                success: function (d) {
+                    $('#fileUpload').val('');
+                    alert('Your Feedback Submitted Successfully');
+                    document.location.href = "patientfeedback.html?empid=" + btoa($("#hempid").val());
+                    $(".dimmer").hide();
+                },
+                error: function (err) {
+                    alert('Error in upload');
+                    $(".dimmer").hide();
+                }
+            });
+        }
+    }
+    function RaiseServiceRequest() {
+        var serviceid = $("#ddlservice").val();
+        var RegNo = $('#hRegNo').val();
+        var ServiceTest = $("#ddlservice option:selected").text();
+        //alert("serviceid-" + serviceid + ",RegNo-" + RegNo + ",ServiceTest-" + ServiceTest);
+        if (serviceid != "0" && $('#hRegNo').val() != "") {
+            document.location.href = "patientfeedbackrequest.html?empid=" + btoa($("#hempid").val()) + "&sid=" + btoa(serviceid) +
+                "&ServiceTest=" + btoa(ServiceTest) + "&regno=" + btoa($('#hRegNo').val());
+        }
+        else {
+            alert('Please select service');
+            $(".dimmer").hide();
+            return false;
+        }
+    }
+
+</script>

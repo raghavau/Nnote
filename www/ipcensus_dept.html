@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>IP Census</title>
+    <title>Department IP Census</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css">
@@ -108,14 +108,11 @@
                     <select name="company" id="company" class="ui search selection dropdown"></select>
                 </div>
             </div>
-            <div class="two fields">
-                <div class="ten wide field">
-                    <label>Department</label>
-                    <select name="dept" id="dept" multiple="" class="ui fluid search dropdown"></select>
-                </div>
-                <div class="six wide field">
+
+            <div class="two equal width fields">
+                <div class="eight wide field">
                     <label>Category</label>
-                    <div class=" fields">
+                    <div class="inline fields">
                         <div class="field">
                             <div class="ui toggle checkbox">
                                 <input type="radio" name="catg" value="B" checked>
@@ -136,11 +133,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="eight wide field">
+                    <label>&nbsp;</label>
+                    <button class="ui primary right floated button" id="btnReport">Report</button>
+                </div>
             </div>
-            <div class="field">
-                <button class="ui primary right floated button" id="btnReport">Report</button>
-            </div>
-
+                        
             <div class="field">
                 <br>
                 <div id="tblGrid"></div>
@@ -304,52 +302,19 @@
         });
     }
 
-    function Department() {
-        $.get(apiURL + 'Masters/Department', function (response) {
-            //debugger;
-        }).done(function (response) {
-            selectedArray = response.data;
-            //debugger;
-            $('#dept').dropdown('clear');
-            var htmlStr = '';
-            $("#dept").empty();
-            if (selectedArray.length > 0) {
-                for (var i = 0; i <= selectedArray.length - 1; i++)
-                    htmlStr += '<option value="' + selectedArray[i].Code + '">' + selectedArray[i].Name + '</option>';
-
-                $("#dept").append(htmlStr);
-            } else {
-                $('.error.message').show();
-                $("#dept").empty();
-            }
-        }).fail(function () {
-            $('.error.message').show();
-            $("#dept").empty();
-        });
-    }
-
     function ReportGrid() {
         $('.dimmer').show();
         $("#tblGrid").empty();
-        var len = $("select[name='dept']").find("option:selected").length,
-            deptsArray = 'R';
-        if(len > 0) {
-            deptsArray = '';
-            for (var i = 0; i <= len - 1; i++) {
-                deptsArray = deptsArray + ($("select[name='dept']").find("option:selected")[i].value) + ',';
-            }
-        }
 
         var filterData = {
             FromDate: $('#frmdate').val(),
             ToDate: $('#todate').val(),
             PayType: $('#paytype').val() == '0' ? "R" : $('#paytype').val(),
             Organisation: ($("#company").val() == null || $("#company").val() == '0') ? "R" : $("#company").val(),
-            Department: deptsArray,
             Category: $("input[name='catg']:checked").val()
         };
 
-        $.post(apiURL + 'Ip/Census', filterData, function (response) {
+        $.post(apiURL + 'Ip/Census/Dept', filterData, function (response) {
             //debugger
         }).done(function (response) {
             selectedArray = response.data;
@@ -365,7 +330,6 @@
                 $("#tblGrid").empty();
             }
             $('.dimmer').hide();
-            Department();
         }).fail(function () {
             $('.dimmer').hide();
         });

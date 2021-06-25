@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Complaint Request</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+    <script type="text/javascript" src="fontawesome/js/fontawesome.min.js"></script>
+    <style type="text/css">
+        .ico-width {
+            font-size: 48px !important;
+        }
+
+        .extra-background {
+            background-color: #f1f1f1 !important;
+        }
+
+        .extra-color-black {
+            color: black !important;
+        }
+
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ui column grid">
+        <div class="column">
+            <div class="ui stacked left aligned segment">
+                <div class="ui red ribbon label" id="lblHeading"></div><br><br>
+                <div class="ui form">
+                    <!-- <h4 class="ui dividing header">Service Request</h4> -->
+                    <div class="field">
+                        <label>Regno</label>
+                        <div class="ui action input">
+                            <input id="regno" name="regno" placeholder="Enter Registration No" type="number"
+                                maxlength="11" value="">
+                            <button class="ui icon button" id="btnSearch">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="field" id="pnlPatient">
+                        <div class="fields">
+                            <div class="field">
+                                <h5 id="name"></h5>
+                                <span id="age"></span> / <span id="gender"></span> / <span id="patmobile"></span><br>
+                                <span id="ipid"></span><input type="hidden" id="hipid"><br>
+                                <span id="doctname"></span> / <span id="deptname"></span><br>
+                                <span id="ward"></span> / <span id="bedno"></span><br>
+                                </i><span id="attendent"></span> /
+                                <span id="attdmobile"></span><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Remarks</label>
+                        <div class="field">
+                            <textarea name="txtRemarks" id="txtRemarks" cols="30" rows="5" class="ui input"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field" id="nonmobile">
+                        <input type="file" name="fileUpload" id="fileUpload" onchange="readURL(event);">
+                    </div>
+
+                    <div class="field" id="mobile">
+                        <button id="btnSelectImage" class="ui blue fluid labeled icon button">
+                            <i class="images icon"></i>
+                            Select Image
+                        </button>
+                    </div>
+
+                    <div class="two fields">
+                        <div class="field">
+                            <button id="btnSave" class="ui positive fluid labeled icon button">
+                                <i class="check icon"></i>
+                                Save
+                            </button>
+                        </div>
+                        <div class="field">
+                            <button id="btnReset" class="ui primary fluid labeled icon button">
+                                <i class="redo icon"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <img src="" alt="" id="camera_image" class="ui medium centered image" height="200px"
+                            width="200px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui active inverted page dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <input type="hidden" id="hempid" />
+    <input type="hidden" id="hsid" />
+    <input type="hidden" id="hsname" />
+    <input type="hidden" id="hfname" />
+    <input type="hidden" id="hRegNo" />
+</body>
+
+</html>
+<script type="text/javascript" src="jquery/phonegap-1.1.0.js"></script>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript">
+    var deviceReady = false;
+    var qsParm = new Array();
+    var phoneGap = false, isinpatient = 'N';
+    var apiURL = '../../NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
+    //var apiURL = 'http://localhost:6491/api/Nnote/';
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    function onDeviceReady() {
+        document.addEventListener("backbutton", onBackKeyDown, false);
+    }
+
+    function onBackKeyDown() {
+        var state = confirm('Are You Sure you want to Exit.');
+        if (state)
+            navigator.app.exitApp(); // exit the app
+    }
+
+    function init() {
+        document.addEventListener("deviceready", function () {
+            deviceReady = true;
+        }, false);
+        window.setTimeout(function () {
+            if (!deviceReady) {
+                alert("Error: Camera not initialised.");
+            }
+        }, 2000);
+    }
+
+    function isPhoneGap() {
+        return (window.cordova || window.PhoneGap || window.phonegap) &&
+            /^file:\/{3}[^\/]/i.test(window.location.href) &&
+            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+    }
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            $("#hsid").val(atob(qsParm["sid"]));
+            $("#hsname").val(atob(qsParm["ServiceTest"]));
+            $("#hRegNo").val(atob(qsParm["regno"]));
+
+            if (qsParm["fname"] != null || qsParm["fname"] != undefined) {
+                if (qsParm["fname"] != 'nofile') {
+                    $("#hfname").val(atob(qsParm["fname"]));
+                    var img = document.getElementById('camera_image');
+                    img.src = sessionStorage.getItem('imagepath');
+                }
+            }
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ready(function () {
+        $(".dimmer").hide();
+        qs();
+        $("#nonmobile").hide();
+        $("#mobile").hide();
+        $('#pnlPatient').hide();
+        $("#lblHeading").text($("#hsname").val() + ' Service Request');
+
+        $("#regno").keypress(function (e) {
+            //debugger;
+            var current_val = $(this).val();
+            var typing_char = String.fromCharCode(e.which);
+            if (parseFloat(current_val + "" + typing_char) > 99999999999) {
+                return false;
+            }
+        });
+
+        phoneGap = isPhoneGap();
+        if (phoneGap) {
+            $("#nonmobile").hide();
+            $("#mobile").show();
+        } else {
+            $("#nonmobile").show();
+            $("#mobile").hide();
+        }
+
+
+
+        $('#btnSelectImage').click(function () {
+            onSelectClick();
+        });
+
+        $('#btnSave').click(function () {
+            SaveRequest();
+        });
+
+        $('#btnReset').click(function () {
+            // document.location.href = "patientfeedbackentry.html?empid=" + btoa($("#hempid").val()) + "&sid=" + btoa(
+            //     $("#hsid").val()) + "&sname=" + btoa($("#hsname").val());
+            document.location.href = "patientfeedbackentry.html?empid=" + btoa($("#hempid").val()) + "&regno=" +
+                btoa($("#regno").val()) + "&ipno=" + btoa($('#hipid').val());
+        });
+
+        $('#btnCancel').click(function () {
+            document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+        });
+
+        if ($("#regno").val() != "" || $("#hRegNo").val() != "") {
+            // alert($("#hRegNo").val());
+            $('#regno').val($("#hRegNo").val());
+            SearchPatient($("#hRegNo").val());
+        }
+        $('#btnSearch').click(function () {
+            SearchPatient();
+        });
+    });
+
+    function readURL(event) {
+        var img = document.getElementById('camera_image');
+        img.style.visibility = "visible";
+        img.style.display = "block";
+        img.src = URL.createObjectURL(event.target.files[0]);
+    }
+
+    function onSelectClick() {
+        window.open('captureimage.html?empid=' + btoa($("#hempid").val()) + "&sid=" + btoa($("#hsid").val()) +
+            "&sname=" + btoa($("#hsname").val()));
+    }
+
+    function SaveRequest() {
+        //debugger;
+        if ($("#txtRemarks").val() == '') {
+            alert('Please Enter Remakrs.');
+            $("#txtRemarks").focus();
+            return false;
+        }
+
+        $(".dimmer").show();
+        var patDtls = '';
+        if ($('#regno').val() != '') {
+            if (isinpatient == 'Y') {
+                patDtls = $('#regno').val() + ' -' + $("#name").text() + ' -';
+                patDtls += ' -' + $("#patmobile").text() + ' -' + $("#doctname").text() + ' -' + $("#deptname").text();
+                patDtls += ' -' + $("#ward").text() + ' -' + $("#bedno").text();
+                patDtls += ' -' + $("#attendent").text() + ' -' + $("#attdmobil").text();
+            }
+        }
+        var objdata = {
+            worktype: $("#hsid").val(),
+            userid: $("#hempid").val(),
+            complaint: patDtls + ' ' + $("#txtRemarks").val(),
+            Regno: $('#regno').val() == '' ? '0' : $('#regno').val(),
+            IPatientId: $('#hipid').val() == '' ? '0' : $('#hipid').val()
+        };
+
+        //alert(JSON.stringify(objdata));
+        $.ajax({
+            type: 'POST',
+            url: apiURL + 'savecomplaint',
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(objdata),
+            success: function (result) {
+                //debugger;
+                if (result.data != '') {
+                    if ($('#fileUpload').val() != '') {
+                        uploadPicture(result.data);
+                    }
+                    else {
+                        $(".dimmer").hide();
+                        alert('Your Service Request Submitted Successfully');
+                        document.location.href = "patientfeedbackentry.html?empid=" + btoa($("#hempid").val()) + "&regno=" +
+                            btoa($("#regno").val()) + "&ipno=" + btoa($('#hipid').val());
+                    }
+                }
+                else {
+                    $(".dimmer").hide();
+                    alert('Your Service Request Failed to Submit.');
+                }
+
+
+            },
+            error: function (xhr, status, error) {
+                alert('Error occurred.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            }
+        });
+    }
+
+    function SearchPatient() {
+        //debugger;
+        $('#pnlPatient').hide();
+        //$('#regno').attr('readonly', 'true');
+        if ($('#regno').val() == '') {
+            alert('Enter Patient Registration No.');
+            $('#regno').focus();
+        } else {
+            $(".dimmer").show();
+            $.get(apiURL.replace('Nnote/', 'Patient/IsInPatient/') + $("#regno").val(), function (response) {
+                //debugger;
+                if (response.data == 'Success') {
+                    isinpatient = 'Y';
+                    $.get(apiURL.replace('Nnote/', 'Patient/AdmissionDetails/') + $("#regno").val(), function (response) {
+                        //debugger;
+                        var arrdata = response.data;
+                        var content = '<br><br>';
+                        if (arrdata.length > 0) {
+                            $('#pnlPatient').show();
+                            $("#name").text(arrdata[0].Name);
+                            $("#age").text(arrdata[0].Age + ' ' + arrdata[0].AgeType);
+                            $("#gender").text(arrdata[0].Gender);
+                            $("#patmobile").text(arrdata[0].MobileNo);
+                            $("#ipid").text(arrdata[0].IPatientId);
+                            $("#hipid").val(arrdata[0].IPatientId);
+                            $("#doctname").text(arrdata[0].DoctorName);
+                            $("#deptname").text(arrdata[0].Department);
+                            $("#ward").text(arrdata[0].WardName);
+                            $("#bedno").text(arrdata[0].BedId);
+                            $("#attendent").text(arrdata[0].Attendant);
+                            $("#attdmobile").text(arrdata[0].AttendantMobile);
+
+                            $(".dimmer").hide();
+                        }
+                    }).fail(function (xhr, status, error) {
+                        alert('Error occurred.\n\r' + xhr.responseText);
+                        $(".dimmer").hide();
+                    });
+                } else {
+                    $(".dimmer").hide();
+                    alert("Not an Inpatient or Patient was Discharged.");
+                }
+            }).fail(function (xhr, status, error) {
+                alert('Error occurred.\n\r' + xhr.responseText);
+                $(".dimmer").hide();
+            });
+        }
+    }
+
+    function uploadPicture(cslno) {
+        //$(".dimmer").show();
+        var d = new Date();
+        var n = d.getTime();
+
+        if ($('#fileUpload').val() != '') {
+            var formdata = new FormData();
+            var file = $('#fileUpload')[0];
+            formdata.append('file', file.files[0]);
+            $.ajax({
+                url: apiURL + 'FileUpload/UploadFile/' + n + '/' + cslno,
+                type: 'POST',
+                data: formdata,
+                contentType: false,
+                processData: false,
+                success: function (d) {
+                    document.getElementById('camera_image').style.display = "none";
+                    $('#fileUpload').val('');
+                    alert('Your Service Request Submitted Successfully');
+                    // document.location.href = "services.html?empid=" + btoa($("#hempid").val());
+                    document.location.href = "patientfeedbackentry.html?empid=" + btoa($("#hempid").val()) + "&regno=" +
+                        btoa($("#regno").val()) + "&ipno=" + btoa($('#hipid').val());
+                },
+                error: function (err) {
+                    alert('Error in upload');
+                    $(".dimmer").hide();
+                }
+            });
+        } else if ($('#hfname').val() != '') {
+            $.ajax({
+                url: apiURL + 'FileUpload/UploadFile/mobile/' + $('#hfname').val() + '/' + cslno,
+                type: 'POST',
+                success: function (d) {
+                    document.getElementById('camera_image').style.display = "none";
+                    alert('Your Service Request Submitted Successfully');
+                    document.location.href = "patientfeedbackentry.html?empid=" + btoa($("#hempid").val()) + "&regno=" +
+                        btoa($("#regno").val()) + "&ipno=" + btoa($('#hipid').val());
+                },
+                error: function (err) {
+                    alert('Error in upload');
+                    $(".dimmer").hide();
+                }
+            });
+        } else {
+            alert('Your Service Request Submitted Successfully');
+            document.location.href = "patientfeedbackentry.html?empid=" + btoa($("#hempid").val()) + "&regno=" +
+                btoa($("#regno").val()) + "&ipno=" + btoa($('#hipid').val());
+        }
+    }
+</script>

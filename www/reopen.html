@@ -154,7 +154,8 @@
             }
         });
 
-        $("#fromDate").datepicker().datepicker("setDate", new Date(2020, 9 - 1, 1));
+        //$("#fromDate").datepicker().datepicker("setDate", new Date(2020, 9 - 1, 1));
+        $("#fromDate").datepicker().datepicker("setDate", new Date());
         $("#toDate").datepicker().datepicker("setDate", new Date());
 
         $("#fromDate").on('change', function() {

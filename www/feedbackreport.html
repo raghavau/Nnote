@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Feedback Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/regular.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="jquery/moment.js"></script>
+    <!--<script type="text/javascript" src="jquery/jquery.datetimepicker.full.min.js"></script>-->
+    <script type="text/javascript" src="jquery/jquery.blockui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+
+    <style type="text/css">
+        body {
+            overflow: auto;
+        }
+
+        body>.grid {
+            height: 100%;
+        }
+
+        .ui.fluid.container {
+            max-width: 98% !important;
+        }
+
+        .column {
+            /*max-width: 450px;*/
+            margin: 20px;
+        }
+
+        .dimmer {
+            background-color: #e9ecef;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1999;
+            opacity: 0.5;
+        }
+
+        .h2 {
+            display: none;
+        }
+
+        .activered {
+            background-color: #ffe8e7 !important;
+        }
+
+        .syringe {
+            animation: blink 1s linear infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 1rem;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+            border-radius: 99vmax;
+            border: 4px solid #ffffff;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgb(255, 255, 255);
+        }
+
+        .header>th {
+            background-color: #3db5ad !important;
+            color: #ffffff !important;
+        }
+
+        .footer>td {
+            background-color: #f1f1f1 !important;
+            color: red !important;
+            font-weight: bold;
+        }
+
+        th.cspan {
+            background-color: #faebd8 !important;
+            color: #000000 !important;
+        }
+
+        th.nocolor {
+            background-color: white !important;
+            color: #000000 !important;
+        }
+
+        td.cscell {
+            background-color: #fef9f3 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <br>
+    <div class="ui fluid container">
+        <div class="page-header">
+            <h3>Feedback Report</h3>
+            <div class="ui divider"></div>
+        </div>
+
+        <div class="ui form">
+            <div class="three fields">
+                <div class="three wide field">
+                    <label>From Date</label>
+                    <input type="text" id="frmdate">
+                </div>
+                <div class="three wide field">
+                    <label>To Date</label>
+                    <input type="text" id="todate">
+                </div>
+                <div class="field">
+                    <label>Category</label>
+                    <div class="inline fields">
+                        <div class="field">
+                            <div class="ui toggle checkbox">
+                                <input type="radio" name="catg" value="B" checked>
+                                <label>Both</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui toggle checkbox">
+                                <input type="radio" name="catg" value="G">
+                                <label>General</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui toggle checkbox">
+                                <input type="radio" name="catg" value="A">
+                                <label>Covid</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="ui buttons">
+                    <button class="ui basic red button" id="all">All</button>
+                    <button class="ui basic blue button" id="adm">Admin Team</button>
+                    <button class="ui basic green button" id="fdb">Feedback Team</button>
+                    <button class="ui basic orange button" id="nur">Nursing Team</button>
+                    <button class="ui basic violet button" id="cmp">Company Type</button>
+                    <button class="ui basic brown button" id="srv">Service</button>
+                </div>
+            </div>
+            <div class="field">
+                <audio id="aplayer">
+                    Unsupported File Format.
+                </audio>
+                <div class="ui mini modal">
+                    <i class="close icon"></i>
+                    <video id="vplayer" width="100%" height="100%">
+                        Unsupported File Format.
+                    </video>
+                </div>
+            </div>
+            <div class="field">
+                <br>
+                <div id="tblGrid"></div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <br>
+    <div class="ui active inverted page dimmer" id="dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
+    <input type="hidden" id="hempid" />
+</body>
+
+</html>
+<script type="text/javascript">
+    var apiURL = '../../NnoteApi/api/Patient/';
+    //var apiURL = 'http://115.241.194.19/NnoteApi/api/Patient/';
+
+    var qsParm = new Array(),
+        empid = null,
+        pid;
+
+    function qs() {
+        //debugger;
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        if (parms.length > 0) {
+            $("#hempid").val(atob(qsParm["empid"]));
+            return true;
+        } else {
+            window.location.href = 'index.html';
+            return false;
+        }
+    }
+
+    $(document).ajaxStop($.unblockUI);
+
+    $(document).ready(function () {
+        var todaydate = moment();
+        $('.ui.dropdown').dropdown();
+        $('.ui.checkbox').checkbox();
+        $('.ui.modal').modal({ 
+            //closable: false,
+            scrolling : 'scrolling',
+            onHidden : function() {
+                $('#aplayer').get(0).pause();
+                $('#aplayer').empty();
+                $('#vplayer').get(0).pause();
+                $('#vplayer').empty();
+                $('.ui.modal').modal('hide');
+                clearDefaults();
+            }
+        });
+        $('.dimmer').hide();
+        $('#frmdate, #todate').attr('readonly', 'true');
+
+        $("#frmdate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: "dd-MM-yy",
+            maxDate: "+0D",
+            beforeShow: function () {
+                setTimeout(function () {
+                    $('.ui-datepicker').css('z-index', 99999999999999);
+                }, 0);
+            },
+            onSelect: function (selected) {
+                $("#todate").datepicker("option", "minDate", selected);
+            }
+        });
+
+        $("#todate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: "dd-MM-yy",
+            maxDate: "+0D",
+            beforeShow: function () {
+                setTimeout(function () {
+                    $('.ui-datepicker').css('z-index', 99999999999999);
+                }, 0);
+            },
+            onSelect: function (selected) {
+                $("#frmdate").datepicker("option", "maxDate", selected);
+            }
+        });
+        $("#frmdate").val(todaydate.format('DD-MMM-YYYY'));
+        $("#todate").val(todaydate.format('DD-MMM-YYYY'));
+
+        $("#aplayer, #vplayer").bind("ended", function () {
+            $('#aplayer').empty();
+            $('#vplayer').empty();
+            $('.ui.modal').modal('hide');
+            clearDefaults();
+        });
+
+        $("#aplayer, #vplayer").on("error", function () {
+            $('#aplayer').empty();
+            $('#vplayer').empty();
+            $('.ui.modal').modal('hide');
+            clearDefaults();
+        });
+
+        $('#all').removeClass('basic');
+        ReportGrid('all');
+
+        $('#all').click(function () {
+            $(this).removeClass('basic');
+            $('#adm').addClass('basic');
+            $('#fdb').addClass('basic');
+            $('#nur').addClass('basic');
+            $('#cmp').addClass('basic');
+            $('#srv').addClass('basic');
+            ReportGrid('all');
+        });
+
+        $('#adm').click(function () {
+            $(this).removeClass('basic');
+            $('#all').addClass('basic');
+            $('#fdb').addClass('basic');
+            $('#nur').addClass('basic');
+            $('#cmp').addClass('basic');
+            $('#srv').addClass('basic');
+            ReportGrid('adm');
+        });
+
+        $('#fdb').click(function () {
+            $(this).removeClass('basic');
+            $('#all').addClass('basic');
+            $('#adm').addClass('basic');
+            $('#nur').addClass('basic');
+            $('#cmp').addClass('basic');
+            $('#srv').addClass('basic');
+            ReportGrid('fdb');
+        });
+
+        $('#nur').click(function () {
+            $(this).removeClass('basic');
+            $('#all').addClass('basic');
+            $('#adm').addClass('basic');
+            $('#fdb').addClass('basic');
+            $('#cmp').addClass('basic');
+            $('#srv').addClass('basic');
+            ReportGrid('nur');
+        });
+
+        $('#cmp').click(function () {
+            $(this).removeClass('basic');
+            $('#all').addClass('basic');
+            $('#adm').addClass('basic');
+            $('#fdb').addClass('basic');
+            $('#nur').addClass('basic');
+            $('#srv').addClass('basic');
+            ReportGrid('cmp');
+        });
+
+        $('#srv').click(function () {
+            $(this).removeClass('basic');
+            $('#all').addClass('basic');
+            $('#adm').addClass('basic');
+            $('#fdb').addClass('basic');
+            $('#nur').addClass('basic');
+            $('#cmp').addClass('basic');
+            ReportGrid('srv');
+        });
+    });
+
+    function ReportGrid(rpttype) {
+        $("#tblGrid").empty();
+
+        if ($('#frmdate').val() == '') {
+            alert('Please Select From Date');
+            $('#frmdate').focus()
+            return false;
+        } else if ($('#todate').val() == '') {
+            alert('Please Select To Date');
+            $('#todate').focus()
+            return false;
+        } else {
+            $('.dimmer').show();
+            var filterData = {};
+
+            var url = apiURL + 'Report/Feedback';
+
+            $.post(url + '/' + $("#frmdate").val() + '/' + $("#todate").val() + '/' + $("input[name='catg']:checked").val() + '/' + rpttype,
+                    filterData, function (response) {})
+            .done(function (response) {
+                selectedArray = response.data;
+                var htmlStr = '';
+                $("#tblGrid").empty();
+                if (selectedArray.length > 0) {
+                    for (var i = 0; i <= selectedArray.length - 1; i++)
+                        htmlStr += selectedArray[i].StrContent;
+
+                    $("#tblGrid").append(htmlStr);
+                } else {
+                    $('.error.message').show();
+                    $("#tblGrid").empty();
+                }
+                $('.dimmer').hide();
+                $(".h1").click(function () {
+                    $(this).find("i").toggleClass("angle right icon angle down icon");
+                    $(this).nextUntil("tr.h1").toggle(300);
+                });
+            }).fail(function () {
+                $('.dimmer').hide();
+            });
+        }
+    }
+
+    function clearDefaults() {
+        $('#aplayer').empty();
+        $('#vplayer').empty();
+        if ($('#p' + pid).hasClass('stop circle outline red')) {
+            $('#p' + pid).removeClass('stop circle outline red');
+            $('#p' + pid).addClass('play circle outline green');
+        }
+    }
+
+    function playAV(id, mode, src) {
+        $('#aplayer').empty();
+        $('#vplayer').empty();
+        pid = id;
+        
+        if ($('#p' + id).hasClass('play circle outline green')) {
+            $('#p' + id).removeClass('play circle outline green');
+            $('#p' + id).addClass('stop circle outline red');
+            if (mode == 'A') {
+                $('#aplayer').append("<source id='sound_src' src=" + src + ">");
+                $('#aplayer').get(0).load();
+                $('#aplayer').get(0).play();
+            } else if (mode == 'V') {
+                $('.ui.modal').modal('show');
+                // $('html, body').animate({
+                //     scrollTop: $("#vplayer").offset().top
+                // }, 500);
+                $('#vplayer').append("<source id='sound_src' src=" + src + ">");
+                $('#vplayer').get(0).load();
+                $('#vplayer').get(0).play();
+            }
+            $("#sound_src").on("error", function (e) {
+                $('#p' + id).removeClass('stop circle outline red');
+                $('#p' + id).addClass('play circle outline green');
+                $('.ui.modal').modal('hide');
+                clearDefaults();
+                alert('Error occurred while playing the file.')
+            });
+        } else {
+            $('.ui.modal').modal('hide');
+            $('#p' + id).removeClass('stop circle outline red');
+            $('#p' + id).addClass('play circle outline green');
+            if (mode == 'A')
+                $('#aplayer').get(0).pause();
+            else if (mode == 'V')
+                $('#vplayer').get(0).pause();
+        }
+    }
+</script>

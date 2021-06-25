@@ -73,6 +73,7 @@
             <a class="item" id="incharge">Incharge</a>
             <a class="item" id="bedtype">Bed Type</a>
             <a class="item" id="ward">Ward</a>
+            <a class="item" id="deptipcensus">Department IP Census</a>
           </div>
           <div class="ui basic segment">
             <iframe frameborder="0" width="100%" height="100%" id="ifrm" seamless="" style="position: absolute; top: 0; left: 0;" scrolling="auto"></iframe>
@@ -157,6 +158,10 @@
         $('#service').click(function () {
             menuActive('service');
             $('#ifrm').attr('src', 'servicemonitoring.html?empid=' + btoa($("#hempid").val())); 
+        });
+        $('#deptipcensus').click(function () {
+            menuActive('deptipcensus');
+            $('#ifrm').attr('src', 'ipcensus_dept.html?empid=' + btoa($("#hempid").val())); 
         });
     });
 

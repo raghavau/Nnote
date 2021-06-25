@@ -110,15 +110,36 @@
                     <label>To Date</label>
                     <input type="text" id="todate">
                 </div>
-                <div class="two wide field">
-                    <label>&nbsp;</label>
-                    <!-- <button class="ui primary right floated button" id="btnReport">Report</button> -->
-                    <div class="ui buttons">
-                        <button class="ui basic red button" id="ward">Ward</button>
-                        <button class="ui basic blue button" id="bedtype">BedType</button>
-                        <button class="ui basic green button" id="incharge">Incharge</button>
-                        <button class="ui basic orange button" id="service">Service</button>
+                <div class="field">
+                    <label>Category</label>
+                    <div class="inline fields">
+                        <div class="field">
+                            <div class="ui toggle checkbox">
+                                <input type="radio" name="catg" value="B" checked>
+                                <label>Both</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui toggle checkbox">
+                                <input type="radio" name="catg" value="G">
+                                <label>General</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui toggle checkbox">
+                                <input type="radio" name="catg" value="A">
+                                <label>Covid</label>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div class="two wide field">
+                <div class="ui buttons">
+                    <button class="ui basic red button" id="ward">Ward</button>
+                    <button class="ui basic blue button" id="bedtype">BedType</button>
+                    <button class="ui basic green button" id="incharge">Incharge</button>
+                    <button class="ui basic orange button" id="service">Service</button>
                 </div>
             </div>
 
@@ -143,7 +164,8 @@
     //var apiURL = 'http://115.241.194.19/NnoteApi/api/Nnote/';
 
     var qsParm = new Array(),
-        empid = null;
+        empid = null,
+        rpt = null;
 
     function qs() {
         //debugger;
@@ -170,7 +192,9 @@
 
     $(document).ready(function () {
         var todaydate = moment();
+        var mindate = new Date(2021, 3, 1);
         $('.ui.dropdown').dropdown();
+        $('.ui.checkbox').checkbox();
         $('.dimmer').hide();
         $('#frmdate, #todate').attr('readonly', 'true');
         
@@ -178,9 +202,9 @@
             changeMonth: true,
             changeYear: true,
             dateFormat: "dd-MM-yy",
-            minDate: new Date(2021, 4 - 1, 1),
+            minDate: mindate,
             maxDate: "+0D",
-            defaultDate: new Date(2021, 4 - 1, 1),
+            defaultDate: new Date(),
             beforeShow: function () {
                 setTimeout(function () {
                     $('.ui-datepicker').css('z-index', 99999999999999);
@@ -231,23 +255,19 @@
                 //$("#frmdate").val($("#frmdate").val());
             }
         });
-        $("#frmdate").val('01-April-2021');
+        $("#frmdate").val(todaydate.clone().startOf('month').format('DD-MMM-YYYY'));
         $("#todate").val(todaydate.format('DD-MMM-YYYY'));
         
         $('#ward').removeClass('basic');
         ReportGrid('Ward');
-
-        $('#btnReport').click(function () {
-            $(this).removeClass('basic');
-            ReportGrid();
-        });
 
         $('#ward').click(function () {
             $(this).removeClass('basic');
             $('#incharge').addClass('basic');
             $('#bedtype').addClass('basic');
             $('#service').addClass('basic');
-            ReportGrid('Ward');
+            rpt = 'Ward';
+            ReportGrid(rpt);
         });
 
         $('#incharge').click(function () {
@@ -255,7 +275,8 @@
             $('#ward').addClass('basic');
             $('#bedtype').addClass('basic');
             $('#service').addClass('basic');
-            ReportGrid('Incharge');
+            rpt = 'Incharge';
+            ReportGrid(rpt);
         });
 
         $('#bedtype').click(function () {
@@ -263,7 +284,8 @@
             $('#incharge').addClass('basic');
             $('#ward').addClass('basic');
             $('#service').addClass('basic');
-            ReportGrid('BedType');
+            rpt = 'BedType';
+            ReportGrid(rpt);
         });
 
         $('#service').click(function () {
@@ -271,8 +293,13 @@
             $('#incharge').addClass('basic');
             $('#bedtype').addClass('basic');
             $('#ward').addClass('basic');
+            rpt = '';
             ReportGrid();
         });
+    });
+
+    $(document).on('click', '.ui.checkbox', function() { 
+        ReportGrid(rpt);
     });
 
     function ReportGrid(rpttype) {
@@ -281,7 +308,8 @@
         
         var filterData = {
             fromdate: $('#frmdate').val(),
-            todate: $('#todate').val()
+            todate: $('#todate').val(),
+            Category: $("input[name='catg']:checked").val()
         };
 
         var url = apiURL + 'Service/Monitor';

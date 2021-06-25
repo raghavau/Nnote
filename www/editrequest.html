@@ -198,6 +198,7 @@
     $(document).ready(function () {
         $(".dimmer").hide();
         $('.ui.checkbox').checkbox();
+        $('.ui.dropdown').dropdown();
 
         qs();
         ShowRequests();
@@ -226,11 +227,7 @@
     }
 
     function ChangeStatus(id) {
-        if ($("#service" + id).val() == '0') {
-            alert('Please Select Service.');
-            $("#service" + id).focus();
-            return false;
-        } else if ($("#txtRemarks" + id).val() == '') {
+        if ($("#txtRemarks" + id).val() == '') {
             alert('Please Enter Remakrs.');
             $("#txtRemarks" + id).focus();
             return false;
@@ -239,6 +236,11 @@
         $(".dimmer").show();
 
         if (chkValue == 'T') {
+            if ($("#service" + id).val() == '0') {
+                alert('Please Select Service.');
+                $("#service" + id).focus();
+                return false;
+            }
             var objdata = {
                 complaintslno: $("#hcslno" + id).val(),
                 serviceid: $("#service" + id).val(),
