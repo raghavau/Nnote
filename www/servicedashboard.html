@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Bed Occupancy</title>
+    <title>Services Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
@@ -63,16 +63,12 @@
     <br>
     <div class="ui fluid container">
         <div class="page-header">
-            <h3><i class="tags icon"></i> Bed Occupancy Dashboard</h3>
+            <h3><i class="tags icon"></i> Service & Feedback Dashboard</h3>
             <div class="ui divider"></div>
         </div>
         <div class="ui secondary pointing menu" style="overflow: auto;">
-            <a class="active item" id="ip">IP Census</a>
-            <a class="item" id="beds">Beds Position</a>
-            <a class="item" id="incharge">Incharge</a>
-            <a class="item" id="bedtype">Bed Type</a>
-            <a class="item" id="ward">Ward</a>
-            <a class="item" id="deptipcensus">Department IP Census</a>
+            <a class="active item" id="service">Service Monitor</a>
+            <a class="item" id="feedback">Feedback Monitor</a>
           </div>
           <div class="ui basic segment">
             <iframe frameborder="0" width="100%" height="100%" id="ifrm" seamless="" style="position: absolute; top: 0; left: 0;" scrolling="auto"></iframe>
@@ -132,31 +128,15 @@
         $(".dimmer").hide();
         $('.ui.segment').height($(this).height() - 180);
 
-        $('#ifrm').attr('src', 'ipcensus.html?empid=' + btoa($("#hempid").val()));
+        $('#ifrm').attr('src', 'servicemonitoring.html?empid=' + btoa($("#hempid").val()));
 
-        $('#incharge').click(function () {
-            menuActive('incharge');
-            $('#ifrm').attr('src', 'inchargedashboard.html?empid=' + btoa($("#hempid").val()));
+        $('#service').click(function () {
+            menuActive('service');
+            $('#ifrm').attr('src', 'servicemonitoring.html?empid=' + btoa($("#hempid").val())); 
         });
-        $('#bedtype').click(function () {
-            menuActive('bedtype');
-            $('#ifrm').attr('src', 'bedtypedashboard.html?empid=' + btoa($("#hempid").val()));
-        });
-        $('#ward').click(function () {
-            menuActive('ward');
-            $('#ifrm').attr('src', 'warddashboard.html?empid=' + btoa($("#hempid").val()));
-        });
-        $('#beds').click(function () {
-            menuActive('beds');
-            $('#ifrm').attr('src', 'bedscount.html?empid=' + btoa($("#hempid").val()));    
-        });
-        $('#ip').click(function () {
-            menuActive('ip');
-            $('#ifrm').attr('src', 'ipcensus.html?empid=' + btoa($("#hempid").val())); 
-        });
-        $('#deptipcensus').click(function () {
-            menuActive('deptipcensus');
-            $('#ifrm').attr('src', 'ipcensus_dept.html?empid=' + btoa($("#hempid").val())); 
+        $('#feedback').click(function () {
+            menuActive('feedback');
+            $('#ifrm').attr('src', 'feedbackreport.html?empid=' + btoa($("#hempid").val())); 
         });
     });
 

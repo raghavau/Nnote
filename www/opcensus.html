@@ -1,0 +1,391 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css">
+    <link rel="stylesheet" type="text/css" href="semantic/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/regular.min.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome/css/solid.min.css">
+    <script type="text/javascript" src="jquery/jquery.3.5.1.min.js"></script>
+    <script type="text/javascript" src="jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="jquery/moment.js"></script>
+    <!--<script type="text/javascript" src="jquery/jquery.datetimepicker.full.min.js"></script>-->
+    <script type="text/javascript" src="jquery/jquery.blockui.js"></script>
+    <script type="text/javascript" src="semantic/semantic.min.js"></script>
+
+    <style type="text/css">
+        .ui.fluid.container {
+            width: 98% !important;
+            top: 100px !important;
+        }
+
+        body {
+            position: fixed;
+            overflow: auto;
+            height: 100%;
+            width: 100%;
+        }
+
+        tr.header {
+            background-color: #3DB5AD !important;
+            color: white;
+        }
+
+        .c {
+            display: none;
+        }
+
+        .header > th {
+            background-color: #3db5ad !important;
+            color: white !important;
+        }
+
+        .ri{
+            text-align:right;
+        }
+
+        tr.footer {
+            background: #F1F1F1 !important;
+            color: red;
+        }
+
+        tr.footer1 {
+            background: #F1F1F1 !important;
+            color: red;
+        }
+    </style>
+
+
+    <script type="text/javascript" language="JavaScript">
+
+        //declarations
+        var apiURL = '../../NnoteApi/api';
+        var dropdownaray = [];
+        var dropselecteddata , d;
+
+        //to resize table
+        $(window).resize(function () {
+            $('#divTable').height($("body").height() - (parseInt($("form").height()) + 150));
+            $('#divTable').width($("body").width() - 50);
+        });
+
+
+
+        $(document).ready(function () {
+
+            //dropdown code
+            $(".ui.dropdown").dropdown();
+            //$("#dropdowndiv").hide();
+
+            //loading hide at starting
+            $("#loading").hide();
+
+
+
+
+            //calender from box
+            $("#frombox").datepicker({
+                dateFormat: 'dd-M-yy',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1950:2100',
+                onSelect: function (selected) {
+                    $("#tobox").datepicker("option", "minDate", selected)
+                }
+            });
+
+
+            //calender to box
+            $("#tobox").datepicker({
+                dateFormat: 'dd-M-yy',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1950:2100',
+                onSelect: function (selected) {
+                    $("#frombox").datepicker("option", "maxDate", selected)
+                }
+            });
+
+
+            //code for todays date
+            $('#frombox').datepicker({ dateFormat: 'dd-M-yy' });
+            $('#frombox').datepicker('setDate', 'today');
+            $('#tobox').datepicker({ dateFormat: 'dd-M-yy' });
+            $('#tobox').datepicker('setDate', 'today');
+
+            //to resize
+            $('#divTable').height($("body").height() - (parseInt($("form").height()) + 150));
+            $('#divTable').width($("body").width() - 50);
+
+
+            //code to get departments data
+            $.ajax({
+                type: "GET",
+                url: apiURL + '/Masters/Department',
+                data: "",
+                contentType: "application/json",
+                success: function (data) {
+                    var s = '';
+                    var d = data.data;
+                    for (var i = 0; i < d.length ; i++) {
+                        s += '<option value= "' + d[i].Code + '"> ' + d[i].Name + '</option>';
+                    }
+                    $("#deptdropdown").html(s);
+                }
+            })
+
+
+            //submit button event
+            $("#submitbutton").click(function () {
+                $("#divTable").empty();
+                ReportGrid();
+            });
+
+            //When we change the values in the department drop down
+            $("#deptdropdown").change(function () {
+                $("#divTable").empty();
+                OnChangeReportGrid();
+            });
+        });
+
+        function OnChangeReportGrid() {
+            if (d != undefined) {
+                var s = '';
+                $("#divTable").empty();
+                $("#loading").show();
+
+                var len = $("#deptdropdown").find("option:selected").length; // to take length of dropddown
+                dropdownarray = [];
+
+                for (var i = 0; i <= len - 1; i++) {
+                    dropdownarray.push($("#deptdropdown").find("option:selected")[i].value); // to take selected departments into an array
+                }
+
+                if (dropdownarray.length > 0) {
+                    dropselecteddata = $.grep(d, function (element, index) {  //filtering the selected data from the original data
+                        return dropdownarray.indexOf(element.DEPTCODE) > -1;
+                    });
+                
+                    if (dropselecteddata.length > 0) {
+                        if (dropdownarray.length > 0) {
+                            s += d[0].Content;
+                        }
+                        var tr, gtot, stot;
+
+
+
+                        var gtotalpatient = 0, gpayTotal = 0, ginsur = 0, gsch = 0;
+                        var gcorp = 0, gehs = 0, gcovgov = 0, gas = 0;
+
+                        var stotalpatient = 0, spayTotal = 0, sinsur = 0, ssch = 0;
+                        var scorp = 0, sehs = 0, scovgov = 0, sas = 0;
+
+                        for (var i = 0; i < dropselecteddata.length; i++) {
+                            if (dropselecteddata[i].SPECIALITY == 'G') {
+                                if (dropselecteddata[i].DOCTCODE == null) {
+                                    gtotalpatient = parseFloat(gtotalpatient) + parseFloat(dropselecteddata[i].Totalpatients);
+                                    gpayTotal = parseFloat(gpayTotal) + parseFloat(dropselecteddata[i].Paying);
+                                    ginsur = parseFloat(ginsur) + parseFloat(dropselecteddata[i].Insurance);
+                                    gsch = parseFloat(gsch) + parseFloat(dropselecteddata[i].Scheme);
+                                    gcorp = parseFloat(gcorp) + parseFloat(dropselecteddata[i].Corporate);
+                                    gehs = parseFloat(gehs) + parseFloat(dropselecteddata[i].Ehs);
+                                    gcovgov = parseFloat(gcovgov) + parseFloat(dropselecteddata[i].Covgovt);
+                                    gas = parseFloat(gas) + parseFloat(dropselecteddata[i].Asp);
+                                }
+                                s += dropselecteddata[i].Content;
+
+
+                            }
+                        }
+
+                        gtot = '</td></tr><tr class="footer"><td></td><td>Total</td>'
+                                    + "<td style= text-align:right>" + gtotalpatient + "</td>"
+                                    + "<td style= text-align:right>" + gpayTotal + " </td>"
+                                    + "<td style= text-align:right>" + ginsur + " </td>"
+                                    + "<td style= text-align:right>" + gsch + "</td>"
+                                    + "<td style= text-align:right>" + gcorp + "</td>"
+                                    + "<td style= text-align:right>" + gehs + "</td>"
+                                    + "<td style= text-align:right>" + gcovgov + "</td>"
+                                    + "<td style= text-align:right>" + gas + "</td></tr>";
+                        s = s + gtot;
+
+                        for (var i = 0; i < dropselecteddata.length; i++) {
+                            if (dropselecteddata[i].SPECIALITY == 'S') {
+                                if (dropselecteddata[i].DOCTCODE == null) {
+                                    stotalpatient = parseFloat(stotalpatient) + parseFloat(dropselecteddata[i].Totalpatients);
+                                    spayTotal = parseFloat(spayTotal) + parseFloat(dropselecteddata[i].Paying);
+                                    sinsur = parseFloat(sinsur) + parseFloat(dropselecteddata[i].Insurance);
+                                    ssch = parseFloat(ssch) + parseFloat(dropselecteddata[i].Scheme);
+                                    scorp = parseFloat(scorp) + parseFloat(dropselecteddata[i].Corporate);
+                                    sehs = parseFloat(sehs) + parseFloat(dropselecteddata[i].Ehs);
+                                    scovgov = parseFloat(scovgov) + parseFloat(dropselecteddata[i].Covgovt);
+                                    sas = parseFloat(sas) + parseFloat(dropselecteddata[i].Asp);
+                                }
+
+                                s += dropselecteddata[i].Content;
+                            }
+                        }
+                        stot = '<tr class="footer"><td></td><td>Total</td>'
+                                + "<td style= text-align:right>" + stotalpatient + "</td>"
+                                + "<td style= text-align:right>" + spayTotal + " </td>"
+                                + "<td style= text-align:right>" + sinsur + " </td>"
+                                + "<td style= text-align:right>" + ssch + "</td>"
+                                + "<td style= text-align:right>" + scorp + "</td>"
+                                + "<td style= text-align:right>" + sehs + "</td>"
+                                + "<td style= text-align:right>" + scovgov + "</td>"
+                                + "<td style= text-align:right>" + sas + "</td></tr>";
+                        if (stotalpatient > 0)
+                            s = s + stot;
+
+                        tr = '<tr class="footer"><td></td><td>GrandTotal</td>'
+                        + "<td style= text-align:right>" + (gtotalpatient + stotalpatient) + "</td>"
+                        + "<td style= text-align:right>" + (gpayTotal + spayTotal) + " </td>"
+                        + "<td style= text-align:right>" + (ginsur + sinsur) + " </td>"
+                        + "<td style= text-align:right>" + (gsch + ssch) + "</td>"
+                        + "<td style= text-align:right>" + (gcorp + scorp) + "</td>"
+                        + "<td style= text-align:right>" + (gehs + sehs) + "</td>"
+                        + "<td style= text-align:right>" + (gcovgov + scovgov) + "</td>"
+                        + "<td style= text-align:right>" + (gas + sas) + "</td></tr>";
+                        s = s + tr;
+
+                        $("#divTable").append(s + '</table>');
+
+                        $("#loading").hide();
+
+                        $('.p').click(function () {
+                            $(this).find("i").toggleClass("caret right icon caret down icon");
+                            $(this).nextUntil("tr.p").toggle(300);
+                        });
+                    }
+                    else {
+                        $("#divTable").empty();
+                        $('#divTable').append('<tr style="color:#f93c3c"><td><h5>No Data Found</h5></td></tr>');
+                        $("#loading").hide();
+                    }
+                }
+                else {
+                    //$("#deptdropdown").hide();
+                    //$("#divTable").empty();
+                    //$('#divTable').append('<tr style="color:#f93c3c"><td><h5>No Data Found</h5></td></tr>');
+                    //$("#loading").hide();
+                    ReportGrid();
+                }
+            }
+        }
+        
+        function ReportGrid() {
+            //$("#dropdowndiv").show();
+            $("#loading").show();
+            $("#divTable").empty();
+            $.ajax({
+                type: "GET",
+                url: apiURL + '/Op/Census/' + $("#frombox").val() + "/" + $("#tobox").val(),
+                data: "",
+                contentType: "application/json",
+                success: function (data) {
+                    var s = '';
+                    d = data.data;
+
+
+                    var len = $("#deptdropdown").find("option:selected").length;
+                    dropdownarray = [];
+
+                    for (var i = 0; i < len; i++) {
+                        dropdownarray.push($("#deptdropdown").find("option:selected")[i].value);
+                    }
+
+                    if (dropdownarray.length > 0) {
+                        dropselecteddata = $.grep(d, function (element, index) {
+                            return dropdownarray.indexOf(element.Department) > -1;
+                        });
+                    }
+                    else {
+                        dropselecteddata = d;
+                    }
+
+                    if (dropdownarray.length > 0) {
+                        OnChangeReportGrid();
+                    }
+                    else {
+                        if (dropselecteddata.length > 3) {
+                            for (var i = 0; i < dropselecteddata.length; i++) {
+                                s += dropselecteddata[i].Content;
+                            }
+
+                            $("#divTable").append(s);
+                            $("#loading").hide();
+
+                            //code to show child data
+                            $('.p').click(function () {
+                                $(this).find("i").toggleClass("caret right icon caret down icon");
+                                $(this).nextUntil("tr.p").toggle(300);
+                            });
+                        }
+                        else {
+                            //$("#dropdowndiv").hide();
+                            $("#divTable").empty();
+                            $('#divTable').append('<tr style="color:#f93c3c"><td><h5>No Data Found</h5></td></tr>');
+                            $("#loading").hide();
+                        }
+                    }
+                }
+            })
+        }
+
+       
+        
+            
+                        
+    </script>
+</head>
+
+<body>
+    <div class="ui fluid container">
+        <h2 class="ui dividing black header">OP Census</h2>
+        <form id="form1" class="ui form">
+            <div class="three fields">
+                <div class="four wide field">
+                    <label style="font-size:medium">From Date</label>
+                    <div class="ui input">
+                        <input type="text" id="frombox" name="fromtextbox" placeholder="Select Date" readonly />
+                    </div>
+                </div>
+                <div class="four wide field">
+                    <label style="font-size:medium">To Date</label>
+                    <div class="ui input">
+                        <input type="text" id="tobox" name="totextbox" placeholder="Select Date" readonly />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>&nbsp;</label>
+                    <input id="submitbutton" class="ui blue button" type="button" value="Submit" />
+                </div>
+            </div>
+            <div id="dropdowndiv" class="field">
+                <label style="font-size:medium"> Select Departments </label>
+                <select id="deptdropdown" class="ui fluid search dropdown" multiple>
+                    <option value="DEPTNAME"></option>
+                </select>
+            </div>
+        </form>
+        <div>
+            <p>&nbsp;</p>
+        </div>
+        <div id="divTable" style="overflow: auto">
+            <table class="ui celled unstackable table">
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="ui active inverted dimmer" id="loading">
+        <div class="ui large text loader">loading</div>
+    </div>
+</body>
+</html>
+
+
+

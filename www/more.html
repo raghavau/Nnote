@@ -87,13 +87,28 @@
                         <div class="center aligned description">
                             <span class="ico-width">
                                 <span class="fa-stack fa-2x" style="vertical-align: middle;color:#4442ba">
+                                    <i class="fas fa-plus fa-stack-1x" style="top: 6px;"></i>
+                                    <i class="far fa-calendar fa-stack-2x"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="btnrosterinfo" class="ui bottom attached button" onclick="Click(5);">
+                        Roster Information
+                    </div>
+                </div>
+                <div class="ui card">
+                    <div class="content">
+                        <div class="center aligned description">
+                            <span class="ico-width">
+                                <span class="fa-stack fa-2x" style="vertical-align: middle;color:#795548">
                                     <i class="fas fa-clock fa-stack-1x" style="top: 6px;"></i>
                                     <i class="far fa-calendar fa-stack-2x"></i>
                                 </span>
                             </span>
                         </div>
                     </div>
-                    <div id="btnroster" class="ui bottom attached button" onclick="Click(5);">
+                    <div id="btnrosterview" class="ui bottom attached button" onclick="Click(8);">
                         Roster View
                     </div>
                 </div>
@@ -125,6 +140,7 @@
                         Wards Plan
                     </div>
                 </div>
+                
             </div>
 
             <h4 class="ui dividing header"><i class="angle right icon"></i>Duty Roster</h4>
@@ -185,8 +201,8 @@
                 <i class="right arrow icon"></i> Feedback Entry
             </button>
             <br>
-            <button class="ui fluid labeled icon red button" id="btnfeedbackreport">
-                <i class="right arrow icon"></i> Feedback Report
+            <button class="ui fluid labeled icon red button" id="btnsrvdashboard">
+                <i class="right arrow icon"></i> Service & Feedback Dashboard
             </button>
             <br>
         </div>
@@ -209,9 +225,7 @@
     }
 
     function isPhoneGap() {
-        return (window.cordova || window.PhoneGap || window.phonegap) &&
-            /^file:\/{3}[^\/]/i.test(window.location.href) &&
-            /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+        return /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
     }
 
     function qs() {
@@ -258,6 +272,9 @@
                 break;
             case 7:
                 window.location.href = "http://narayanagroup.co.in/BioAttendanceApi/www/wardsPlan.html";
+                break;
+            case 8:
+                window.location.href = "http://narayanagroup.co.in/BioAttendanceApi/www/rosterinformation.html";
                 break;
         }
     }
@@ -511,8 +528,8 @@
             document.location.href = "patientfeedback.html?empid=" + btoa($("#hempid").val());
         });
 
-        $("#btnfeedbackreport").click(function () {
-            document.location.href = "feedbackreport.html?empid=" + btoa($("#hempid").val());
+        $("#btnsrvdashboard").click(function () {
+            document.location.href = "servicedashboard.html?empid=" + btoa($("#hempid").val());
         });
         CheckStatus();
     });

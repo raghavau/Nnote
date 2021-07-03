@@ -69,76 +69,6 @@
                     <p>No Data Available. Please check for another date</p>
                 </div>
                 <div class="ui middle aligned relaxed divided list" id="list">
-                    <!-- <div class="item">
-                        <div class="ui content">
-                            <label class="header" style="word-wrap: break-word;">Nursing</label>
-                            <div class="description">App testing for nursing services
-                                <br>05-SEP-20
-                            </div>
-                            <div class="extra">
-                                <div class="right floated content">
-                                    <div class="ui right floated small button" onclick="ShowSlide(4)">Action</div>
-                                </div>
-                                <br>
-                                <br>
-                                <div class="ui secondary segment cslide" name="cslide" id="slide4"
-                                    style="display: none;">
-                                    <div class="ui form">
-                                        <div class="inline fields">
-                                            <div class="field">
-                                                <div class="ui radio checkbox" id="status4">
-                                                    <input type="radio" name="status4" tabindex="0" class="hidden"
-                                                        value="Y">
-                                                    <label>Resolved</label>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <div class="ui radio checkbox" id="status4">
-                                                    <input type="radio" name="status4" tabindex="0" class="hidden"
-                                                        value="P">
-                                                    <label>Repost</label>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <div class="ui radio checkbox" id="status4">
-                                                    <input type="radio" name="status4" tabindex="0" class="hidden"
-                                                        value="C">
-                                                    <label>Not Feasible</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="field" id="expDays4" style="display: none;">
-                                            Expected Days
-                                            <input type="hidden" id="txtExpDays4" value="1">
-                                            <div id="slider-range-min4">
-                                                <div id="custom-handle4" class="ui-slider-handle custom-handle"></div>
-                                            </div>
-                                        </div>
-                                        <div class="required field">
-                                            <label>Remarks</label>
-                                            <textarea id="txtRemarks4" class="ui input" placeholder="Enter Remarks"
-                                                cols="30" rows="3"></textarea>
-                                            <input type="hidden" id="hcslno4" value="11228" />
-                                        </div>
-                                        <div class="two fields">
-                                            <div class="field">
-                                                <button id="btnSave4" onclick="ChangeStatus(4)"
-                                                    class="ui positive fluid labeled icon button">
-                                                    <i class="check icon"></i>Save
-                                                </button>
-                                            </div>
-                                            <div class="field">
-                                                <button id="btnCancel4" class="ui negative fluid labeled icon button"
-                                                    type="button" onclick="HideSlide(4)">
-                                                    <i class="times icon"></i>Cancel
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
                 <input type="hidden" id="hinId" value="0">
             </div>
@@ -315,7 +245,7 @@
             range: "min",
             value: 1,
             min: 1,
-            max: 10,
+            max: 30,
             create: function () {
                 handle.text($(this).slider("value"));
             },
@@ -328,10 +258,9 @@
         $("#txtExpDays" + id).val($("#slider-range-min" + id).slider("value"));
 
         $(document).on('click', '.ui.radio.checkbox#status' + id, function () {
+            $('#expDays' + id).hide();
+            $('#srv' + id).hide();
             $('.ui.radio.checkbox#status' + id).each(function () {
-                //debugger;
-                $('#expDays' + id).hide();
-                $('#srv' + id).hide();
                 var boolval = $(this)[0].firstElementChild.checked;
                 var inputval = $(this)[0].firstElementChild.value;
                 if (boolval) {
@@ -340,7 +269,7 @@
                         $('#expDays' + id).show();
                     else if (chkValue == 'T')
                         $('#srv' + id).show();
-                }
+                } 
             });
         });
     }

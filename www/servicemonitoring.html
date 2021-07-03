@@ -95,10 +95,10 @@
 <body>
     <br>
     <div class="ui fluid container">
-        <div class="page-header">
+        <!-- <div class="page-header">
             <h3>Service Monitoring</h3>
             <div class="ui divider"></div>
-        </div>
+        </div> -->
 
         <div class="ui form">
             <div class="three fields">
@@ -136,10 +136,10 @@
             </div>
             <div class="two wide field">
                 <div class="ui buttons">
+                    <button class="ui basic orange button" id="service">Service</button>
                     <button class="ui basic red button" id="ward">Ward</button>
                     <button class="ui basic blue button" id="bedtype">BedType</button>
                     <button class="ui basic green button" id="incharge">Incharge</button>
-                    <button class="ui basic orange button" id="service">Service</button>
                 </div>
             </div>
 
@@ -258,8 +258,8 @@
         $("#frmdate").val(todaydate.clone().startOf('month').format('DD-MMM-YYYY'));
         $("#todate").val(todaydate.format('DD-MMM-YYYY'));
         
-        $('#ward').removeClass('basic');
-        ReportGrid('Ward');
+        $('#service').removeClass('basic');
+        ReportGrid('service');
 
         $('#ward').click(function () {
             $(this).removeClass('basic');

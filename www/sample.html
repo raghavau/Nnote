@@ -14,75 +14,42 @@
         body {
             padding: 20px;
         }
+        #layout {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background-color: #faebd8;
+}
 
-        div.container {
-            position: fixed;
-            top: 40px;
-            right: 40px;
-            border: 1px dotted lightgray;
-            height: 100px;
-        }
+#frm1 {
+  position: fixed;
+  width: 10%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background-color: #b5e0dd;
+}
 
-        div.controls>div {
-            display: inline-block;
-            height: 46px;
-            width: 46px;
-            opacity: .5;
-            background-image: url('https://openclipart.org/image/300px/svg_to_png/172203/Icon_set_player.png');
-            background-size: 150px;
-        }
-
-        div.controls>div:hover {
-            opacity: 1.0;
-        }
-
-        div#prev {
-            background-position: 0px 0px;
-        }
-
-        div#play {
-            background-position: -52px 0px;
-        }
-
-        div#next {
-            background-position: 46px 0px;
-        }
-
-        div#stop {
-            background-position: 0px 46px;
-        }
-
-        div#pause {
-            background-position: 98px 46px;
-        }
-
-        div#record {
-            background-position: 46px 46px;
-        }
-
-        audio {}
+#frm2 {
+  position: fixed;
+  width: 90%;
+  height: 100%;
+  top: 0px;
+  left: 10%;
+  background-color: transparent;
+}
     </style>
 </head>
 
 <body>
-    <br>
-    <div class="ui container">
-        <div class="field">
-            <i class="play circle outline green large icon ac" id="p1"></i>
-            <i class="play circle outline green large icon ac" id="p2"></i>
-            <i class="play circle outline green large icon ac" id="p3"></i>
-            <audio id="player"></audio>
-        </div>
-        <div class="field">
-            <i class="play green large icon" id="p4"></i>
-            <video id="vplayer" width="320" height="240"></video>
-        </div>
-    </div>
+    <div id="layout">
+        <div id="frm1"></div>
+        <div id="frm2"></div>
+      </div>
 
     <input type="hidden" id="hempid" />
-    <!-- <source src="http://115.241.194.19/NnoteApi/Upload/20210618/20210501495.mp3" />
-        <source src="http://115.241.194.19/NnoteApi/Upload/20210618/20210501721.mp3" />
-        <source src="http://115.241.194.19/NnoteApi/Upload/20210618/20210501693.mp3" /> -->
 </body>
 
 </html>
@@ -97,15 +64,7 @@
             e.preventDefault();
         }, false);
     }
-    var qsParm = new Array(),
-        audioFiles = [
-            "http://115.241.194.19/NnoteApi/Upload/20210619/123.mp3",
-            "http://115.241.194.19/NnoteApi/Upload/20210618/20210501721.mp3",
-            "http://115.241.194.19/NnoteApi/Upload/20210618/20210501693.mp3"
-        ],
-        videoFiles = [
-            "http://115.241.194.19/NnoteApi/Upload/20210619/shuttle.mp4"
-        ];
+    var qsParm = new Array();
 
     function qs() {
         //debugger;
@@ -133,142 +92,6 @@
     }
 
     $(document).ready(function () {
-        $("#player, #vplayer").bind("ended", function () {
-            $('#player').empty();
-            $('#vplayer').empty();
-            if ($('#p1').hasClass('stop circle outline red')) {
-                $('#p1').removeClass('stop circle outline red');
-                $('#p1').addClass('play circle outline green');
-            }
-            if ($('#p2').hasClass('stop circle outline red')) {
-                $('#p2').removeClass('stop circle outline red');
-                $('#p2').addClass('play circle outline green');
-            }
-            if ($('#p3').hasClass('stop circle outline red')) {
-                $('#p3').removeClass('stop circle outline red');
-                $('#p3').addClass('play circle outline green');
-            }
-            if ($('#p4').hasClass('stop red')) {
-                $('#p4').removeClass('stop red');
-                $('#p4').addClass('play green');
-            }
-        });
-
-        $('#p1').click(function () {
-            $('#player').empty();
-            $('#vplayer').get(0).load();
-            $('#vplayer').empty();
-            if ($('#p2').hasClass('stop circle outline red')) {
-                $('#p2').removeClass('stop circle outline red');
-                $('#p2').addClass('play circle outline green');
-            }
-            if ($('#p3').hasClass('stop circle outline red')) {
-                $('#p3').removeClass('stop circle outline red');
-                $('#p3').addClass('play circle outline green');
-            }
-            if ($('#p4').hasClass('stop red')) {
-                $('#p4').removeClass('stop red');
-                $('#p4').addClass('play green');
-            }
-
-            if ($(this).hasClass('play circle outline green')) {
-                $(this).removeClass('play circle outline green');
-                $(this).addClass('stop circle outline red');
-                $('#player').append("<source id='sound_src' src=" + audioFiles[0] + ">");
-                $('#player').get(0).load();
-                $('#player').get(0).play();
-            } else {
-                $(this).removeClass('stop circle outline red');
-                $(this).addClass('play circle outline green');
-                $('#player').get(0).pause();
-            }
-        });
-        $('#p2').click(function () {
-            $('#player').empty();
-            $('#vplayer').get(0).load();
-            $('#vplayer').empty();
-            if ($('#p1').hasClass('stop circle outline red')) {
-                $('#p1').removeClass('stop circle outline red');
-                $('#p1').addClass('play circle outline green');
-            }
-            if ($('#p3').hasClass('stop circle outline red')) {
-                $('#p3').removeClass('stop circle outline red');
-                $('#p3').addClass('play circle outline green');
-            }
-            if ($('#p4').hasClass('stop red')) {
-                $('#p4').removeClass('stop red');
-                $('#p4').addClass('play green');
-            }
-
-            if ($(this).hasClass('play circle outline green')) {
-                $(this).removeClass('play circle outline green');
-                $(this).addClass('stop circle outline red');
-                $('#player').append("<source id='sound_src' src=" + audioFiles[1] + ">");
-                $('#player').get(0).load();
-                $('#player').get(0).play();
-            } else {
-                $(this).removeClass('stop circle outline red');
-                $(this).addClass('play circle outline green');
-                $('#player').get(0).pause();
-            }
-        });
-        $('#p3').click(function () {
-            $('#player').empty();
-            $('#vplayer').get(0).load();
-            $('#vplayer').empty();
-            if ($('#p1').hasClass('stop circle outline red')) {
-                $('#p1').removeClass('stop circle outline red');
-                $('#p1').addClass('play circle outline green');
-            }
-            if ($('#p2').hasClass('stop circle outline red')) {
-                $('#p2').removeClass('stop circle outline red');
-                $('#p2').addClass('play circle outline green');
-            }
-            if ($('#p4').hasClass('stop red')) {
-                $('#p4').removeClass('stop red');
-                $('#p4').addClass('play green');
-            }
-
-            if ($(this).hasClass('play circle outline green')) {
-                $(this).removeClass('play circle outline green');
-                $(this).addClass('stop circle outline red');
-                $('#player').append("<source id='sound_src' src=" + audioFiles[2] + ">");
-                $('#player').get(0).load();
-                $('#player').get(0).play();
-            } else {
-                $(this).removeClass('stop circle outline red');
-                $(this).addClass('play circle outline green');
-                $('#player').get(0).pause();
-            }
-        });
-
-        $('#p4').click(function () {
-            if ($('#p1').hasClass('stop circle outline red')) {
-                $('#p1').removeClass('stop circle outline red');
-                $('#p1').addClass('play circle outline green');
-            }
-            if ($('#p2').hasClass('stop circle outline red')) {
-                $('#p2').removeClass('stop circle outline red');
-                $('#p2').addClass('play circle outline green');
-            }
-            if ($('#p3').hasClass('stop circle outline red')) {
-                $('#p3').removeClass('stop circle outline red');
-                $('#p3').addClass('play circle outline green');
-            }
-            $('#player').get(0).pause();
-
-            if ($(this).hasClass('play green')) {
-                $(this).removeClass('play green');
-                $(this).addClass('stop red');
-                $('#vplayer').append("<source id='sound_src' src=" + videoFiles[0] + ">");
-                $('#vplayer').get(0).load();
-                $('#vplayer').get(0).play();
-            } else {
-                $(this).removeClass('stop red');
-                $(this).addClass('play green');
-                $('#vplayer').get(0).load();
-                $('#vplayer').empty();
-            }
-        });
+        $("#frm2").load("http://localhost/Nnote/index.html");
     });
 </script>
