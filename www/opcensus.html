@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <title></title>
 
@@ -23,10 +24,21 @@
         }
 
         body {
-            position: fixed;
             overflow: auto;
-            height: 100%;
-            width: 100%;
+        }
+
+        ::-webkit-scrollbar {
+            width: 1rem;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+            border-radius: 99vmax;
+            border: 4px solid #ffffff;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgb(255, 255, 255);
         }
 
         tr.header {
@@ -38,13 +50,13 @@
             display: none;
         }
 
-        .header > th {
+        .header>th {
             background-color: #3db5ad !important;
             color: white !important;
         }
 
-        .ri{
-            text-align:right;
+        .ri {
+            text-align: right;
         }
 
         tr.footer {
@@ -57,21 +69,53 @@
             color: red;
         }
     </style>
-
-
     <script type="text/javascript" language="JavaScript">
-
         //declarations
         var apiURL = '../../NnoteApi/api';
         var dropdownaray = [];
-        var dropselecteddata , d;
+        var dropselecteddata, d;
 
         //to resize table
+        /*
         $(window).resize(function () {
             $('#divTable').height($("body").height() - (parseInt($("form").height()) + 150));
             $('#divTable').width($("body").width() - 50);
         });
+        */
 
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+            document.addEventListener("backbutton", function (e) {
+                e.preventDefault();
+            }, false);
+        }
+        var qsParm = new Array();
+
+        function qs() {
+            //debugger;
+            var query = window.location.search.substring(1);
+            var parms = query.split('&');
+            for (var i = 0; i < parms.length; i++) {
+                var pos = parms[i].indexOf('=');
+                if (pos > 0) {
+                    var key = parms[i].substring(0, pos);
+                    var val = parms[i].substring(pos + 1);
+                    qsParm[key] = val;
+                }
+            }
+            if (parms.length > 0) {
+                $("#hempid").val(atob(qsParm["empid"]));
+                return true;
+            } else {
+                window.location.href = 'index.html';
+                return false;
+            }
+        }
+
+        function isPhoneGap() {
+            return /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
+        }
 
 
         $(document).ready(function () {
@@ -111,14 +155,18 @@
 
 
             //code for todays date
-            $('#frombox').datepicker({ dateFormat: 'dd-M-yy' });
+            $('#frombox').datepicker({
+                dateFormat: 'dd-M-yy'
+            });
             $('#frombox').datepicker('setDate', 'today');
-            $('#tobox').datepicker({ dateFormat: 'dd-M-yy' });
+            $('#tobox').datepicker({
+                dateFormat: 'dd-M-yy'
+            });
             $('#tobox').datepicker('setDate', 'today');
 
             //to resize
-            $('#divTable').height($("body").height() - (parseInt($("form").height()) + 150));
-            $('#divTable').width($("body").width() - 50);
+            //$('#divTable').height($("body").height() - (parseInt($("form").height()) + 150));
+            //$('#divTable').width($("body").width() - 50);
 
 
             //code to get departments data
@@ -130,12 +178,12 @@
                 success: function (data) {
                     var s = '';
                     var d = data.data;
-                    for (var i = 0; i < d.length ; i++) {
+                    for (var i = 0; i < d.length; i++) {
                         s += '<option value= "' + d[i].Code + '"> ' + d[i].Name + '</option>';
                     }
                     $("#deptdropdown").html(s);
                 }
-            })
+            });
 
 
             //submit button event
@@ -161,32 +209,49 @@
                 dropdownarray = [];
 
                 for (var i = 0; i <= len - 1; i++) {
-                    dropdownarray.push($("#deptdropdown").find("option:selected")[i].value); // to take selected departments into an array
+                    dropdownarray.push($("#deptdropdown").find("option:selected")[i]
+                    .value); // to take selected departments into an array
                 }
 
                 if (dropdownarray.length > 0) {
-                    dropselecteddata = $.grep(d, function (element, index) {  //filtering the selected data from the original data
-                        return dropdownarray.indexOf(element.DEPTCODE) > -1;
+                    dropselecteddata = $.grep(d, function (element,
+                    index) { //filtering the selected data from the original data
+                        return dropdownarray.indexOf(element.Department) > -1;
                     });
-                
+
                     if (dropselecteddata.length > 0) {
-                        if (dropdownarray.length > 0) {
-                            s += d[0].Content;
-                        }
                         var tr, gtot, stot;
+                        var gtotalpatient = 0,
+                            gpayTotal = 0,
+                            ginsur = 0,
+                            gsch = 0;
+                        var gcorp = 0,
+                            gehs = 0,
+                            gcovgov = 0,
+                            gas = 0;
 
+                        var stotalpatient = 0,
+                            spayTotal = 0,
+                            sinsur = 0,
+                            ssch = 0;
+                        var scorp = 0,
+                            sehs = 0,
+                            scovgov = 0,
+                            sas = 0;
 
-
-                        var gtotalpatient = 0, gpayTotal = 0, ginsur = 0, gsch = 0;
-                        var gcorp = 0, gehs = 0, gcovgov = 0, gas = 0;
-
-                        var stotalpatient = 0, spayTotal = 0, sinsur = 0, ssch = 0;
-                        var scorp = 0, sehs = 0, scovgov = 0, sas = 0;
+                        s = '<table class="ui celled unstackable table">'
 
                         for (var i = 0; i < dropselecteddata.length; i++) {
-                            if (dropselecteddata[i].SPECIALITY == 'G') {
-                                if (dropselecteddata[i].DOCTCODE == null) {
-                                    gtotalpatient = parseFloat(gtotalpatient) + parseFloat(dropselecteddata[i].Totalpatients);
+                            if (dropselecteddata[i].Speciality == 'G') {
+                                if (i == 0) {
+                                    s += '<tr><td colspan="10">';
+                                    if (dropdownarray.length > 0) {
+                                        s += d[0].Content;
+                                    }
+                                }
+                                if (dropselecteddata[i].Doctcode == "") {
+                                    gtotalpatient = parseFloat(gtotalpatient) + parseFloat(dropselecteddata[i]
+                                        .Totalpatients);
                                     gpayTotal = parseFloat(gpayTotal) + parseFloat(dropselecteddata[i].Paying);
                                     ginsur = parseFloat(ginsur) + parseFloat(dropselecteddata[i].Insurance);
                                     gsch = parseFloat(gsch) + parseFloat(dropselecteddata[i].Scheme);
@@ -196,26 +261,35 @@
                                     gas = parseFloat(gas) + parseFloat(dropselecteddata[i].Asp);
                                 }
                                 s += dropselecteddata[i].Content;
-
-
                             }
                         }
 
-                        gtot = '</td></tr><tr class="footer"><td></td><td>Total</td>'
-                                    + "<td style= text-align:right>" + gtotalpatient + "</td>"
-                                    + "<td style= text-align:right>" + gpayTotal + " </td>"
-                                    + "<td style= text-align:right>" + ginsur + " </td>"
-                                    + "<td style= text-align:right>" + gsch + "</td>"
-                                    + "<td style= text-align:right>" + gcorp + "</td>"
-                                    + "<td style= text-align:right>" + gehs + "</td>"
-                                    + "<td style= text-align:right>" + gcovgov + "</td>"
-                                    + "<td style= text-align:right>" + gas + "</td></tr>";
-                        s = s + gtot;
+                        gtot = '<tbody><tr class="footer"><td></td><td>Total</td>' +
+                            "<td style= text-align:right>" + gtotalpatient + "</td>" +
+                            "<td style= text-align:right>" + gpayTotal + " </td>" +
+                            "<td style= text-align:right>" + ginsur + " </td>" +
+                            "<td style= text-align:right>" + gsch + "</td>" +
+                            "<td style= text-align:right>" + gcorp + "</td>" +
+                            "<td style= text-align:right>" + gehs + "</td>" +
+                            "<td style= text-align:right>" + gcovgov + "</td>" +
+                            "<td style= text-align:right>" + gas + "</td></tr></tbody></table>";
+                        if (gtotalpatient > 0)
+                            s = s + gtot + '</td></tr>';
 
+                        var j = 0;
                         for (var i = 0; i < dropselecteddata.length; i++) {
-                            if (dropselecteddata[i].SPECIALITY == 'S') {
-                                if (dropselecteddata[i].DOCTCODE == null) {
-                                    stotalpatient = parseFloat(stotalpatient) + parseFloat(dropselecteddata[i].Totalpatients);
+                            if (dropselecteddata[i].Speciality == 'S') {
+                                if (j == 0) {
+                                    s += '<tr><td colspan="10">';
+                                    s += '<h2 class="ui red header">Super Speciality</h2><table class="ui celled unstackable table">' +
+                                        '<thead><tr class = "header"><th></th><th class = "header">DepartmentName</th><th class = "header">TotalPatients</th>' +
+                                        '<th class = "header">Paying</th><th class = "header">Insuance</th><th class = "header">Scheme</th><th class = "header">Corporate</th>' +
+                                        '<th class = "header">Ehs</th><th class = "header">CovGovt</th><th class = "header">Asp</th></tr></thead><tbody>';
+                                    j++;
+                                }
+                                if (dropselecteddata[i].Doctcode == "") {
+                                    stotalpatient = parseFloat(stotalpatient) + parseFloat(dropselecteddata[i]
+                                        .Totalpatients);
                                     spayTotal = parseFloat(spayTotal) + parseFloat(dropselecteddata[i].Paying);
                                     sinsur = parseFloat(sinsur) + parseFloat(dropselecteddata[i].Insurance);
                                     ssch = parseFloat(ssch) + parseFloat(dropselecteddata[i].Scheme);
@@ -228,30 +302,30 @@
                                 s += dropselecteddata[i].Content;
                             }
                         }
-                        stot = '<tr class="footer"><td></td><td>Total</td>'
-                                + "<td style= text-align:right>" + stotalpatient + "</td>"
-                                + "<td style= text-align:right>" + spayTotal + " </td>"
-                                + "<td style= text-align:right>" + sinsur + " </td>"
-                                + "<td style= text-align:right>" + ssch + "</td>"
-                                + "<td style= text-align:right>" + scorp + "</td>"
-                                + "<td style= text-align:right>" + sehs + "</td>"
-                                + "<td style= text-align:right>" + scovgov + "</td>"
-                                + "<td style= text-align:right>" + sas + "</td></tr>";
+                        stot = '<tbody><tr class="footer"><td></td><td>Total</td>' +
+                            "<td style= text-align:right>" + stotalpatient + "</td>" +
+                            "<td style= text-align:right>" + spayTotal + " </td>" +
+                            "<td style= text-align:right>" + sinsur + " </td>" +
+                            "<td style= text-align:right>" + ssch + "</td>" +
+                            "<td style= text-align:right>" + scorp + "</td>" +
+                            "<td style= text-align:right>" + sehs + "</td>" +
+                            "<td style= text-align:right>" + scovgov + "</td>" +
+                            "<td style= text-align:right>" + sas + "</td></tr></tbody></table>";
                         if (stotalpatient > 0)
-                            s = s + stot;
+                            s = s + stot + '</td></tr>';
 
-                        tr = '<tr class="footer"><td></td><td>GrandTotal</td>'
-                        + "<td style= text-align:right>" + (gtotalpatient + stotalpatient) + "</td>"
-                        + "<td style= text-align:right>" + (gpayTotal + spayTotal) + " </td>"
-                        + "<td style= text-align:right>" + (ginsur + sinsur) + " </td>"
-                        + "<td style= text-align:right>" + (gsch + ssch) + "</td>"
-                        + "<td style= text-align:right>" + (gcorp + scorp) + "</td>"
-                        + "<td style= text-align:right>" + (gehs + sehs) + "</td>"
-                        + "<td style= text-align:right>" + (gcovgov + scovgov) + "</td>"
-                        + "<td style= text-align:right>" + (gas + sas) + "</td></tr>";
+                        tr = '<tr class="footer"><td></td><td>GrandTotal</td>' +
+                            "<td style= text-align:right>" + (gtotalpatient + stotalpatient) + "</td>" +
+                            "<td style= text-align:right>" + (gpayTotal + spayTotal) + " </td>" +
+                            "<td style= text-align:right>" + (ginsur + sinsur) + " </td>" +
+                            "<td style= text-align:right>" + (gsch + ssch) + "</td>" +
+                            "<td style= text-align:right>" + (gcorp + scorp) + "</td>" +
+                            "<td style= text-align:right>" + (gehs + sehs) + "</td>" +
+                            "<td style= text-align:right>" + (gcovgov + scovgov) + "</td>" +
+                            "<td style= text-align:right>" + (gas + sas) + "</td></tr>";
                         s = s + tr;
 
-                        $("#divTable").append(s + '</table>');
+                        $("#divTable").append(s);
 
                         $("#loading").hide();
 
@@ -259,14 +333,12 @@
                             $(this).find("i").toggleClass("caret right icon caret down icon");
                             $(this).nextUntil("tr.p").toggle(300);
                         });
-                    }
-                    else {
+                    } else {
                         $("#divTable").empty();
                         $('#divTable').append('<tr style="color:#f93c3c"><td><h5>No Data Found</h5></td></tr>');
                         $("#loading").hide();
                     }
-                }
-                else {
+                } else {
                     //$("#deptdropdown").hide();
                     //$("#divTable").empty();
                     //$('#divTable').append('<tr style="color:#f93c3c"><td><h5>No Data Found</h5></td></tr>');
@@ -275,7 +347,7 @@
                 }
             }
         }
-        
+
         function ReportGrid() {
             //$("#dropdowndiv").show();
             $("#loading").show();
@@ -301,15 +373,13 @@
                         dropselecteddata = $.grep(d, function (element, index) {
                             return dropdownarray.indexOf(element.Department) > -1;
                         });
-                    }
-                    else {
+                    } else {
                         dropselecteddata = d;
                     }
 
                     if (dropdownarray.length > 0) {
                         OnChangeReportGrid();
-                    }
-                    else {
+                    } else {
                         if (dropselecteddata.length > 3) {
                             for (var i = 0; i < dropselecteddata.length; i++) {
                                 s += dropselecteddata[i].Content;
@@ -323,28 +393,23 @@
                                 $(this).find("i").toggleClass("caret right icon caret down icon");
                                 $(this).nextUntil("tr.p").toggle(300);
                             });
-                        }
-                        else {
+                        } else {
                             //$("#dropdowndiv").hide();
                             $("#divTable").empty();
-                            $('#divTable').append('<tr style="color:#f93c3c"><td><h5>No Data Found</h5></td></tr>');
+                            $('#divTable').append(
+                                '<tr style="color:#f93c3c"><td><h5>No Data Found</h5></td></tr>');
                             $("#loading").hide();
                         }
                     }
                 }
             })
         }
-
-       
-        
-            
-                        
     </script>
 </head>
 
 <body>
     <div class="ui fluid container">
-        <h2 class="ui dividing black header">OP Census</h2>
+        <!-- <h2 class="ui dividing black header">OP Census</h2> -->
         <form id="form1" class="ui form">
             <div class="three fields">
                 <div class="four wide field">
@@ -359,7 +424,6 @@
                         <input type="text" id="tobox" name="totextbox" placeholder="Select Date" readonly />
                     </div>
                 </div>
-
                 <div class="field">
                     <label>&nbsp;</label>
                     <input id="submitbutton" class="ui blue button" type="button" value="Submit" />
@@ -381,11 +445,10 @@
             </table>
         </div>
     </div>
+    <input type="hidden" id="hempid" />
     <div class="ui active inverted dimmer" id="loading">
         <div class="ui large text loader">loading</div>
     </div>
 </body>
+
 </html>
-
-
-

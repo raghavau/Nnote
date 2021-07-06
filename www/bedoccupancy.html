@@ -67,7 +67,8 @@
             <div class="ui divider"></div>
         </div>
         <div class="ui secondary pointing menu" style="overflow: auto;">
-            <a class="active item" id="ip">IP Census</a>
+            <a class="active item" id="op">OP Census</a>
+            <a class="item" id="ip">IP Census</a>
             <a class="item" id="beds">Beds Position</a>
             <a class="item" id="incharge">Incharge</a>
             <a class="item" id="bedtype">Bed Type</a>
@@ -132,7 +133,7 @@
         $(".dimmer").hide();
         $('.ui.segment').height($(this).height() - 180);
 
-        $('#ifrm').attr('src', 'ipcensus.html?empid=' + btoa($("#hempid").val()));
+        $('#ifrm').attr('src', 'opcensus.html?empid=' + btoa($("#hempid").val()));
 
         $('#incharge').click(function () {
             menuActive('incharge');
@@ -154,6 +155,12 @@
             menuActive('ip');
             $('#ifrm').attr('src', 'ipcensus.html?empid=' + btoa($("#hempid").val())); 
         });
+
+        $('#op').click(function () {
+            menuActive('op');
+            $('#ifrm').attr('src', 'opcensus.html?empid=' + btoa($("#hempid").val())); 
+        });
+
         $('#deptipcensus').click(function () {
             menuActive('deptipcensus');
             $('#ifrm').attr('src', 'ipcensus_dept.html?empid=' + btoa($("#hempid").val())); 

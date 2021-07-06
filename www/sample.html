@@ -44,10 +44,7 @@
 </head>
 
 <body>
-    <div id="layout">
-        <div id="frm1"></div>
-        <div id="frm2"></div>
-      </div>
+    <div id="outer"><div id="inner">Hello</div></div>
 
     <input type="hidden" id="hempid" />
 </body>
@@ -92,6 +89,6 @@
     }
 
     $(document).ready(function () {
-        $("#frm2").load("http://localhost/Nnote/index.html");
+        $('#inner').html("Hi");
     });
 </script>
