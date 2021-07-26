@@ -130,10 +130,12 @@
         return /ios|iphone|ipod|ipad|android/i.test(navigator.userAgent);
     }
     
+    /*
     var timeout = setInterval(function runMe() {
         //debugger;
         ShowAppUpdate();
     }, 60000);
+    */
 
     $(document).ready(function () {
         qs();
@@ -234,6 +236,7 @@
 
     function ShowAppUpdate() {
         $('#download').hide();
+        /*
         $.get(apiURL + 'Notifications/App/4029038', function (response) {
             //debugger;
             var arrdata = response.data;
@@ -248,5 +251,6 @@
         }).fail(function () {
             //setTimeout(ShowAppUpdate(), 60000);
         });
+        */
     }
 </script>

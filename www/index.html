@@ -205,7 +205,7 @@
 
     function CheckAppUpdate() {
         $(".dimmer").show();
-        $.get("./version.xml", function(data) {}).done(function(result) {
+        /*$.get("./version.xml", function(data) {}).done(function(result) {
             var version = $(result).find('content').attr('version');
             $("#version").text("Version " + version);
             $("#hvno").val(version);
@@ -227,6 +227,7 @@
         }).fail(function(jqxhr, settings, ex) {
             $("#hvno").val('0');
             $(".dimmer").hide();
-        });
+        });*/
+        $(".dimmer").hide();
     }
 </script>

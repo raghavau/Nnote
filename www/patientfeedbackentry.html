@@ -154,10 +154,12 @@
                                     type="hidden" id="hipid"><br>
                                 <i class="user md green icon"></i><span id="doctname"></span> / <span
                                     id="deptname"></span><br>
-                                <i class="bed icon"></i><span id="wardcode"></span> /<span id="ward"></span> <br>
-                                <i class="bed icon"></i><span id="bedno"></span> / <span id="pstatus"></span><br>
-                                <i class="user orange icon"></i><span id="attendent"></span> / <i
-                                    class="mobile alternate orange icon"></i><span id="attdmobile"></span><br>
+                                <div id='divPdetails'>
+                                    <i class="bed icon"></i><span id="wardcode"></span> /<span id="ward"></span> <br>
+                                    <i class="bed icon"></i><span id="bedno"></span> / <span id="pstatus"></span><br>
+                                    <i class="user orange icon"></i><span id="attendent"></span> / <i
+                                        class="mobile alternate orange icon"></i><span id="attdmobile"></span><br>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -313,6 +315,7 @@
         <input type="hidden" id="hempid" />
         <input type="hidden" id="hRegNo" />
         <input type="hidden" id="hIpId" />
+        <input type="hidden" id="hPatientType" />
 </body>
 
 </html>
@@ -355,6 +358,8 @@
             if (parms.length > 1) {
                 $("#hRegNo").val(atob(qsParm["regno"]));
                 $("#hIpId").val(atob(qsParm["ipno"]));
+                $("#hPatientType").val(atob(qsParm["pstatus"]));
+
             }
             return true;
         } else {
@@ -412,7 +417,7 @@
         if ($('#hRegNo').val() != '') {
             //$(".dimmer").show();
 
-            $.get(apiURL + 'Patient/GetAdmissionDetails/' + $("#hRegNo").val(), function (response) {
+            $.get(apiURL + 'Patient/GetAdmissionDetails/' + $("#hRegNo").val() + '/' + $("#hPatientType").val(), function (response) {
                 // debugger;
                 var arrdata = response.data;
                 var content = '<br><br>';
@@ -427,12 +432,20 @@
                     $("#hipid").val(arrdata[0].IPatientId);
                     $("#doctname").text(arrdata[0].DoctorName);
                     $("#deptname").text(arrdata[0].Department);
-                    $("#ward").text(arrdata[0].WardName);
-                    $("#bedno").text(arrdata[0].BedId);
-                    $("#attendent").text(arrdata[0].Attendant);
-                    $("#attdmobile").text(arrdata[0].AttendantMobile);
-                    $("#wardcode").text(arrdata[0].WardCode);
-                    $("#pstatus").text(arrdata[0].PatientStatus);
+
+                    //alert("Bed ID-" + arrdata[0].BedId);
+                    if (arrdata[0].BedId != "" || arrdata[0].WardCode != "") {
+                        $("#divPdetails").show();
+                        $("#ward").text(arrdata[0].WardName);
+                        $("#bedno").text(arrdata[0].BedId);
+                        $("#attendent").text(arrdata[0].Attendant);
+                        $("#attdmobile").text(arrdata[0].AttendantMobile);
+                        $("#wardcode").text(arrdata[0].WardCode);
+                        $("#pstatus").text(arrdata[0].PatientStatus);
+                    }
+                    else {
+                        $("#divPdetails").hide();
+                    }
                     $(".dimmer").hide();
                     GetFeedbackGroup();
                 }
@@ -631,7 +644,8 @@
             WardCode: $("#wardcode").text() == '' ? '' : $("#wardcode").text(),
             LinkFb: requNo,
             WorkTypeId: $("#ddlservice").val() == '' ? '0' : $("#ddlservice").val(),
-            ServiceRemarks: $('#txtsrvRemarks').val() == '' ? '' : $('#txtsrvRemarks').val()
+            ServiceRemarks: $('#txtsrvRemarks').val() == '' ? '' : $('#txtsrvRemarks').val(),
+            PatientType: $('#hPatientType').val() == '' ? '0' : $('#hPatientType').val(),
         };
         $.ajax({
             type: 'POST',
@@ -648,6 +662,7 @@
                     }
                     else {
                         alert('Your Feedback Submitted Successfully');
+                        document.location.href = "patientfeedback.html?empid=" + btoa($("#hempid").val());
                         $(".dimmer").hide();
                     }
                 } else {

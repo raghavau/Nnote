@@ -124,9 +124,19 @@
                 <div class="ui styled fluid accordion">
                     <div class="active title">
                         <i class="dropdown icon"></i>
-                        Filters
+                        Filters <label>&nbsp;</label>
+                        <div class="ui toggle checkbox">
+                            <label>IP</label>
+                            <input type="checkbox" name="throughput" id="chkIp" checked="true">
+                        </div>
+
+                        <label>&nbsp;</label>
+                        <div class="ui toggle checkbox">
+                            <label>OP</label>
+                            <input type="checkbox" name="throughput" id="chkOp">
+                        </div>
                     </div>
-                    <div class="active content">
+                    <div class="active content" id="divIP" style="display: none;">
                         <div class="inline equal width fields">
                             <div class="field">
                                 <div class="ui radio checkbox">
@@ -140,6 +150,7 @@
                                     <label>IP No</label>
                                 </div>
                             </div>
+
                             <div class="field">
                                 <div class="ui radio checkbox">
                                     <input type="radio" name="filter" value="name">
@@ -184,16 +195,77 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="ui section divider"></div>
-                <div class="ui red message">
-                    <p>No Data Available with this search criteria</p>
-                </div>
-                <div class="field">
-                    <div class="ui link four stackable cards" id="enqdata"></div>
+                    <div class="active content" id="divOp" style="display: none;">
+                        <div class="inline equal width fields">
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="filter1" value="regno" checked>
+                                    <label>Regno</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="filter1" value="opno">
+                                    <label>OP No</label>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="filter1" value="name">
+                                    <label>Patient Name</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="filter1" value="mobile">
+                                    <label>Mobile No</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="filter1" value="aadhar">
+                                    <label>Aadhar No</label>
+                                </div>
+                            </div>
+                            <div class="field" style="display: none;">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="filter1" value="attname">
+                                    <label>Attendant Name</label>
+                                </div>
+                            </div>
+                            <div class="field" style="display: none;">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="filter1" value="attmobile">
+                                    <label>Attendant Mobile</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="four fields">
+                            <div class="four wide field">
+                                <label id="filtertext1">Registration No</label>
+                                <div class="ui input">
+                                    <input type="text" name="search1" id="search1" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>&nbsp;</label>
+                                <button class="ui primary button" id="report1">Search</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+            <div class="ui section divider"></div>
+            <div class="ui red message">
+                <p>No Data Available with this search criteria</p>
+            </div>
+            <div class="field">
+                <div class="ui link four stackable cards" id="enqdata"></div>
+            </div>
         </div>
+    </div>
     </div>
     <br>
     <div class="ui active inverted page dimmer">
@@ -239,6 +311,7 @@
         }
         if (parms.length > 0) {
             $("#hempid").val(atob(qsParm["empid"]));
+            //$("#hempid").val('500800881');
             return true;
         } else {
             window.location.href = 'index.html';
@@ -254,8 +327,22 @@
         $('#search').prop('type', 'number');
         $('#search').prop('maxlength', '11');
         $('#search').focus();
-
+        $('#chkIp').change(function () {
+            chkIp.checked = true;
+            chkOp.checked = false;
+            $("#divOp").hide();
+            $("#divIP").show();
+            $("#enqdata").empty();
+        });
+        $('#chkOp').change(function () {
+            chkIp.checked = false;
+            chkOp.checked = true;
+            $("#divOp").show();
+            $("#divIP").hide();
+            $("#enqdata").empty();
+        });
         qs();
+
 
         $('#search').keypress(function (e) {
             var current_val = $(this).val();
@@ -283,6 +370,10 @@
                     }
                     break;
                 case 'ipno':
+                    if (parseFloat(current_val + "" + typing_char) > 999999999) {
+                        return false;
+                    }
+                case 'opno':
                     if (parseFloat(current_val + "" + typing_char) > 999999999) {
                         return false;
                     }
@@ -328,7 +419,12 @@
                 case 'ipno':
                     text = 'IP No';
                     $('#search').prop('type', 'number');
-                    $('#search').prop('maxlength', '9');
+                    $('#search').prop('maxlength', '10');
+                    break;
+                case 'opno':
+                    text = 'OP No';
+                    $('#search').prop('type', 'number');
+                    $('#search').prop('maxlength', '10');
                     break;
                 default:
                     text = '';
@@ -340,11 +436,59 @@
             $('#search').focus();
         });
 
-        $('#report').click(function () {
-            $('.message').hide();
-            ShowReport();
+        $("input[name='filter1']").change(function () {
+            $('.message').hide()
+            var value = $("input[name='filter1']:checked").val();
+            var text = '';
+            switch (value) {
+                case 'regno':
+                    text = 'Registration No';
+                    $('#search1').prop('type', 'number');
+                    $('#search1').prop('maxlength', '11');
+                    break;
+                case 'name':
+                    text = 'Patient Name';
+                    $('#search1').prop('type', 'text');
+                    $('#search1').prop('maxlength', '100');
+                    break;
+                case 'mobile':
+                    text = 'Mobile No';
+                    $('#search1').prop('type', 'number');
+                    $('#search1').prop('maxlength', '10');
+                    break;
+                case 'aadhar':
+                    text = 'Aadhar No';
+                    $('#search1').prop('type', 'number');
+                    $('#search1').prop('maxlength', '12');
+                    break;
+                case 'ipno':
+                    text = 'IP No';
+                    $('#search1').prop('type', 'number');
+                    $('#search1').prop('maxlength', '10');
+                    break;
+                case 'opno':
+                    text = 'OP No';
+                    $('#search1').prop('type', 'number');
+                    $('#search1').prop('maxlength', '10');
+                    break;
+                default:
+                    text = '';
+                    $('#search1').prop('type', 'text');
+                    break;
+            }
+            $('#filtertext1').text(text);
+            $('#search1').val('');
+            $('#search1').focus();
         });
 
+        $('#report').click(function () {
+            $('.message').hide();
+            ShowReport('IP');
+        });
+        $('#report1').click(function () {
+            $('.message').hide();
+            ShowReport('OP');
+        });
         $(window).scroll(function () {
             if ($(this).scrollTop() > 300) {
                 $('.scroll_To_Top').fadeIn();
@@ -357,86 +501,174 @@
                 $('.ui.accordion>.content').addClass('active');
             }
         });
-
-
         $('.scroll_To_Top').click(function () {
             $('html, body').animate({ scrollTop: 0 }, 700);
             return false;
         });
     });
 
-    function ShowReport() {
-        $('#enqdata').empty();
-        var value = $("input[name='filter']:checked").val();
-
-        if ($('#search').val() == '') {
-            var msg;
-            switch (value) {
-                case 'regno':
-                    msg = 'Enter Registration No';
-                    break;
-                case 'ipno':
-                    msg = 'Enter InPatient No';
-                    break;
-                case 'name':
-                    msg = 'Enter Patient Name';
-                    break;
-                case 'mobile':
-                    msg = 'Enter Mobile No';
-                    break;
-                case 'aadhar':
-                    msg = 'Enter Aadhar No';
-                    break;
-                case 'attname':
-                    msg = 'Enter Attendant Name';
-                    break;
-                case 'attmobile':
-                    msg = 'Enter Attendant Mobile';
-                    break;
-            }
-            alert(msg);
-            $('#search').focus();
-            return false;
-        }
-
-        if (value == 'regno') {
-            if ($('#search').val().length < 11) {
-                alert('Invalid Registration No');
-                $('#search').focus();
-                return false;
-            }
-        } else if (value == 'ipno') {
-            if ($('#search').val().length < 9) {
-                alert('Invalid IP No');
-                $('#search').focus();
-                return false;
-            }
-        } else if (value == 'aadhar') {
-            if ($('#search').val().length < 12) {
-                alert('Invalid Aadhar No');
-                $('#search').focus();
-                return false;
-            }
-        } else if (value == 'mobile' || value == 'attmobile') {
-            if ($('#search').val().length < 10) {
-                alert('Invalid Mobile No');
+    function ShowReport(val) {
+        $('#enqdata').empty(); var filterData = "";
+        if (val == 'IP') {
+            var value = $("input[name='filter']:checked").val();
+            if ($('#search').val() == '') {
+                var msg;
+                switch (value) {
+                    case 'regno':
+                        msg = 'Enter Registration No';
+                        break;
+                    case 'ipno':
+                        msg = 'Enter InPatient No';
+                        break;
+                    case 'name':
+                        msg = 'Enter Patient Name';
+                        break;
+                    case 'mobile':
+                        msg = 'Enter Mobile No';
+                        break;
+                    case 'aadhar':
+                        msg = 'Enter Aadhar No';
+                        break;
+                    case 'attname':
+                        msg = 'Enter Attendant Name';
+                        break;
+                    case 'attmobile':
+                        msg = 'Enter Attendant Mobile';
+                        break;
+                }
+                alert(msg);
                 $('#search').focus();
                 return false;
             }
         }
+        else {
+            var value = $("input[name='filter1']:checked").val();
+            if ($('#search1').val() == '') {
+                var msg;
+                switch (value) {
+                    case 'regno':
+                        msg = 'Enter Registration No';
+                        break;
+                    case 'name':
+                        msg = 'Enter Patient Name';
+                        break;
+                    case 'mobile':
+                        msg = 'Enter Mobile No';
+                        break;
+                    case 'aadhar':
+                        msg = 'Enter Aadhar No';
+                        break;
+                    case 'opno':
+                        msg = 'Enter OutPatient No';
+                        break;
+                }
+                alert(msg);
+                $('#search1').focus();
+                return false;
+            }
+        }
+        if (val == 'IP') {
+            if (value == 'regno') {
+                if ($('#search').val().length < 11) {
+                    alert('Invalid Registration No');
+                    $('#search').focus();
+                    return false;
+                }
+            } else if (value == 'ipno') {
+                if ($('#search').val().length < 9) {
+                    alert('Invalid IP No');
+                    $('#search').focus();
+                    return false;
+                }
 
+            } else if (value == 'opno') {
+                if ($('#search').val().length < 9) {
+                    alert('Invalid OP No');
+                    $('#search').focus();
+                    return false;
+                }
+
+            } else if (value == 'aadhar') {
+                if ($('#search').val().length < 12) {
+                    alert('Invalid Aadhar No');
+                    $('#search').focus();
+                    return false;
+                }
+            } else if (value == 'mobile') {
+                if ($('#search').val().length < 10) {
+                    alert('Invalid Mobile No');
+                    $('#search').focus();
+                    return false;
+                }
+            }
+        }
+        else {
+            if (val == 'OP') {
+                if (value == 'regno') {
+                    if ($('#search1').val().length < 11) {
+                        alert('Invalid Registration No');
+                        $('#search1').focus();
+                        return false;
+                    }
+                } else if (value == 'ipno') {
+                    if ($('#search1').val().length < 9) {
+                        alert('Invalid IP No');
+                        $('#search1').focus();
+                        return false;
+                    }
+
+                } else if (value == 'opno') {
+                    if ($('#search1').val().length < 9) {
+                        alert('Invalid OP No');
+                        $('#search1').focus();
+                        return false;
+                    }
+
+                } else if (value == 'aadhar') {
+                    if ($('#search1').val().length < 12) {
+                        alert('Invalid Aadhar No');
+                        $('#search1').focus();
+                        return false;
+                    }
+                } else if (value == 'mobile' || value == 'attmobile') {
+                    if ($('#search1').val().length < 10) {
+                        alert('Invalid Mobile No');
+                        $('#search1').focus();
+                        return false;
+                    }
+                }
+            }
+        }
         $(".dimmer").show();
-
-        var filterData = {
-            "Regno": value == 'regno' ? $('#search').val() : "-1",
-            "IPatientId": value == 'ipno' ? $('#search').val() : "-1",
-            "Name": value == 'name' ? $('#search').val() : "-1",
-            "MobileNo": value == 'mobile' ? $('#search').val() : "-1",
-            "Aadhar": value == 'aadhar' ? $('#search').val() : "-1",
-            "Attendant": value == 'attname' ? $('#search').val() : "-1",
-            "AttendantMobile": value == 'attmobile' ? $('#search').val() : "-1"
-        };
-
+        if (val == 'IP') {
+            $("#divOp").hide();
+            $("#divIP").show();
+            filterData = {
+                "Regno": value == 'regno' ? $('#search').val() : "-1",
+                "IPatientId": value == 'ipno' ? $('#search').val() : "-1",
+                "Name": value == 'name' ? $('#search').val() : "-1",
+                "MobileNo": value == 'mobile' ? $('#search').val() : "-1",
+                "Aadhar": value == 'aadhar' ? $('#search').val() : "-1",
+                "Attendant": value == 'attname' ? $('#search').val() : "-1",
+                "AttendantMobile": value == 'attmobile' ? $('#search').val() : "-1",
+                //"OPatientId": value == 'opno' ? $('#search').val() : "-1",
+                "PatientType": "IP",
+            };
+        }
+        else {
+            $("#divOp").show();
+            $("#divIP").hide();
+            filterData = {
+                "Regno": value == 'regno' ? $('#search1').val() : "-1",
+                "Name": value == 'name' ? $('#search1').val() : "-1",
+                "MobileNo": value == 'mobile' ? $('#search1').val() : "-1",
+                "Aadhar": value == 'aadhar' ? $('#search1').val() : "-1",
+                "IPatientId": value == 'opno' ? $('#search1').val() : "-1",
+                "Attendant": "-1",
+                "AttendantMobile": "-1",
+                "PatientType": "OP",
+            };
+        }
         $.post(apiURL + 'Enquiry/FeedBack', filterData, function (response) {
             //debugger
         }).done(function (response) {
@@ -448,6 +680,7 @@
                     htmlStr += selectedArray[i].StrContent;
 
                 $("#enqdata").append(htmlStr);
+                //console.log('Eswar-' + $("#enqdata").append(htmlStr));
             } else {
                 $('.message').show()
                 setTimeout(function () { $('.message').hide(); }, 5000);
@@ -462,9 +695,10 @@
             $('.dimmer').hide();
         });
     }
-    function feedback(obj1, obj2) {
+    function feedback(obj1, obj2, obj3) {
+        //alert("obj1-" + obj1 + ",obj2-" + obj2 + ",obj3-" + obj3);
         document.location.href = "patientfeedbackentry.html?empid=" + btoa($("#hempid").val()) + "&regno=" +
-            btoa(obj1) + "&ipno=" + btoa(obj2)
+            btoa(obj1) + "&ipno=" + btoa(obj2) + "&pstatus=" + btoa(obj3);
 
     }
 </script>

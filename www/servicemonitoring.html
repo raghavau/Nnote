@@ -142,7 +142,17 @@
                     <button class="ui basic green button" id="incharge">Incharge</button>
                 </div>
             </div>
-
+            <div class="field">
+                <audio id="aplayer">
+                    Unsupported File Format.
+                </audio>
+                <div class="ui mini modal">
+                    <i class="close icon"></i>
+                    <video id="vplayer" width="100%" height="100%">
+                        Unsupported File Format.
+                    </video>
+                </div>
+            </div>
             <div class="field">
                 <br>
                 <div id="tblGrid"></div>
@@ -195,6 +205,33 @@
         var mindate = new Date(2021, 3, 1);
         $('.ui.dropdown').dropdown();
         $('.ui.checkbox').checkbox();
+        $('.ui.modal').modal({ 
+            //closable: false,
+            scrolling : 'scrolling',
+            onHidden : function() {
+                $('#aplayer').get(0).pause();
+                $('#aplayer').empty();
+                $('#vplayer').get(0).pause();
+                $('#vplayer').empty();
+                $('.ui.modal').modal('hide');
+                clearDefaults();
+            }
+        });
+
+        $("#aplayer, #vplayer").bind("ended", function () {
+            $('#aplayer').empty();
+            $('#vplayer').empty();
+            $('.ui.modal').modal('hide');
+            clearDefaults();
+        });
+
+        $("#aplayer, #vplayer").on("error", function () {
+            $('#aplayer').empty();
+            $('#vplayer').empty();
+            $('.ui.modal').modal('hide');
+            clearDefaults();
+        });
+
         $('.dimmer').hide();
         $('#frmdate, #todate').attr('readonly', 'true');
         
@@ -344,5 +381,53 @@
         }).fail(function () {
             $('.dimmer').hide();
         });
+    }
+
+    function clearDefaults() {
+        $('#aplayer').empty();
+        $('#vplayer').empty();
+        if ($('#p' + pid).hasClass('stop circle outline red')) {
+            $('#p' + pid).removeClass('stop circle outline red');
+            $('#p' + pid).addClass('play circle outline green');
+        }
+    }
+
+    function playAV(id, mode, src) {
+        $('#aplayer').empty();
+        $('#vplayer').empty();
+        pid = id;
+        
+        if ($('#p' + id).hasClass('play circle outline green')) {
+            $('#p' + id).removeClass('play circle outline green');
+            $('#p' + id).addClass('stop circle outline red');
+            if (mode == 'A') {
+                $('#aplayer').append("<source id='sound_src' src=" + src + ">");
+                $('#aplayer').get(0).load();
+                $('#aplayer').get(0).play();
+            } else if (mode == 'V') {
+                $('.ui.modal').modal('show');
+                // $('html, body').animate({
+                //     scrollTop: $("#vplayer").offset().top
+                // }, 500);
+                $('#vplayer').append("<source id='sound_src' src=" + src + ">");
+                $('#vplayer').get(0).load();
+                $('#vplayer').get(0).play();
+            }
+            $("#sound_src").on("error", function (e) {
+                $('#p' + id).removeClass('stop circle outline red');
+                $('#p' + id).addClass('play circle outline green');
+                $('.ui.modal').modal('hide');
+                clearDefaults();
+                alert('Error occurred while playing the file.')
+            });
+        } else {
+            $('.ui.modal').modal('hide');
+            $('#p' + id).removeClass('stop circle outline red');
+            $('#p' + id).addClass('play circle outline green');
+            if (mode == 'A')
+                $('#aplayer').get(0).pause();
+            else if (mode == 'V')
+                $('#vplayer').get(0).pause();
+        }
     }
 </script>
