@@ -41,6 +41,7 @@
     </div>
     <input type="hidden" id="hempid" />
     <input type="hidden" id="hano" /> <!-- value="201910239075"  -->
+    <input type="hidden" id="hscan" />
 </body>
 
 </html>
@@ -61,8 +62,6 @@
 
     var apiURL = '../../NnoteApi/Api/Nnote/';
     //var apiURL = 'http://115.241.194.19/NnoteApi/Api/Nnote/';
-    ////var apiURL = 'http://192.168.1.195/nnoteapi/Api/Nnote/';
-    ////var apiURL = 'http://localhost:6491/api/Nnote/';
     var qsParm = new Array(),
         phonegap = false;
 
@@ -85,6 +84,9 @@
             $("#hempid").val(atob(qsParm["empid"]));
             if (phonegap) {
                 $("#hano").val(atob(qsParm["ano"]));
+                if (qsParm["scan"] != null || qsParm["scan"] != undefined) {
+                    $("#hscan").val(atob(qsParm["scan"]));
+                }
                 $("#mobile").show();
             } else {
                 $("#nomobile").show();
@@ -147,17 +149,18 @@
                 data: JSON.stringify(objdata),
                 success: function (response) {
                     var content = '';
-                    content = response.data[0].Contentdata;
-                    var VCycle = response.data[0].VerifyCycle;
-                    var Hasverify = response.data[0].Hasverify;
-                    var IsTag = response.data[0].IsTag;
-                    //alert("VCycle-" + VCycle + ",Hasverify-" + Hasverify + ",IsTag" + IsTag)
-                    if (VCycle == "0" && Hasverify == "AVERIFY" && IsTag == "Y") {
-                        alert("Verification cycle has not been initiated.");
+                    if (response.data.length > 0) {
+                        content = response.data[0].Contentdata;
+                        var VCycle = response.data[0].VerifyCycle;
+                        var Hasverify = response.data[0].Hasverify;
+                        var IsTag = response.data[0].IsTag;
+                        //alert("VCycle-" + VCycle + ",Hasverify-" + Hasverify + ",IsTag" + IsTag)
+                        if (VCycle == "0" && Hasverify == "AVERIFY" && IsTag == "Y") {
+                            alert("Verification cycle has not been initiated.");
+                        } else {}
+                        $('#divAssetDtls').append(content);
                     }
-                    else {
-                    }
-                    $('#divAssetDtls').append(content);
+
                     $('.dimmer').hide();
                 }
             });
@@ -171,10 +174,9 @@
         //alert(val);
         var AssetEntryType = '';
         if (Tagval == '2') {
-            if ($("#hano").val() != "") {
+            if ($("#hscan").val() == "Y") {
                 AssetEntryType = "A";
-            }
-            else {
+            } else {
                 AssetEntryType = "E";
             }
         }

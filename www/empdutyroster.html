@@ -107,9 +107,16 @@
 
         <div class="ui small form">
             <div class="fields">
-                <div class="four wide field">
+                <div class="three wide field">
                     <label>Date</label>
                     <input name="dutydate" id="dutydate">
+                </div>
+                <div class="two wide field">
+                    <label>&nbsp;</label>
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="doctor" checked>
+                        <label>Doctors</label>
+                    </div>
                 </div>
                 <div class="eight wide field">
                     <label>Service Area</label>
@@ -122,7 +129,13 @@
                         </button>
                     </div>
                 </div>
-                <div class="four wide field">
+                <div class="two wide field">
+                    <label for="type">Type</label>
+                    <select name="type" id="type" class="ui dropdown">
+                        <option value="null" selected>All</option>
+                        <option value="L">Late Arrival</option>
+                        <option value="E">Early Leave</option>
+                    </select>
                     <!-- <label>Shift</label>
                     <select name="status" id="status" class="ui dropdown">
                         <option value="null" selected>Both</option>
@@ -137,12 +150,14 @@
                 </div>
             </div>
             <div class="field">
-                <div id="grid"></div>
+                <div id="grid" style="overflow: auto;"></div>
             </div>
         </div>
         <br>
     </div>
-    <div class="dimmer" id="dimmer"></div>
+    <div class="ui active inverted page dimmer" id="dimmer">
+        <div class="ui large text loader">Loading</div>
+    </div>
     <input type="hidden" id="hempid" />
 </body>
 
@@ -166,6 +181,7 @@
         $('.dimmer').hide();
         $('.error.message').hide();
         $('.ui.dropdown').dropdown();
+        $('.ui.checkbox').checkbox();
         $('#dutydate').attr('readonly', 'true');
 
         var today = moment().format("DD-MMM-YYYY");
@@ -174,32 +190,62 @@
         $("#dutydate").datepicker({
             changeMonth: true,
             dateFormat: "dd-MM-yy",
-            defaultDate: today,
-            //maxDate: "0d+",
+            defaultDate: new Date(),
+            maxDate: "0d+",
             minDate: new Date(2021, 4, 1),
             onSelect: function() {
+                if($('.ui.checkbox')[0].firstElementChild.checked){
+                    Departments_Doc();
+                } else {
+                    Departments();
+                }
+            }
+        });
+
+        if($('.ui.checkbox')[0].firstElementChild.checked){
+            Departments_Doc();
+        } else {
+            Departments();
+        }
+        
+        $("#depts").change(function () {
+            if($('.ui.checkbox')[0].firstElementChild.checked){
+                Grid_Doctor();
+            } else {
                 Grid();
             }
         });
 
-        Departments();
-        $("#depts").change(function () {
-            Grid();
-        });
-
-        $("#status").change(function () {
-            Grid();
+        $("#type").change(function () {
+            if($('.ui.checkbox')[0].firstElementChild.checked){
+                Grid_Doctor();
+            } else {
+                Grid();
+            }
         });
 
         $('#btnclear').click(function () {
             $('.ui.dropdown.fluid').dropdown('clear');
-            Grid();
+            if($('.ui.checkbox')[0].firstElementChild.checked){
+                Grid_Doctor();
+            } else {
+                Grid();
+            }
         });
+    });
+
+    $(document).on('click', '.ui.checkbox', function() { 
+        $(".dimmer").show();
+        if($(this)[0].firstElementChild.checked){
+            Departments_Doc();
+        } else {
+            Departments();
+        }
     });
 
     function Grid() {
         //debugger;
-        $(".dimmer").hide();
+        $(".dimmer").show();
         var filterData = {};
         filterData.FromDate = $("#dutydate").val();
         filterData.ShiftType = 'A';
@@ -221,11 +267,23 @@
             } else
                 selectedArray = response.data;
 
+            if($("#type").val() == 'L') {
+                selectedArray = jQuery.grep(selectedArray, function (data, i) {
+                    //debugger;
+                    return data.LateArrival > 15;
+                });
+            } else if($("#type").val() == 'E') {
+                selectedArray = jQuery.grep(selectedArray, function (data, i) {
+                    //debugger;
+                    return data.EarlyLeave > 15;
+                });
+            }
+
             if (selectedArray.length > 0) {
                 $('.error.message').hide();
                 htmlStr += selectedArray[0].Header;
                 for (var i = 0; i <= selectedArray.length - 1; i++) {
-                    htmlStr += selectedArray[i].Content;
+                    htmlStr += '<tr class="top aligned"><td class="center aligned one wide">' + (i + 1) + '</td>' + selectedArray[i].Content;
                 }
                 htmlStr += selectedArray[0].Footer;
                 $("#grid").append(htmlStr);
@@ -233,6 +291,61 @@
                 $('.error.message').show();
                 $('#message').text('No Data found.');
             }
+            $('.dimmer').hide();
+        }).fail(function () {
+            $('.dimmer').hide();
+        });
+    }
+
+    function Grid_Doctor() {
+        //debugger;
+        $(".dimmer").show();
+        $("#grid").empty();
+        var filterData = {};
+        filterData.FromDate = $("#dutydate").val();
+
+        $.post(apiURL + 'Schedule/D', filterData, function (response) {}).done(function (response) {
+            $("#grid").empty();
+            var htmlStr = '';
+            var len = $("select[name='depts']").find("option:selected").length;
+            deptsArray = [];
+            for (var i = 0; i <= len - 1; i++) {
+                deptsArray.push($("select[name='depts']").find("option:selected")[i].value);
+            }
+
+            if (deptsArray.length > 0) {
+                selectedArray = jQuery.grep(response.data, function (data, i) {
+                    //debugger;
+                    return deptsArray.indexOf(data.DepartmentCode) > -1;
+                });
+            } else
+                selectedArray = response.data;
+
+            if($("#type").val() == 'L') {
+                selectedArray = jQuery.grep(selectedArray, function (data, i) {
+                    //debugger;
+                    return data.LateArrival > 15;
+                });
+            } else if($("#type").val() == 'E') {
+                selectedArray = jQuery.grep(selectedArray, function (data, i) {
+                    //debugger;
+                    return data.EarlyLeave > 15;
+                });
+            }
+
+            if (selectedArray.length > 0) {
+                $('.error.message').hide();
+                htmlStr += selectedArray[0].Header;
+                for (var i = 0; i <= selectedArray.length - 1; i++) {
+                    htmlStr += '<tr class="top aligned"><td class="center aligned one wide">' + (i + 1) + '</td>' + selectedArray[i].Content;
+                }
+                htmlStr += selectedArray[0].Footer;
+                $("#grid").append(htmlStr);
+            } else {
+                $('.error.message').show();
+                $('#message').text('No Data found.');
+            }
+            $('.dimmer').hide();
         }).fail(function () {
             $('.dimmer').hide();
         });
@@ -264,6 +377,31 @@
                 $("#depts").empty();
             }
             Grid();
+        }).fail(function () {
+            $('.error.message').show();
+            $("#depts").empty();
+        });
+    }
+
+    function Departments_Doc() {
+        $.get(apiURL + 'Departments/D/' + $("#dutydate").val(), function (response) {
+            //debugger;
+        }).done(function (response) {
+            selectedArray = response.data;
+            
+            $('#depts').dropdown('clear');
+            var htmlStr = '';
+            $("#depts").empty();
+            if (selectedArray.length > 0) {
+                for (var i = 0; i <= selectedArray.length - 1; i++)
+                    htmlStr += '<option value="' + selectedArray[i].Code + '">' + selectedArray[i].Name + '</option>';
+
+                $("#depts").append(htmlStr);
+            } else {
+                $('.error.message').show();
+                $("#depts").empty();
+            }
+            Grid_Doctor();
         }).fail(function () {
             $('.error.message').show();
             $("#depts").empty();

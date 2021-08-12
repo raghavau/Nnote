@@ -19,6 +19,7 @@
         .ui.fluid.container {
             width: 98% !important;
         }
+
         .ico-width {
             font-size: 48px !important;
         }
@@ -107,6 +108,25 @@
         .card {
             cursor: default !important;
         }
+
+        .ui.cards .content .header {
+            font-size: 18px !important;
+            padding: 0 0 10px 0;
+        }
+
+        .ui.cards .content .meta {
+            color: #333333;
+            font-weight: 400 !important;
+            padding-bottom: 5px;
+        }
+
+        .ui.cards .content .meta i:last-child {
+            margin-left: 15px;
+        }
+
+        .ui.cards .content .description {
+            line-height: 28px;
+        }
     </style>
 </head>
 
@@ -191,7 +211,7 @@
                 <div class="field">
                     <div class="ui link four stackable cards" id="enqdata"></div>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
     <br>
@@ -256,112 +276,111 @@
 
         qs();
 
-        $('#search').keypress(function(e) {
+        $('#search').keypress(function (e) {
             var current_val = $(this).val();
             var typing_char = String.fromCharCode(e.which);
             var value = $("input[name='filter']:checked").val();
             switch (value) {
-                case 'regno': 
+                case 'regno':
                     if (parseFloat(current_val + "" + typing_char) > 99999999999) {
                         return false;
                     }
-                break;
-                case 'mobile': 
+                    break;
+                case 'mobile':
                     if (parseFloat(current_val + "" + typing_char) > 9999999999) {
                         return false;
                     }
-                break;
-                case 'attmobile': 
+                    break;
+                case 'attmobile':
                     if (parseFloat(current_val + "" + typing_char) > 9999999999) {
                         return false;
                     }
-                break;
-                case 'aadhar': 
+                    break;
+                case 'aadhar':
                     if (parseFloat(current_val + "" + typing_char) > 999999999999) {
                         return false;
                     }
-                break;
-                case 'ipno': 
+                    break;
+                case 'ipno':
                     if (parseFloat(current_val + "" + typing_char) > 999999999) {
                         return false;
                     }
-                break;
+                    break;
             }
         });
 
-        $("input[name='filter']").change(function(){
+        $("input[name='filter']").change(function () {
             $('.message').hide()
             var value = $("input[name='filter']:checked").val();
             var text = '';
             switch (value) {
-                case 'regno': 
+                case 'regno':
                     text = 'Registration No';
                     $('#search').prop('type', 'number');
                     $('#search').prop('maxlength', '11');
-                break;
-                case 'name': 
+                    break;
+                case 'name':
                     text = 'Patient Name';
                     $('#search').prop('type', 'text');
                     $('#search').prop('maxlength', '100');
-                break;
-                case 'mobile': 
+                    break;
+                case 'mobile':
                     text = 'Mobile No';
                     $('#search').prop('type', 'number');
                     $('#search').prop('maxlength', '10');
-                break;
-                case 'attname': 
+                    break;
+                case 'attname':
                     text = 'Attend Name';
                     $('#search').prop('type', 'text');
                     $('#search').prop('maxlength', '100');
-                break;
-                case 'attmobile': 
+                    break;
+                case 'attmobile':
                     text = 'Attend Mobile No';
                     $('#search').prop('type', 'number');
                     $('#search').prop('maxlength', '10');
-                break;
-                case 'aadhar': 
+                    break;
+                case 'aadhar':
                     text = 'Aadhar No';
                     $('#search').prop('type', 'number');
                     $('#search').prop('maxlength', '12');
-                break;
-                case 'ipno': 
+                    break;
+                case 'ipno':
                     text = 'IP No';
                     $('#search').prop('type', 'number');
                     $('#search').prop('maxlength', '9');
-                break;
-                default: 
+                    break;
+                default:
                     text = '';
                     $('#search').prop('type', 'text');
-                break;
+                    break;
             }
             $('#filtertext').text(text);
             $('#search').val('');
             $('#search').focus();
         });
-    
-        $('#report').click(function (){
+
+        $('#report').click(function () {
             $('.message').hide();
             ShowReport();
         });
 
-        $(window).scroll(function(){
-            if ($(this).scrollTop() > 300) 
-            {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 300) {
                 $('.scroll_To_Top').fadeIn();
                 $('.ui.accordion').addClass('stick_to_top');
                 $('.ui.accordion>.content').removeClass('active');
-            } 
-            else 
-            {
+            } else {
                 $('.scroll_To_Top').fadeOut();
                 $('.ui.accordion').removeClass('stick_to_top');
                 $('.ui.accordion>.content').addClass('active');
             }
         });
-        
 
-        $('.scroll_To_Top').click(function(){
-            $('html, body').animate({scrollTop : 0}, 700);
+
+        $('.scroll_To_Top').click(function () {
+            $('html, body').animate({
+                scrollTop: 0
+            }, 700);
             return false;
         });
     });
@@ -370,9 +389,9 @@
         $('#enqdata').empty();
         var value = $("input[name='filter']:checked").val();
 
-        if($('#search').val() == '') {
+        if ($('#search').val() == '') {
             var msg;
-            switch(value){
+            switch (value) {
                 case 'regno':
                     msg = 'Enter Registration No';
                     break;
@@ -400,46 +419,42 @@
             return false;
         }
 
-        if(value == 'regno')
-        {
-            if($('#search').val().length < 11) {
+        if (value == 'regno') {
+            if ($('#search').val().length < 11) {
                 alert('Invalid Registration No');
                 $('#search').focus();
                 return false;
             }
-        } else if(value == 'ipno')
-        {
-            if($('#search').val().length < 9) {
+        } else if (value == 'ipno') {
+            if ($('#search').val().length < 9) {
                 alert('Invalid IP No');
                 $('#search').focus();
                 return false;
             }
-        } else if(value == 'aadhar')
-        {
-            if($('#search').val().length < 12) {
+        } else if (value == 'aadhar') {
+            if ($('#search').val().length < 12) {
                 alert('Invalid Aadhar No');
                 $('#search').focus();
                 return false;
             }
-        } else if(value == 'mobile' || value == 'attmobile')
-        {
-            if($('#search').val().length < 10) {
+        } else if (value == 'mobile' || value == 'attmobile') {
+            if ($('#search').val().length < 10) {
                 alert('Invalid Mobile No');
                 $('#search').focus();
                 return false;
             }
         }
 
-        $(".dimmer").show();        
-        
+        $(".dimmer").show();
+
         var filterData = {
-            "Regno": value == 'regno'? $('#search').val(): "-1",
-            "IPatientId": value == 'ipno'? $('#search').val(): "-1",
-            "Name": value == 'name'? $('#search').val(): "-1",
-            "MobileNo": value == 'mobile'? $('#search').val(): "-1",
-            "Aadhar": value == 'aadhar'? $('#search').val(): "-1",
-            "Attendant": value == 'attname'? $('#search').val(): "-1",
-            "AttendantMobile": value == 'attmobile'? $('#search').val(): "-1"
+            "Regno": value == 'regno' ? $('#search').val() : "-1",
+            "IPatientId": value == 'ipno' ? $('#search').val() : "-1",
+            "Name": value == 'name' ? $('#search').val() : "-1",
+            "MobileNo": value == 'mobile' ? $('#search').val() : "-1",
+            "Aadhar": value == 'aadhar' ? $('#search').val() : "-1",
+            "Attendant": value == 'attname' ? $('#search').val() : "-1",
+            "AttendantMobile": value == 'attmobile' ? $('#search').val() : "-1"
         };
 
         $.post(apiURL + 'Enquiry', filterData, function (response) {
@@ -455,7 +470,9 @@
                 $("#enqdata").append(htmlStr);
             } else {
                 $('.message').show()
-                setTimeout(function () { $('.message').hide(); }, 5000);
+                setTimeout(function () {
+                    $('.message').hide();
+                }, 5000);
                 $("#enqdata").empty();
             }
             $('.dimmer').hide();
