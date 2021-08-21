@@ -219,6 +219,7 @@
 
     $(document).ready(function () {
         var todaydate = moment();
+        qs();
         $('.ui.dropdown').dropdown();
         $('.ui.checkbox').checkbox();
         $('.ui.modal').modal({ 
@@ -380,7 +381,7 @@
 
             var url = apiURL + 'Report/Feedback';
 
-            $.post(url + '/' + $("#frmdate").val() + '/' + $("#todate").val() + '/' + $("input[name='catg']:checked").val() + '/' + rpttype,
+            $.post(url + '/' + $("#frmdate").val() + '/' + $("#todate").val() + '/' + $("input[name='catg']:checked").val() + '/' + rpttype + '/' + $("#hempid").val(),
                     filterData, function (response) {})
             .done(function (response) {
                 selectedArray = response.data;
