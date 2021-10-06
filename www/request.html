@@ -50,23 +50,42 @@
                 <div class="ui form">
                     <!-- <h4 class="ui dividing header">Service Request</h4> -->
                     <div class="field">
+                        <div class="ui toggle checkbox">
+                            <input name="ptype" type="radio" value="1" checked><label>IP</label>
+                        </div>
+                        <div class="ui toggle checkbox">
+                            <input name="ptype" type="radio" value="2"><label>OP</label>
+                        </div>
+                    </div>
+                    <div class="field">
                         <label>Regno</label>
                         <div class="ui action input">
-                            <input id="regno" name="regno" placeholder="Enter Registration No" type="number"
-                                maxlength="11" value="">
+                            <input id="regno" name="regno" placeholder="Enter Registration No" type="number" maxlength="11" value="">
                             <button class="ui icon button" id="btnSearch">Search</button>
                         </div>
                     </div>
 
-                    <div class="field" id="pnlPatient">
+                    <div class="field" id="pnlIpPatient">
                         <div class="fields">
                             <div class="field">
                                 <h5 id="name"></h5>
                                 <span id="age"></span> / <span id="gender"></span> / <span id="patmobile"></span><br>
-                                <span id="ipid"></span><input type="hidden" id="hipid"><br>
+                                <span id="ipid"></span><br>
                                 <span id="doctname"></span> / <span id="deptname"></span><br>
                                 <span id="ward"></span> / <span id="bedno"></span><br>
                                 <span id="attendent"></span> / <span id="attdmobile"></span><br>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field" id="pnlOpPatient">
+                        <div class="fields">
+                            <div class="field">
+                                <h5 id="opname"></h5>
+                                <span id="opage"></span> / <span id="opgender"></span> / <span id="oppatmobile"></span><br>
+                                <span id="opid"></span><br>
+                                <span id="opdoctname"></span> / <span id="opdeptname"></span><br>
+                                <span id="oppaytype"></span><br>
                             </div>
                         </div>
                     </div>
@@ -126,6 +145,7 @@
     <input type="hidden" id="hsid" />
     <input type="hidden" id="hsname" />
     <input type="hidden" id="hfname" />
+    <input type="hidden" id="hipid">
 </body>
 
 </html>
@@ -200,9 +220,11 @@
     $(document).ready(function () {
         $(".dimmer").hide();
         qs();
+        $('.ui.checkbox').checkbox();
         $("#nonmobile").hide();
         $("#mobile").hide();
-        $('#pnlPatient').hide();
+        $('#pnlIpPatient').hide();
+        $('#pnlOpPatient').hide();
         $("#lblHeading").text($("#hsname").val() + ' Service Request');
 
         $("#regno").keypress(function (e) {
@@ -259,6 +281,7 @@
 
     function SaveRequest() {
         //debugger;
+        var pType = $("input[name='ptype']:checked").val()
         if ($("#txtRemarks").val() == '') {
             alert('Please Enter Remakrs.');
             $("#txtRemarks").focus();
@@ -268,12 +291,17 @@
         $(".dimmer").show();
         var patDtls = '';
         if ($('#regno').val() != '') {
-            if(isinpatient == 'Y')
-            {
-                patDtls = $('#regno').val() + ' -' + $("#name").text() + ' -' ;
-                patDtls += ' -' + $("#patmobile").text() + ' -' + $("#doctname").text() + ' -' + $("#deptname").text();
-                patDtls += ' -' + $("#ward").text() + ' -' + $("#bedno").text();
-                patDtls += ' -' + $("#attendent").text() + ' -' + $("#attdmobil").text();
+            if(pType == 1) {
+                if(isinpatient == 'Y')
+                {
+                    patDtls = $('#regno').val() + ' -' + $("#name").text() + ' -' ;
+                    patDtls += ' -' + $("#patmobile").text() + ' -' + $("#doctname").text() + ' -' + $("#deptname").text();
+                    patDtls += ' -' + $("#ward").text() + ' -' + $("#bedno").text();
+                    patDtls += ' -' + $("#attendent").text() + ' -' + $("#attdmobil").text();
+                }
+            } else if(pType == 2) {
+                patDtls = $('#regno').val() + ' -' + $("#opname").text() + ' -' ;
+                patDtls += $("#oppatmobile").text() + ' -' + $("#opdoctname").text() + ' -' + $("#opdeptname").text();
             }
         }
         var objdata = {
@@ -307,7 +335,83 @@
 
     function SearchPatient() {
         //debugger;
-        $('#pnlPatient').hide();
+        $('#pnlIpPatient').hide();
+        $('#pnlOpPatient').hide();
+        //$('#regno').attr('readonly', 'true');
+        var pType = $("input[name='ptype']:checked").val()
+        if ($('#regno').val() == '') {
+            alert('Enter Patient Registration No.');
+            $('#regno').focus();
+        } else {
+            $(".dimmer").show();
+            if(pType == 1){
+                $.get(apiURL.replace('Nnote/', 'Patient/IsInPatient/') + $("#regno").val(), function (response) {
+                    //debugger;
+                    if (response.data == 'Success') {
+                        isinpatient = 'Y';
+                        $.get(apiURL.replace('Nnote/', 'Patient/AdmissionDetails/') + $("#regno").val(), function (response) {
+                            //debugger;
+                            var arrdata = response.data;
+                            var content = '<br><br>';
+                            if (arrdata.length > 0) {
+                                $('#pnlIpPatient').show();
+                                $("#name").text(arrdata[0].Name);
+                                $("#age").text(arrdata[0].Age + ' ' + arrdata[0].AgeType);
+                                $("#gender").text(arrdata[0].Gender);
+                                $("#patmobile").text(arrdata[0].MobileNo);
+                                $("#ipid").text(arrdata[0].IPatientId);
+                                $("#hipid").val(arrdata[0].IPatientId);
+                                $("#doctname").text(arrdata[0].DoctorName);
+                                $("#deptname").text(arrdata[0].Department);
+                                $("#ward").text(arrdata[0].WardName);
+                                $("#bedno").text(arrdata[0].BedId);
+                                $("#attendent").text(arrdata[0].Attendant);
+                                $("#attdmobile").text(arrdata[0].AttendantMobile);
+                            }
+                            $(".dimmer").hide();
+                        }).fail(function (xhr, status, error) {
+                            alert('Error occurred.\n\r' + xhr.responseText);
+                            $(".dimmer").hide();
+                        });
+                    } else {
+                        $(".dimmer").hide();
+                        alert("Not an Inpatient or Patient was Discharged.");
+                    }
+                }).fail(function (xhr, status, error) {
+                    alert('Error occurred.\n\r' + xhr.responseText);
+                    $(".dimmer").hide();
+                });
+            } else if(pType == 2) {
+                $.get(apiURL.replace('Nnote/', 'Patient/ConsultDetails/') + $("#regno").val(), function (response) {
+                    //debugger;
+                    var arrdata = response.data;
+                    var content = '<br><br>';
+                    if (arrdata.length > 0) {
+                        $('#pnlOpPatient').show();
+                        $("#opname").text(arrdata[0].Name);
+                        $("#opage").text(arrdata[0].Age + ' ' + arrdata[0].AgeType);
+                        $("#opgender").text(arrdata[0].Gender);
+                        $("#oppatmobile").text(arrdata[0].MobileNo);
+                        $("#opid").text(arrdata[0].PatientId);
+                        $("#hipid").val(arrdata[0].PatientId);
+                        $("#opdoctname").text(arrdata[0].DoctorName);
+                        $("#opdeptname").text(arrdata[0].Department);
+                        $("#oppaytype").text(arrdata[0].PatientType);
+                    } else {
+                        alert('Registration No not found.');
+                    }
+                    $(".dimmer").hide();
+                }).fail(function (xhr, status, error) {
+                    alert('Error occurred.\n\r' + xhr.responseText);
+                    $(".dimmer").hide();
+                });
+            }
+        }
+    }
+
+    function SearchPatient_Old() {
+        //debugger;
+        $('#pnlIpPatient').hide();
         //$('#regno').attr('readonly', 'true');
         if ($('#regno').val() == '') {
             alert('Enter Patient Registration No.');
@@ -323,7 +427,7 @@
                         var arrdata = response.data;
                         var content = '<br><br>';
                         if (arrdata.length > 0) {
-                            $('#pnlPatient').show();
+                            $('#pnlIpPatient').show();
                             $("#name").text(arrdata[0].Name);
                             $("#age").text(arrdata[0].Age + ' ' + arrdata[0].AgeType);
                             $("#gender").text(arrdata[0].Gender);

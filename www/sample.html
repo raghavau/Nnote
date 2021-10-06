@@ -12,40 +12,164 @@
     <script type="text/javascript" src="semantic/semantic.min.js"></script>
     <style type="text/css">
         body {
-            padding: 20px;
+            top: 0px !important;
+            left: 0px !important;
         }
-        #layout {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0px;
-  left: 0px;
-  background-color: #faebd8;
-}
 
-#frm1 {
-  position: fixed;
-  width: 10%;
-  height: 100%;
-  top: 0px;
-  left: 0px;
-  background-color: #b5e0dd;
-}
+        div.menu {
+            border: 1px solid #a0a0a0;
+            width: 40px;
+            position: fixed;
+            left: 5px;
+            top: 5px;
+            border-radius: 5px;
+            background: white;
+            padding: 2px;
+        }
 
-#frm2 {
-  position: fixed;
-  width: 90%;
-  height: 100%;
-  top: 0px;
-  left: 10%;
-  background-color: transparent;
-}
+        /* #e8cf8e      #ecd8a4     #f1e1b9     #f5eace     #f9f3e3     #fefcf8*/
+        div.sidebar {
+            background-color: #efefef;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            margin: 0px;
+            padding: 0px;
+            width: 250px;
+            overflow-y: auto;
+        }
+
+        div.sidebar>table {
+            width: 100%;
+        }
+
+        .h1>td {
+            padding: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .h2>td {
+            padding: 4px;
+            padding-left: 18px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .h3>td {
+            padding: 4px;
+            padding-left: 30px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .h4>td {
+            padding: 4px;
+            padding-left: 46px;
+            font-size: 14px;
+            font-weight: bold;
+            border-left: 1px solid antiquewhite;
+        }
+
+        td>i {
+            float: right;
+        }
+
+        @media only screen and (max-width: 600px)  {
+            div.sidebar {
+                display: none;
+            }
+
+            div.menu {
+                display: inline;
+            }
+        }
+
+        @media only screen and (min-width: 600px)  {
+            div.sidebar {
+                display: inline;
+            }
+
+            div.menu {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div id="outer"><div id="inner">Hello</div></div>
-
+    <div class="menu">
+        <i class="icon big bars"></i>
+    </div>
+    <div class="sidebar">
+        <table>
+            <tr class="h1">
+                <td>
+                    Master <i class="icon angle down"></i>
+                </td>
+            </tr>
+            <tr class="h2">
+                <td>
+                    Master 1 <i class="icon angle down"></i>
+                </td>
+            </tr>
+            <tr class="h3">
+                <td>
+                    Master 2 <i class="icon angle down"></i>
+                </td>
+            </tr>
+            <tr class="h4">
+                <td>
+                    Page 4
+                </td>
+            </tr>
+            <tr class="h4">
+                <td>
+                    Page 5
+                </td>
+            </tr>
+            <tr class="h3">
+                <td>
+                    Page 2
+                </td>
+            </tr>
+            <tr class="h3">
+                <td>
+                    Page 3
+                </td>
+            </tr>
+            <tr class="h2">
+                <td>
+                    Page 1
+                </td>
+            </tr>
+            <tr class="h1">
+                <td>
+                    Transactions <i class="icon angle down"></i>
+                </td>
+            </tr>
+            <tr class="h2">
+                <td>
+                    Page 6
+                </td>
+            </tr>
+            <tr class="h2">
+                <td>
+                    Page 7
+                </td>
+            </tr>
+            <tr class="h1">
+                <td>
+                    Reports <i class="icon angle down"></i>
+                </td>
+            </tr>
+            <tr class="h2">
+                <td>
+                    Page 8
+                </td>
+            </tr>
+        </table>
+    </div>
     <input type="hidden" id="hempid" />
 </body>
 
@@ -89,6 +213,33 @@
     }
 
     $(document).ready(function () {
-        $('#inner').html("Hi");
+        var ht = $('body').height();
+        $('.sidebar').height(ht);
+        
+        $('.h2,.h3,.h4').hide();
+
+        $(".menu").click(function(){
+            $('.sidebar').height(300);
+            $('.sidebar').css('top', '40px');
+            $('.sidebar').css('left', '5px');
+            $('.sidebar').toggle();
+        });
+
+        $(".h1").click(function () {
+            $(this).find("i").toggleClass("angle up icon angle down icon");
+            $(this).nextUntil("tr.h1").toggle(300);
+            $('.h3,.h4').hide();
+        });
+
+        $(".h2").click(function () {
+            $(this).find("i").toggleClass("angle up icon angle down icon");
+            $(this).nextUntil("tr.h2").toggle(300);
+            $('.h4').hide();
+        });
+
+        $(".h3").click(function () {
+            $(this).find("i").toggleClass("angle up icon angle down icon");
+            $(this).nextUntil("tr.h3").toggle(300);
+        });
     });
 </script>
