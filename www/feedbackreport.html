@@ -158,6 +158,8 @@
                     <button class="ui basic violet button" id="cmp">Company Type</button>
                     <button class="ui basic brown button" id="wty">Bed Category</button>
                     <button class="ui basic purple button" id="srv">Service</button>
+                    <button class="ui basic teal button" id="dsg">Discharge</button>
+                    <button class="ui basic pink button" id="dep">Department</button>
                 </div>
             </div>
             <div class="field">
@@ -294,6 +296,8 @@
             $('#cmp').addClass('basic');
             $('#srv').addClass('basic');
             $('#wty').addClass('basic');
+            $('#dsg').addClass('basic');
+            $('#dep').addClass('basic');
             ReportGrid('all');
         });
 
@@ -305,6 +309,8 @@
             $('#cmp').addClass('basic');
             $('#srv').addClass('basic');
             $('#wty').addClass('basic');
+            $('#dsg').addClass('basic');
+            $('#dep').addClass('basic');
             ReportGrid('adm');
         });
 
@@ -316,6 +322,8 @@
             $('#cmp').addClass('basic');
             $('#srv').addClass('basic');
             $('#wty').addClass('basic');
+            $('#dsg').addClass('basic');
+            $('#dep').addClass('basic');
             ReportGrid('fdb');
         });
 
@@ -327,6 +335,8 @@
             $('#cmp').addClass('basic');
             $('#srv').addClass('basic');
             $('#wty').addClass('basic');
+            $('#dsg').addClass('basic');
+            $('#dep').addClass('basic');
             ReportGrid('nur');
         });
 
@@ -338,6 +348,8 @@
             $('#nur').addClass('basic');
             $('#srv').addClass('basic');
             $('#wty').addClass('basic');
+            $('#dsg').addClass('basic');
+            $('#dep').addClass('basic');
             ReportGrid('cmp');
         });
 
@@ -349,6 +361,8 @@
             $('#nur').addClass('basic');
             $('#cmp').addClass('basic');
             $('#wty').addClass('basic');
+            $('#dsg').addClass('basic');
+            $('#dep').addClass('basic');
             ReportGrid('srv');
         });
 
@@ -360,7 +374,35 @@
             $('#nur').addClass('basic');
             $('#cmp').addClass('basic');
             $('#srv').addClass('basic');
+            $('#dsg').addClass('basic');
+            $('#dep').addClass('basic');
             ReportGrid('wty');
+        });
+
+        $('#dsg').click(function () {
+            $(this).removeClass('basic');
+            $('#all').addClass('basic');
+            $('#adm').addClass('basic');
+            $('#fdb').addClass('basic');
+            $('#nur').addClass('basic');
+            $('#cmp').addClass('basic');
+            $('#srv').addClass('basic');
+            $('#wty').addClass('basic');
+            $('#dep').addClass('basic');
+            ReportGrid('dsg');
+        });
+
+        $('#dep').click(function () {
+            $(this).removeClass('basic');
+            $('#all').addClass('basic');
+            $('#adm').addClass('basic');
+            $('#fdb').addClass('basic');
+            $('#nur').addClass('basic');
+            $('#cmp').addClass('basic');
+            $('#srv').addClass('basic');
+            $('#wty').addClass('basic');
+            $('#dsg').addClass('basic');
+            ReportGrid('dep');
         });
     });
 

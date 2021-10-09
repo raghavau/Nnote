@@ -151,10 +151,15 @@
         });
 
         $("#emppin").keypress(function(e) {
-            var current_val = $(this).val();
-            var typing_char = String.fromCharCode(e.which);
-            if (parseFloat(current_val + "" + typing_char) > 99999) {
-                return false;
+            if(e.which == 13)
+            {
+                $('#login').click();
+            } else {
+                var current_val = $(this).val();
+                var typing_char = String.fromCharCode(e.which);
+                if (parseFloat(current_val + "" + typing_char) > 99999) {
+                    return false;
+                }
             }
         });
 
